@@ -8,14 +8,15 @@ import type { TakeawayItem as TakeawayItemType } from '../../types/lesson';
 interface Props {
   item: TakeawayItemType;
   isLast: boolean;
+  index: number;
 }
 
-export default function TakeawayItem({ item, isLast }: Props) {
+export default function TakeawayItem({ item, isLast, index }: Props) {
   return (
     <View style={[styles.card, isLast && { marginBottom: 0 }]}>
       <View style={styles.accentRail} />
       <View style={styles.header}>
-        <Text style={styles.index}>0{item.headline.length > 0 ? '1' : '0'}</Text>
+        <Text style={styles.index}>{String(index).padStart(2, '0')}</Text>
       </View>
       <View style={styles.body}>
         <Text style={styles.headline}>{item.headline}</Text>

@@ -49,6 +49,7 @@ interface AppContextValue {
   addNote: (content: string, lessonId?: string) => void;
   updateNote: (noteId: string, content: string) => void;
   deleteNote: (noteId: string) => void;
+  resetAllProgress: () => void;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
@@ -81,6 +82,32 @@ function getDefaultState(): AppState {
       dayStreak: 7,
       casesCompleted: MOCK_LESSONS.filter((l) => l.status === 'completed').length,
       timeThisWeekMinutes: 83,
+      lastActiveDate: new Date().toISOString().split('T')[0],
+    },
+    savedLessonIds: [],
+    notes: [],
+  };
+}
+
+function getFreshState(): AppState {
+  const lessons: Record<string, LessonProgress> = {};
+  MOCK_LESSONS.forEach((l) => {
+    lessons[l.lesson_id] = {
+      status: l.is_locked ? 'locked' as LessonStatus : 'new' as LessonStatus,
+      progress: 0,
+      tabsViewed: [],
+      savedAt: undefined,
+      completedAt: undefined,
+      startedAt: undefined,
+    };
+  });
+
+  return {
+    lessons,
+    stats: {
+      dayStreak: 0,
+      casesCompleted: 0,
+      timeThisWeekMinutes: 0,
       lastActiveDate: new Date().toISOString().split('T')[0],
     },
     savedLessonIds: [],
@@ -309,6 +336,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  const resetAllProgress = useCallback(async () => {
+    await AsyncStorage.removeItem(STORAGE_KEY);
+    setState(getFreshState());
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -322,6 +354,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         addNote,
         updateNote,
         deleteNote,
+        resetAllProgress,
       }}
     >
       {children}

@@ -1,20 +1,33 @@
 // ─── Reflection Card — Instrumental ───────────────────────────────────────────
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Edit3 } from 'lucide-react-native';
 import { Colors, FontFamily } from '../../theme';
 
 interface Props {
   number: number;
   prompt: string;
+  onAddNote?: (prompt: string) => void;
 }
 
-export default function ReflectionCard({ number, prompt }: Props) {
+export default function ReflectionCard({ number, prompt, onAddNote }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.accentRail} />
       <View style={styles.header}>
         <Text style={styles.number}>0{number}</Text>
+        {onAddNote && (
+          <TouchableOpacity
+            style={styles.noteBtn}
+            onPress={() => onAddNote(prompt)}
+            activeOpacity={0.7}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Edit3 size={12} color={Colors.accent} strokeWidth={1.5} />
+            <Text style={styles.noteBtnText}>NOTE</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.headerDivider} />
       <View style={styles.body}>
@@ -41,6 +54,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingTop: 14,
     paddingBottom: 12,
@@ -64,5 +80,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16 * 1.4,
     color: Colors.textPrimary,
+  },
+  noteBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+  },
+  noteBtnText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: Colors.accent,
+    letterSpacing: 0.8,
   },
 });

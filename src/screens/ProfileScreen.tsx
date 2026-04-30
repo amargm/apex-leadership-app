@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronRight, RotateCcw } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { Colors, FontFamily, Spacing, Radius } from '../theme';
 import type { ProfileScreenProps } from '../navigation/types';
 import { useAppState } from '../state/AppState';
@@ -53,7 +51,7 @@ export default function ProfileScreen(_: ProfileScreenProps) {
   const [largeFontOn, setLargeFontOn] = useState(false);
   const [darkModeOn, setDarkModeOn] = useState(true);
   const [dailyReminderOn, setDailyReminderOn] = useState(true);
-  const { state } = useAppState();
+  const { state, resetAllProgress } = useAppState();
 
   const handleResetProgress = () => {
     Alert.alert(
@@ -64,9 +62,8 @@ export default function ProfileScreen(_: ProfileScreenProps) {
         {
           text: 'Reset',
           style: 'destructive',
-          onPress: async () => {
-            await AsyncStorage.removeItem('@apex_app_state');
-            Alert.alert('Done', 'Restart the app to see changes.');
+          onPress: () => {
+            resetAllProgress();
           },
         },
       ],

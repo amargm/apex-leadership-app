@@ -52,6 +52,13 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   });
   const activeCaseProgress = activeCase ? getLessonProgress(activeCase.lesson_id).progress : 0;
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'GOOD MORNING';
+    if (hour < 17) return 'GOOD AFTERNOON';
+    return 'GOOD EVENING';
+  };
+
   const handleLessonPress = (lesson: Lesson) => {
     navigation.navigate('LessonDetail', { lessonId: lesson.lesson_id });
   };
@@ -100,7 +107,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
         {/* ── Greeting ────────────────────────────────────────────── */}
         <Animated.View style={[styles.greeting, fadeStyles[1]]}>
-          <Text style={styles.greetingLabel}>GOOD MORNING</Text>
+          <Text style={styles.greetingLabel}>{getGreeting()}</Text>
           <Text style={styles.greetingName}>Leader</Text>
         </Animated.View>
 

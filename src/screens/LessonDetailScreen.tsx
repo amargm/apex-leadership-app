@@ -246,13 +246,19 @@ function TimelineTab({ lesson }: { lesson: Lesson }) {
 }
 
 function ReflectTab({ lesson }: { lesson: Lesson }) {
+  const { addNote } = useAppState();
+
+  const handleAddNote = (prompt: string) => {
+    addNote(`Reflection on: "${prompt}"`, lesson.lesson_id);
+  };
+
   return (
     <View>
       <Text style={styles.reflectIntro}>
         These prompts help you internalize the case's lessons. There are no wrong answers — reflect honestly.
       </Text>
       {lesson.tabs.reflect.prompts.map((prompt, i) => (
-        <ReflectionCard key={i} number={i + 1} prompt={prompt} />
+        <ReflectionCard key={i} number={i + 1} prompt={prompt} onAddNote={handleAddNote} />
       ))}
     </View>
   );
@@ -283,6 +289,7 @@ function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: 
         <TakeawayItem
           key={i}
           item={item}
+          index={i + 1}
           isLast={i === lesson.tabs.takeaways.items.length - 1}
         />
       ))}
