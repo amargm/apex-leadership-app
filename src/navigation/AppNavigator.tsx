@@ -1,8 +1,8 @@
 // ─── APEX App Navigator — Instrumental Redesign ──────────────────────────────
 
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { Animated, StyleSheet, View } from 'react-native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BookOpen, Map, FileText, User } from 'lucide-react-native';
@@ -17,6 +17,38 @@ import PathScreen from '../screens/PathScreen';
 import NotesScreen from '../screens/NotesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
+// ─── Fade-on-focus wrapper for smooth tab transitions ─────────────────────────
+function FadeInScreen({ children }: { children: React.ReactNode }) {
+  const opacity = React.useRef(new Animated.Value(0)).current;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      opacity.setValue(0);
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }, []),
+  );
+
+  return (
+    <Animated.View style={{ flex: 1, opacity }}>
+      {children}
+    </Animated.View>
+  );
+}
+
+function FadedPathScreen(props: any) {
+  return <FadeInScreen><PathScreen {...props} /></FadeInScreen>;
+}
+function FadedNotesScreen(props: any) {
+  return <FadeInScreen><NotesScreen {...props} /></FadeInScreen>;
+}
+function FadedProfileScreen(props: any) {
+  return <FadeInScreen><ProfileScreen {...props} /></FadeInScreen>;
+}
+
 // ─── Navigators ───────────────────────────────────────────────────────────────
 const Stack = createNativeStackNavigator<LearnStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -24,13 +56,22 @@ const Tab = createBottomTabNavigator<TabParamList>();
 // ─── Learn Stack (Home + Lesson Detail) ──────────────────────────────────────
 function LearnStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animation: 'fade_from_bottom',
+        animationDuration: 250,
+        gestureEnabled: true,
+        fullScreenGestureEnabled: true,
+      }}
+    >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen
         name="LessonDetail"
         component={LessonDetailScreen}
         options={{
           animation: 'slide_from_right',
+          animationDuration: 300,
         }}
       />
       <Stack.Screen
@@ -38,6 +79,7 @@ function LearnStack() {
         component={SavedScreen}
         options={{
           animation: 'slide_from_right',
+          animationDuration: 300,
         }}
       />
     </Stack.Navigator>
@@ -70,11 +112,13 @@ function BottomTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        lazy: true,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: '#666666',
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused }) => {
           const icons: Record<string, React.ComponentType<any>> = {
             Learn: BookOpen,
@@ -88,9 +132,9 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Learn" component={LearnStack} options={{ title: 'LEARN' }} />
-      <Tab.Screen name="Path" component={PathScreen} options={{ title: 'PATH' }} />
-      <Tab.Screen name="Notes" component={NotesScreen} options={{ title: 'NOTES' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'PROFILE' }} />
+      <Tab.Screen name="Path" component={FadedPathScreen} options={{ title: 'PATH' }} />
+      <Tab.Screen name="Notes" component={FadedNotesScreen} options={{ title: 'NOTES' }} />
+      <Tab.Screen name="Profile" component={FadedProfileScreen} options={{ title: 'PROFILE' }} />
     </Tab.Navigator>
   );
 }

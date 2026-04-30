@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* Green ambient glow */}
       <LinearGradient
-        colors={['rgba(200, 240, 77, 0.06)', 'rgba(200, 240, 77, 0.02)', 'transparent']}
+        colors={['rgba(200, 240, 77, 0.12)', 'rgba(200, 240, 77, 0.05)', 'rgba(200, 240, 77, 0.01)', 'transparent']}
         style={styles.topGlow}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
@@ -212,8 +212,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: '28%',
+    height: '30%',
     zIndex: 0,
+    pointerEvents: 'none',
   },
   scroll: { flex: 1 },
   content: { paddingBottom: Spacing.xl },
