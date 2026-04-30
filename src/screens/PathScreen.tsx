@@ -17,8 +17,12 @@ const CATEGORY_DOT_COLORS: Record<string, string> = {
   grey: '#444444',
 };
 
+const FILTERS = ['ALL', 'READING', 'YET TO READ', 'COMPLETED'] as const;
+type FilterKey = (typeof FILTERS)[number];
+
 export default function PathScreen({ navigation }: PathScreenProps) {
   const [lockedMessage, setLockedMessage] = useState<{ id: string; msg: string } | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterKey>('ALL');
 
   const handleNodePress = (lesson: Lesson) => {
     if (lesson.is_locked) {
@@ -36,6 +40,15 @@ export default function PathScreen({ navigation }: PathScreenProps) {
     }
   };
 
+  const filteredLessons = MOCK_LESSONS.filter((lesson) => {
+    switch (activeFilter) {
+      case 'READING': return lesson.status === 'in_progress';
+      case 'YET TO READ': return lesson.status === 'new' && !lesson.is_locked;
+      case 'COMPLETED': return lesson.status === 'completed';
+      default: return true;
+    }
+  });
+
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* ── Header ── */}
@@ -51,6 +64,22 @@ export default function PathScreen({ navigation }: PathScreenProps) {
         </View>
       </View>
 
+      {/* ── Filters ── */}
+      <View style={styles.filterBar}>
+        {FILTERS.map((filter) => (
+          <TouchableOpacity
+            key={filter}
+            style={[styles.filterTab, activeFilter === filter && styles.filterTabActive]}
+            onPress={() => setActiveFilter(filter)}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.filterLabel, activeFilter === filter && styles.filterLabelActive]}>
+              {filter}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -60,7 +89,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
           {/* Vertical line */}
           <View style={styles.verticalLine} />
 
-          {MOCK_LESSONS.map((lesson, index) => {
+          {filteredLessons.map((lesson, index) => {
             const isCompleted = lesson.status === 'completed';
             const isInProgress = lesson.status === 'in_progress';
             const isLocked = lesson.is_locked;
@@ -129,9 +158,37 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: Spacing.screenPaddingH,
     paddingTop: Spacing.base,
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.base,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderDefault,
+  },
+  filterBar: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 12,
+    gap: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  filterTab: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  filterTabActive: {
+    borderColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+  },
+  filterLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#555555',
+    letterSpacing: 0.08 * 9,
+    textTransform: 'uppercase',
+  },
+  filterLabelActive: {
+    color: Colors.accent,
   },
   title: {
     fontFamily: FontFamily.bebasNeue,
@@ -142,7 +199,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.04 * 9,
     marginTop: 2,
   },
@@ -155,7 +212,7 @@ const styles = StyleSheet.create({
   headerCountText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.04 * 9,
   },
   scroll: { flex: 1 },
@@ -209,7 +266,7 @@ const styles = StyleSheet.create({
     color: Colors.accent,
   },
   nodeNumberLocked: {
-    color: '#444444',
+    color: '#777777',
   },
   nodeContent: { flex: 1, paddingTop: 4 },
   nodeContentLocked: { opacity: 0.45 },
@@ -218,7 +275,7 @@ const styles = StyleSheet.create({
   nodeCategory: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -232,7 +289,7 @@ const styles = StyleSheet.create({
   nodeMeta: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.04 * 9,
   },
   lockedHint: {

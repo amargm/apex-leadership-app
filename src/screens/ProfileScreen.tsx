@@ -96,7 +96,7 @@ export default function ProfileScreen(_: ProfileScreenProps) {
             <Text style={styles.settingsLabel}>About APEX</Text>
             <View style={styles.settingsRight}>
               <Text style={styles.settingsMeta}>v1.0</Text>
-              <ChevronRight size={16} color={'#444444'} strokeWidth={1.5} />
+              <ChevronRight size={16} color={'#666666'} strokeWidth={1.5} />
             </View>
           </TouchableOpacity>
         </View>
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   avatarInitials: { fontFamily: FontFamily.dmMonoMedium, fontSize: 18, color: Colors.textPrimary },
   profileName: { fontFamily: FontFamily.dmSerifDisplayRegular, fontSize: 22, color: Colors.textPrimary, marginBottom: 2 },
-  profileRole: { fontFamily: FontFamily.dmMonoLight, fontSize: 10, color: '#444444', letterSpacing: 0.04 * 10 },
+  profileRole: { fontFamily: FontFamily.dmMonoLight, fontSize: 10, color: '#777777', letterSpacing: 0.04 * 10 },
   divider: { height: 1, backgroundColor: Colors.borderDefault, marginBottom: Spacing.xl },
   sectionDivider: {
     flexDirection: 'row',
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   sectionDividerIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 8,
   },
   settingsGroup: {
@@ -183,12 +183,12 @@ const styles = StyleSheet.create({
   },
   settingsRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   settingsLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: 13, color: Colors.textPrimary },
-  settingsMeta: { fontFamily: FontFamily.dmMonoLight, fontSize: 9, color: '#444444', letterSpacing: 0.04 * 9 },
+  settingsMeta: { fontFamily: FontFamily.dmMonoLight, fontSize: 9, color: '#777777', letterSpacing: 0.04 * 9 },
   settingsContent: { flex: 1 },
   settingsDescription: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: 12,
-    color: '#444444',
+    color: '#777777',
     lineHeight: 12 * 1.5,
     marginTop: 4,
   },

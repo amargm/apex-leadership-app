@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { BookOpen, Map, Trophy, User } from 'lucide-react-native';
+import { BookOpen, Map, FileText, User } from 'lucide-react-native';
 
 import { Colors, FontFamily } from '../theme';
 import type { TabParamList, LearnStackParamList } from './types';
@@ -13,7 +13,7 @@ import type { TabParamList, LearnStackParamList } from './types';
 import HomeScreen from '../screens/HomeScreen';
 import LessonDetailScreen from '../screens/LessonDetailScreen';
 import PathScreen from '../screens/PathScreen';
-import WinsScreen from '../screens/WinsScreen';
+import NotesScreen from '../screens/NotesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 // ─── Navigators ───────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ function TabIcon({ focused, Icon }: TabIconProps) {
       <View style={[styles.tabAccentLine, focused && styles.tabAccentLineActive]} />
       <Icon
         size={18}
-        color={focused ? Colors.accent : '#444444'}
+        color={focused ? Colors.accent : '#666666'}
         strokeWidth={1.5}
       />
     </View>
@@ -64,14 +64,14 @@ function BottomTabs() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: '#2A2A2A',
+        tabBarInactiveTintColor: '#555555',
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
         tabBarIcon: ({ focused }) => {
           const icons: Record<string, React.ComponentType<any>> = {
             Learn: BookOpen,
             Path: Map,
-            Wins: Trophy,
+            Notes: FileText,
             Profile: User,
           };
           const Icon = icons[route.name];
@@ -81,7 +81,7 @@ function BottomTabs() {
     >
       <Tab.Screen name="Learn" component={LearnStack} options={{ title: 'LEARN' }} />
       <Tab.Screen name="Path" component={PathScreen} options={{ title: 'PATH' }} />
-      <Tab.Screen name="Wins" component={WinsScreen} options={{ title: 'WINS' }} />
+      <Tab.Screen name="Notes" component={NotesScreen} options={{ title: 'NOTES' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'PROFILE' }} />
     </Tab.Navigator>
   );

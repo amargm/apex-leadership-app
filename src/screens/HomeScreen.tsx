@@ -17,7 +17,6 @@ import type { HomeScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS, MOCK_NOTIFICATION } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
 import FeaturedCard from '../components/FeaturedCard';
-import LessonListItem from '../components/LessonListItem';
 import PushNotificationPanel from '../components/PushNotificationPanel';
 
 // ─── Staggered fade-up hook ───────────────────────────────────────────────────
@@ -42,24 +41,12 @@ const SECTION_COUNT = 6;
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const fadeStyles = useFadeUp(SECTION_COUNT);
   const [showNotif, setShowNotif] = useState(true);
-  const [lockedHint, setLockedHint] = useState<string | null>(null);
 
   const featuredLessons = MOCK_LESSONS.filter((l) => !l.is_locked);
-  const trackLessons = MOCK_LESSONS;
   const activeCase = MOCK_LESSONS.find((l) => l.status === 'in_progress');
 
   const handleLessonPress = (lesson: Lesson) => {
     navigation.navigate('LessonDetail', { lessonId: lesson.lesson_id });
-  };
-
-  const handleLockedPress = (lesson: Lesson) => {
-    const remaining = lesson.unlock_after_count - MOCK_USER_STATS.cases_completed;
-    setLockedHint(
-      remaining > 0
-        ? `Complete ${remaining} more lesson${remaining > 1 ? 's' : ''} to unlock`
-        : 'Complete your current lesson first',
-    );
-    setTimeout(() => setLockedHint(null), 3000);
   };
 
   const formatTime = (minutes: number) =>
@@ -89,7 +76,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             APE<Text style={styles.wordmarkAccent}>X</Text>
           </Text>
           <View style={styles.headerRight}>
-            <Text style={styles.versionText}>v1.0</Text>
+            <TouchableOpacity style={styles.savedButton} activeOpacity={0.7}>
+              <Text style={styles.savedButtonText}>SAVED</Text>
+            </TouchableOpacity>
           </View>
         </Animated.View>
         <View style={styles.headerAccentLine} />
@@ -168,31 +157,21 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           </ScrollView>
         </Animated.View>
 
-        {/* ── Section Divider: Your Track ──────────────────────────── */}
+        {/* ── Section Divider: Daily Thought ───────────────────────── */}
         <Animated.View style={[styles.sectionDivider, fadeStyles[5]]}>
-          <Text style={styles.sectionDividerLabel}>YOUR TRACK</Text>
+          <Text style={styles.sectionDividerLabel}>DAILY THOUGHT</Text>
           <View style={styles.sectionDividerRule} />
           <Text style={styles.sectionDividerIndex}>02</Text>
         </Animated.View>
 
-        {/* ── Track List ───────────────────────────────────────────── */}
+        {/* ── Quote Block ──────────────────────────────────────────── */}
         <Animated.View style={fadeStyles[5]}>
-          {lockedHint && (
-            <View style={styles.lockedHint}>
-              <Text style={styles.lockedHintText}>{lockedHint}</Text>
-            </View>
-          )}
-
-          <View style={styles.trackList}>
-            {trackLessons.map((lesson, i) => (
-              <LessonListItem
-                key={lesson.lesson_id}
-                lesson={lesson}
-                index={i}
-                onPress={handleLessonPress}
-                onLockedPress={handleLockedPress}
-              />
-            ))}
+          <View style={styles.quoteBlock}>
+            <View style={styles.quoteAccentLine} />
+            <Text style={styles.quoteText}>
+              "The task of leadership is not to put greatness into people, but to elicit it, for the greatness is there already."
+            </Text>
+            <Text style={styles.quoteAttribution}>— John Buchan</Text>
           </View>
         </Animated.View>
       </ScrollView>
@@ -235,12 +214,6 @@ const styles = StyleSheet.create({
   },
   wordmarkAccent: { color: Colors.accent },
   headerRight: { alignItems: 'flex-end' },
-  versionText: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 9,
-    color: '#444444',
-    letterSpacing: 0.04 * 9,
-  },
   headerAccentLine: {
     width: 40,
     height: 1,
@@ -258,7 +231,7 @@ const styles = StyleSheet.create({
   greetingLabel: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.12 * 9,
     textTransform: 'uppercase',
     marginBottom: 6,
@@ -298,7 +271,7 @@ const styles = StyleSheet.create({
   readoutLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.14 * 8,
     textTransform: 'uppercase',
   },
@@ -326,7 +299,7 @@ const styles = StyleSheet.create({
     right: 10,
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 8,
   },
   activeCaseSignalRow: {
@@ -420,7 +393,7 @@ const styles = StyleSheet.create({
   sectionDividerIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 8,
   },
 
@@ -431,26 +404,49 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
 
-  // ── Track List ──
-  trackList: {
+  // ── Quote Block ──
+  quoteBlock: {
     marginHorizontal: Spacing.screenPaddingH,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    overflow: 'hidden',
+    padding: 20,
+    paddingLeft: 18,
+    position: 'relative',
+  },
+  quoteAccentLine: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: Colors.accent,
+  },
+  quoteText: {
+    fontFamily: FontFamily.dmSerifDisplayRegular,
+    fontSize: 15,
+    lineHeight: 15 * 1.6,
+    color: Colors.textPrimary,
+    marginBottom: 12,
+  },
+  quoteAttribution: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#777777',
+    letterSpacing: 0.04 * 9,
   },
 
-  // ── Locked Hint ──
-  lockedHint: {
-    marginHorizontal: Spacing.screenPaddingH,
+  // ── Saved Button ──
+  savedButton: {
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    padding: Spacing.md,
-    marginBottom: Spacing.sm,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
-  lockedHintText: {
+  savedButtonText: {
     fontFamily: FontFamily.dmMonoRegular,
-    fontSize: 11,
-    color: '#444444',
-    textAlign: 'center',
+    fontSize: 9,
+    color: '#777777',
+    letterSpacing: 0.10 * 9,
+    textTransform: 'uppercase',
   },
 });

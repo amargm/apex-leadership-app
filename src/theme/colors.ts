@@ -15,10 +15,10 @@ export const Colors = {
 
   // Text — expanded hierarchy
   textPrimary: '#EDEAE5',
-  textSecondary: '#888888',
-  textMuted: '#555555',
-  textDark: '#333333',
-  textDarker: '#1E1E1E',
+  textSecondary: '#A0A0A0',
+  textMuted: '#707070',
+  textDark: '#555555',
+  textDarker: '#333333',
 
   // Accents
   accent: '#C8F04D',       // primary — sharp yellow-green

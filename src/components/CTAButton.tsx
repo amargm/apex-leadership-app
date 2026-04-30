@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
     color: '#050505',
   },
   labelSecondary: {
-    color: '#444444',
+    color: '#777777',
   },
 });

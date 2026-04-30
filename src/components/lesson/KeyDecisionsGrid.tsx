@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   index: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 8,
     marginBottom: 8,
   },
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   description: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     lineHeight: 9 * 1.4,
   },
 });

@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   badgeDoneText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -204,13 +204,13 @@ const styles = StyleSheet.create({
   metaText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.04 * 9,
   },
   metaSep: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
   },
   progressRow: {
     flexDirection: 'row',
@@ -238,6 +238,6 @@ const styles = StyleSheet.create({
     right: 14,
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 12,
-    color: '#2A2A2A',
+    color: '#555555',
   },
 });

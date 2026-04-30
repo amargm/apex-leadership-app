@@ -84,59 +84,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         </View>
       </View>
 
-      {/* ── Hero Section ─────────────────────────────────────────── */}
-      <View style={styles.hero}>
-        <Text style={styles.watermark}>{String(lessonIndex).padStart(2, '0')}</Text>
-
-        {/* Status pill */}
-        <View style={styles.statusRow}>
-          <View style={[styles.statusPill, lesson.status === 'in_progress' && styles.statusPillActive]}>
-            <View style={[styles.statusDot, lesson.status === 'in_progress' && styles.statusDotActive]} />
-            <Text style={[styles.statusText, lesson.status === 'in_progress' && styles.statusTextActive]}>
-              {lesson.status === 'in_progress' ? 'IN PROGRESS' : lesson.status === 'completed' ? 'COMPLETED' : 'NEW'}
-            </Text>
-          </View>
-        </View>
-
-        {/* Meta tags */}
-        <View style={styles.metaTags}>
-          <Text style={styles.metaTag}>{lesson.company}</Text>
-          <View style={styles.metaTagDivider} />
-          <Text style={styles.metaTagBold}>{lesson.read_time_minutes} min</Text>
-          <View style={styles.metaTagDivider} />
-          <Text style={styles.metaTag}>{lesson.difficulty}</Text>
-          <View style={styles.metaTagDivider} />
-          <Text style={styles.metaTag}>{lesson.year_range}</Text>
-        </View>
-
-        {/* Title */}
-        <Text style={styles.lessonTitle}>{lesson.title}</Text>
-
-        {/* Subtitle */}
-        <Text style={styles.lessonSubtitle}>{lesson.subtitle}</Text>
-
-        {/* Instrument Panel */}
-        <View style={styles.instrumentPanel}>
-          <View style={styles.instrumentAccentLine} />
-          <View style={styles.instrumentContent}>
-            <View style={styles.instrumentLeft}>
-              <View style={styles.instrumentProgressRow}>
-                <Text style={styles.instrumentProgressValue}>{progressPct}%</Text>
-                <View style={styles.instrumentProgressBar}>
-                  <View style={[styles.instrumentProgressFill, { width: `${progressPct}%` }]} />
-                </View>
-              </View>
-              <Text style={styles.instrumentProgressLabel}>PROGRESS</Text>
-            </View>
-            <View style={styles.instrumentRight}>
-              <Text style={styles.instrumentTimeValue}>~{Math.ceil(lesson.read_time_minutes * (1 - progressPct / 100))} min left</Text>
-              <Text style={styles.instrumentTimeLabel}>EST. REMAINING</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      {/* ── Tab Bar ──────────────────────────────────────────────── */}
+      {/* ── Tab Bar (sticky) ─────────────────────────────────────── */}
       <View style={styles.tabBar}>
         {TABS.map((tab, i) => (
           <TouchableOpacity
@@ -152,17 +100,72 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         ))}
       </View>
 
-      {/* ── Tab Content ──────────────────────────────────────────── */}
+      {/* ── Scrollable Content (hero + tab content) ──────────────── */}
       <Animated.ScrollView
         ref={scrollRef}
         style={[styles.scroll, { opacity: contentOpacity }]}
-        contentContainerStyle={styles.tabContent}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {activeTab === 'OVERVIEW' && <OverviewTab lesson={lesson} />}
-        {activeTab === 'TIMELINE' && <TimelineTab lesson={lesson} />}
-        {activeTab === 'REFLECT' && <ReflectTab lesson={lesson} />}
-        {activeTab === 'TAKEAWAYS' && <TakeawaysTab lesson={lesson} onBack={() => navigation.goBack()} />}
+        {/* ── Hero Section (scrolls with content) ─────────────────── */}
+        <View style={styles.hero}>
+          <Text style={styles.watermark}>{String(lessonIndex).padStart(2, '0')}</Text>
+
+          {/* Status pill */}
+          <View style={styles.statusRow}>
+            <View style={[styles.statusPill, lesson.status === 'in_progress' && styles.statusPillActive]}>
+              <View style={[styles.statusDot, lesson.status === 'in_progress' && styles.statusDotActive]} />
+              <Text style={[styles.statusText, lesson.status === 'in_progress' && styles.statusTextActive]}>
+                {lesson.status === 'in_progress' ? 'IN PROGRESS' : lesson.status === 'completed' ? 'COMPLETED' : 'NEW'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Meta tags */}
+          <View style={styles.metaTags}>
+            <Text style={styles.metaTag}>{lesson.company}</Text>
+            <View style={styles.metaTagDivider} />
+            <Text style={styles.metaTagBold}>{lesson.read_time_minutes} min</Text>
+            <View style={styles.metaTagDivider} />
+            <Text style={styles.metaTag}>{lesson.difficulty}</Text>
+            <View style={styles.metaTagDivider} />
+            <Text style={styles.metaTag}>{lesson.year_range}</Text>
+          </View>
+
+          {/* Title */}
+          <Text style={styles.lessonTitle}>{lesson.title}</Text>
+
+          {/* Subtitle */}
+          <Text style={styles.lessonSubtitle}>{lesson.subtitle}</Text>
+
+          {/* Instrument Panel */}
+          <View style={styles.instrumentPanel}>
+            <View style={styles.instrumentAccentLine} />
+            <View style={styles.instrumentContent}>
+              <View style={styles.instrumentLeft}>
+                <View style={styles.instrumentProgressRow}>
+                  <Text style={styles.instrumentProgressValue}>{progressPct}%</Text>
+                  <View style={styles.instrumentProgressBar}>
+                    <View style={[styles.instrumentProgressFill, { width: `${progressPct}%` }]} />
+                  </View>
+                </View>
+                <Text style={styles.instrumentProgressLabel}>PROGRESS</Text>
+              </View>
+              <View style={styles.instrumentRight}>
+                <Text style={styles.instrumentTimeValue}>~{Math.ceil(lesson.read_time_minutes * (1 - progressPct / 100))} min left</Text>
+                <Text style={styles.instrumentTimeLabel}>EST. REMAINING</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Tab Content ── */}
+        <View style={styles.tabContent}>
+          {activeTab === 'OVERVIEW' && <OverviewTab lesson={lesson} />}
+          {activeTab === 'TIMELINE' && <TimelineTab lesson={lesson} />}
+          {activeTab === 'REFLECT' && <ReflectTab lesson={lesson} />}
+          {activeTab === 'TAKEAWAYS' && <TakeawaysTab lesson={lesson} onBack={() => navigation.goBack()} />}
+        </View>
       </Animated.ScrollView>
     </SafeAreaView>
   );
@@ -266,7 +269,7 @@ const styles = StyleSheet.create({
   errorSub: {
     fontFamily: FontFamily.loraRegular,
     fontSize: 14,
-    color: '#444444',
+    color: '#777777',
     marginBottom: Spacing.xl,
   },
 
@@ -297,12 +300,12 @@ const styles = StyleSheet.create({
   backArrow: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 13,
-    color: '#444444',
+    color: '#777777',
   },
   backLabel: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
   },
@@ -314,7 +317,7 @@ const styles = StyleSheet.create({
   caseIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 9,
   },
 
@@ -354,7 +357,7 @@ const styles = StyleSheet.create({
   statusDot: {
     width: 5,
     height: 5,
-    backgroundColor: '#444444',
+    backgroundColor: '#777777',
   },
   statusDotActive: {
     backgroundColor: Colors.accent,
@@ -362,7 +365,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.08 * 8,
     textTransform: 'uppercase',
   },
@@ -377,7 +380,7 @@ const styles = StyleSheet.create({
   metaTag: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.04 * 9,
     paddingHorizontal: 10,
   },
@@ -405,7 +408,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 13,
     lineHeight: 13 * 1.5,
-    color: '#444444',
+    color: '#777777',
     maxWidth: '85%',
     marginBottom: 22,
   },
@@ -455,7 +458,7 @@ const styles = StyleSheet.create({
   instrumentProgressLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
     marginTop: 4,
@@ -472,7 +475,7 @@ const styles = StyleSheet.create({
   instrumentTimeLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.08 * 8,
     textTransform: 'uppercase',
     marginTop: 4,
@@ -500,7 +503,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
-    color: '#2A2A2A',
+    color: '#555555',
   },
   tabLabelActive: { color: Colors.accent },
   tabUnderline: {
@@ -512,7 +515,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
   },
   scroll: { flex: 1 },
-  tabContent: { padding: Spacing.screenPaddingH, paddingBottom: 48 },
+  scrollContent: { paddingBottom: 48 },
+  tabContent: { padding: Spacing.screenPaddingH, paddingTop: 24 },
 
   // ── Tab Section Headers ──
   tabSectionHeader: {
@@ -531,7 +535,7 @@ const styles = StyleSheet.create({
   tabSectionSub: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.04 * 9,
   },
   tabSectionCount: {
@@ -543,7 +547,7 @@ const styles = StyleSheet.create({
   tabSectionCountText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.04 * 9,
   },
 
@@ -552,7 +556,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 13,
     lineHeight: 13 * 1.6,
-    color: '#444444',
+    color: '#777777',
     marginBottom: 24,
     paddingBottom: 20,
     borderBottomWidth: 1,

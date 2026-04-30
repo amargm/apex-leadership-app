@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   index: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#2A2A2A',
+    color: '#555555',
     letterSpacing: 0.06 * 8,
   },
   body: {
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 12,
     lineHeight: 12 * 1.7,
-    color: '#444444',
+    color: '#777777',
   },
 });

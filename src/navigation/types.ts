@@ -8,7 +8,7 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 export type TabParamList = {
   Learn: undefined;
   Path: undefined;
-  Wins: undefined;
+  Notes: undefined;
   Profile: undefined;
 };
 
@@ -30,5 +30,5 @@ export type LessonDetailScreenProps = NativeStackScreenProps<
 >;
 
 export type PathScreenProps = BottomTabScreenProps<TabParamList, 'Path'>;
-export type WinsScreenProps = BottomTabScreenProps<TabParamList, 'Wins'>;
+export type NotesScreenProps = BottomTabScreenProps<TabParamList, 'Notes'>;
 export type ProfileScreenProps = BottomTabScreenProps<TabParamList, 'Profile'>;

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   attribution: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.04 * 9,
   },
 });

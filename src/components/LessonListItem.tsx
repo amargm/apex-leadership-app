@@ -61,7 +61,7 @@ export default function LessonListItem({ lesson, index = 0, onPress, onLockedPre
     statusColor = Colors.accent;
   } else if (isCompleted) {
     statusText = '✓';
-    statusColor = '#444444';
+    statusColor = '#666666';
   } else if (isLocked) {
     statusText = '×';
     statusColor = '#333333';
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   category: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#444444',
+    color: '#777777',
     letterSpacing: 0.10 * 8,
   },
   title: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   titleDone: {
     textDecorationLine: 'line-through',
-    color: '#444444',
+    color: '#777777',
   },
   status: {
     fontFamily: FontFamily.dmMonoRegular,
