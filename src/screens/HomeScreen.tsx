@@ -94,9 +94,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       >
         {/* ── Header ──────────────────────────────────────────────── */}
         <Animated.View style={[styles.header, fadeStyles[0]]}>
-          <Text style={styles.wordmark}>
-            APE<Text style={styles.wordmarkAccent}>X</Text>
-          </Text>
+          <View>
+            <Text style={styles.wordmark}>
+              APE<Text style={styles.wordmarkAccent}>X</Text>
+            </Text>
+            <Text style={styles.tagline}>Learn to lead from those who did.</Text>
+          </View>
           <View style={styles.headerRight}>
             <TouchableOpacity style={styles.savedButton} activeOpacity={0.7} onPress={() => navigation.navigate('Saved' as any)}>
               <Text style={styles.savedButtonText}>SAVED</Text>
@@ -219,7 +222,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: '43%',
+    height: '50%',
     zIndex: 0,
     pointerEvents: 'none',
   },
@@ -244,6 +247,13 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   wordmarkAccent: { color: Colors.accent },
+  tagline: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textMuted,
+    letterSpacing: 0.5,
+    marginTop: 2,
+  },
   headerRight: { alignItems: 'flex-end' },
   headerAccentLine: {
     width: 40,
