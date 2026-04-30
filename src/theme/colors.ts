@@ -1,20 +1,24 @@
-// ─── APEX Color System ────────────────────────────────────────────────────────
+// ─── APEX Color System — Instrumental Redesign ────────────────────────────────
 // Single source of truth. Never use raw hex values outside this file.
+// Aesthetic: precision instrument — darker, sharper, ruled.
 
 export const Colors = {
-  // Backgrounds
-  bgPrimary: '#0A0A0A',
-  bgSurface: '#111111',
-  bgSurface2: '#1A1A1A',
+  // Backgrounds — darker than before
+  bgPrimary: '#050505',
+  bgSurface: '#0C0C0C',
+  bgSurface2: '#121212',
+  bgSurface3: '#161616',
 
-  // Borders
-  borderDefault: '#242424',
-  borderSubtle: '#1C1C1C',
+  // Borders — thinner appearance via lower contrast
+  borderDefault: '#1A1A1A',
+  borderSubtle: '#222222',
 
-  // Text
-  textPrimary: '#F0EDE8',
+  // Text — expanded hierarchy
+  textPrimary: '#EDEAE5',
   textSecondary: '#888888',
   textMuted: '#555555',
+  textDark: '#333333',
+  textDarker: '#1E1E1E',
 
   // Accents
   accent: '#C8F04D',       // primary — sharp yellow-green
@@ -22,22 +26,24 @@ export const Colors = {
   accentBlue: '#4DB8FF',   // tertiary — locked states, progress
 
   // Semantic
-  danger: '#FF4444',
+  danger: '#E85454',
   success: '#6FC97A',
 
   // Accent tinted borders / overlays
   accentBorder: 'rgba(200, 240, 77, 0.3)',
+  accentDim: 'rgba(200, 240, 77, 0.12)',
   accentBg: 'rgba(200, 240, 77, 0.07)',
+  accentGhost: 'rgba(200, 240, 77, 0.04)',
   accentGradientStart: 'rgba(200, 240, 77, 0.06)',
   accentGradientEnd: 'rgba(200, 240, 77, 0.02)',
   accentQuoteBorder: 'rgba(200, 240, 77, 0.15)',
 
   // Category banner gradients (dark, max 20% departure from base black)
   categoryGradients: {
-    culture: ['#1a2f1a', '#0d1f12'] as [string, string],
-    strategy: ['#2f1a0d', '#1f0d05'] as [string, string],
-    crisis: ['#0d1a2f', '#05101f'] as [string, string],
-    grey: ['#1a1a1a', '#0d0d0d'] as [string, string],
+    culture: ['#0d1a10', '#050505'] as [string, string],
+    strategy: ['#1a140a', '#050505'] as [string, string],
+    crisis: ['#0a1018', '#050505'] as [string, string],
+    grey: ['#121212', '#050505'] as [string, string],
   },
 } as const;
 

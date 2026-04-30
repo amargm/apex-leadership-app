@@ -1,4 +1,4 @@
-// ─── APEX App Navigator ───────────────────────────────────────────────────────
+// ─── APEX App Navigator — Instrumental Redesign ──────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BookOpen, Map, Trophy, User } from 'lucide-react-native';
 
-import { Colors, Spacing, Radius } from '../theme';
+import { Colors, FontFamily, Spacing, Radius } from '../theme';
 import type { TabParamList, LearnStackParamList } from './types';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -36,20 +36,23 @@ function LearnStack() {
   );
 }
 
-// ─── Tab Bar Icon ─────────────────────────────────────────────────────────────
+// ─── Tab Bar Icon with top accent line ────────────────────────────────────────
 type TabIconProps = {
   focused: boolean;
-  size: number;
   Icon: React.ComponentType<{ size: number; color: string; strokeWidth: number }>;
 };
 
-function TabIcon({ focused, size, Icon }: TabIconProps) {
+function TabIcon({ focused, Icon }: TabIconProps) {
   return (
-    <Icon
-      size={size}
-      color={focused ? Colors.accent : Colors.textSecondary}
-      strokeWidth={1.5}
-    />
+    <View style={styles.tabIconContainer}>
+      {/* Top accent line — visible only when active */}
+      <View style={[styles.tabAccentLine, focused && styles.tabAccentLineActive]} />
+      <Icon
+        size={18}
+        color={focused ? Colors.accent : '#444444'}
+        strokeWidth={1.5}
+      />
+    </View>
   );
 }
 
@@ -61,10 +64,10 @@ function BottomTabs() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: Colors.textSecondary,
+        tabBarInactiveTintColor: '#2A2A2A',
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
-        tabBarIcon: ({ focused, size }) => {
+        tabBarIcon: ({ focused }) => {
           const icons: Record<string, React.ComponentType<any>> = {
             Learn: BookOpen,
             Path: Map,
@@ -72,7 +75,7 @@ function BottomTabs() {
             Profile: User,
           };
           const Icon = icons[route.name];
-          return <TabIcon focused={focused} size={20} Icon={Icon} />;
+          return <TabIcon focused={focused} Icon={Icon} />;
         },
       })}
     >
@@ -99,8 +102,8 @@ export default function AppNavigator() {
           notification: Colors.accent,
         },
         fonts: {
-          regular: { fontFamily: 'DMSans_400Regular', fontWeight: '400' },
-          medium: { fontFamily: 'DMSans_500Medium', fontWeight: '500' },
+          regular: { fontFamily: 'DMMono_400Regular', fontWeight: '400' },
+          medium: { fontFamily: 'DMMono_500Medium', fontWeight: '500' },
           bold: { fontFamily: 'DMSans_700Bold', fontWeight: '700' },
           heavy: { fontFamily: 'DMSans_700Bold', fontWeight: '900' },
         },
@@ -114,20 +117,36 @@ export default function AppNavigator() {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'rgba(10, 10, 10, 0.92)',
+    backgroundColor: 'rgba(5, 5, 5, 0.96)',
     borderTopWidth: 1,
     borderTopColor: Colors.borderDefault,
-    paddingHorizontal: Spacing.sm,
-    height: 64,
+    paddingHorizontal: 4,
+    height: 60,
+    elevation: 0,
   },
   tabItem: {
-    paddingVertical: Spacing.sm,
-    borderRadius: Radius.card,
+    paddingTop: 12,
+    paddingBottom: 0,
   },
   tabLabel: {
-    fontSize: 10,
-    letterSpacing: 0.5,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    letterSpacing: 0.08 * 8,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginTop: 4,
+  },
+  tabIconContainer: {
+    alignItems: 'center',
+    position: 'relative',
+  },
+  tabAccentLine: {
+    position: 'absolute',
+    top: -12,
+    width: 24,
+    height: 2,
+    backgroundColor: 'transparent',
+  },
+  tabAccentLineActive: {
+    backgroundColor: Colors.accent,
   },
 });

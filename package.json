@@ -11,6 +11,7 @@
   "main": "index.js",
   "dependencies": {
     "@expo-google-fonts/bebas-neue": "^0.2.3",
+    "@expo-google-fonts/dm-mono": "^0.4.2",
     "@expo-google-fonts/dm-sans": "^0.2.3",
     "@expo-google-fonts/dm-serif-display": "^0.2.3",
     "@expo-google-fonts/lora": "^0.2.3",

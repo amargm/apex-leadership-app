@@ -1,5 +1,5 @@
-// ─── Featured Card ────────────────────────────────────────────────────────────
-// 300px wide horizontal scroll card. Spec: Section 8.
+// ─── Featured Card — Instrumental ─────────────────────────────────────────────
+// 280px wide horizontal scroll card. Square, ruled, monospace meta.
 
 import React, { useRef } from 'react';
 import {
@@ -10,28 +10,21 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, FontFamily, Spacing, Radius, BorderWidth } from '../theme';
+import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
 import type { Lesson } from '../types/lesson';
 
-// ─── Category gradient map ────────────────────────────────────────────────────
 const BANNER_GRADIENTS: Record<string, [string, string]> = {
-  green: ['#1a2f1a', '#0d1f12'],
-  orange: ['#2f1a0d', '#1f0d05'],
-  blue: ['#0d1a2f', '#05101f'],
-  grey: ['#1a1a1a', '#0d0d0d'],
+  green: ['#0d1a10', '#050505'],
+  orange: ['#1a140a', '#050505'],
+  blue: ['#0a1018', '#050505'],
+  grey: ['#121212', '#050505'],
 };
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
   orange: Colors.accentOrange,
   blue: Colors.accentBlue,
-  grey: Colors.textMuted,
-};
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  accessible: 'ACCESSIBLE',
-  medium: 'MEDIUM',
-  complex: 'COMPLEX',
+  grey: '#444444',
 };
 
 interface Props {
@@ -44,27 +37,18 @@ export default function FeaturedCard({ lesson, onPress }: Props) {
 
   const translateY = pressAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -3],
+    outputRange: [0, -2],
   });
 
   const handlePressIn = () => {
-    Animated.timing(pressAnim, {
-      toValue: 1,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(pressAnim, { toValue: 1, duration: 150, useNativeDriver: true }).start();
   };
-
   const handlePressOut = () => {
-    Animated.timing(pressAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(pressAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start();
   };
 
   const gradient = BANNER_GRADIENTS[lesson.category_color_key] ?? BANNER_GRADIENTS.grey;
-  const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key] ?? Colors.textMuted;
+  const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key] ?? '#444444';
   const progressPct = lesson.progress ?? 0;
 
   return (
@@ -77,220 +61,183 @@ export default function FeaturedCard({ lesson, onPress }: Props) {
     >
       <Animated.View style={[styles.card, { transform: [{ translateY }] }]}>
 
-        {/* ── Banner ──────────────────────────────────────────────────── */}
-        <LinearGradient colors={gradient} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 1 }} style={styles.banner}>
+        {/* ── Header ── */}
+        <LinearGradient colors={gradient} start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+          {/* Watermark */}
+          <Text style={styles.watermark}>{lesson.company_abbreviation}</Text>
 
-          {/* Structural watermark character */}
-          <Text style={styles.bannerWatermark}>{lesson.company_abbreviation}</Text>
-
-          {/* Badge: NEW or IN PROGRESS */}
+          {/* Badge */}
           {lesson.status === 'new' && (
             <View style={styles.badgeNew}>
               <Text style={styles.badgeNewText}>NEW</Text>
             </View>
           )}
           {lesson.status === 'in_progress' && (
-            <View style={styles.badgeInProgress}>
-              <Text style={styles.badgeInProgressText}>IN PROGRESS</Text>
+            <View style={styles.badgeDone}>
+              <Text style={styles.badgeDoneText}>IN PROGRESS</Text>
             </View>
           )}
 
-          {/* Company line */}
-          <View style={styles.companyLine}>
+          {/* Category line */}
+          <View style={styles.categoryLine}>
             <View style={[styles.dot, { backgroundColor: dotColor }]} />
-            <Text style={styles.companyName}>{lesson.company.toUpperCase()}</Text>
+            <Text style={styles.categoryText}>{lesson.category.toUpperCase()}</Text>
           </View>
         </LinearGradient>
 
-        {/* ── Body ────────────────────────────────────────────────────── */}
+        {/* ── Body ── */}
         <View style={styles.body}>
-          <Text style={styles.topicLine} numberOfLines={1}>
-            {lesson.category.toUpperCase()}
-          </Text>
-
-          <Text style={styles.title} numberOfLines={2}>
-            {lesson.title}
-          </Text>
+          <Text style={styles.title} numberOfLines={2}>{lesson.title}</Text>
 
           <View style={styles.metaRow}>
-            <Text style={styles.metaText}>{lesson.read_time_minutes} min read</Text>
-            <View style={styles.difficultyBadge}>
-              <Text style={styles.difficultyText}>
-                {DIFFICULTY_LABELS[lesson.difficulty]}
-              </Text>
-            </View>
+            <Text style={styles.metaText}>{lesson.read_time_minutes} min</Text>
+            <Text style={styles.metaSep}>·</Text>
+            <Text style={styles.metaText}>{lesson.difficulty}</Text>
           </View>
 
-          {/* Progress bar */}
-          <View style={styles.progressTrack}>
-            <ProgressBar value={progressPct} />
-          </View>
+          {/* Progress */}
           {progressPct > 0 && (
-            <Text style={styles.progressLabel}>{progressPct}% complete</Text>
+            <View style={styles.progressRow}>
+              <View style={styles.progressTrack}>
+                <View style={[styles.progressFill, { width: `${progressPct}%` }]} />
+              </View>
+              <Text style={styles.progressPct}>{progressPct}%</Text>
+            </View>
           )}
         </View>
+
+        {/* Arrow */}
+        <Text style={styles.arrow}>→</Text>
       </Animated.View>
     </TouchableWithoutFeedback>
   );
 }
 
-// ─── Progress Bar (animated on mount) ────────────────────────────────────────
-function ProgressBar({ value }: { value: number }) {
-  const widthAnim = useRef(new Animated.Value(0)).current;
-
-  React.useEffect(() => {
-    Animated.timing(widthAnim, {
-      toValue: value,
-      duration: 600,
-      useNativeDriver: false,
-    }).start();
-  }, [value]);
-
-  const width = widthAnim.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['0%', '100%'],
-  });
-
-  return (
-    <View style={styles.progressBar}>
-      <Animated.View style={[styles.progressFill, { width }]} />
-    </View>
-  );
-}
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   card: {
-    width: 300,
-    backgroundColor: Colors.bgSurface,
+    width: 280,
     borderWidth: BorderWidth.thin,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.bottomSheet,
     overflow: 'hidden',
     marginRight: Spacing.md,
   },
-  banner: {
-    height: 140,
-    padding: Spacing.md,
-    justifyContent: 'space-between',
+  header: {
+    height: 110,
+    padding: 12,
+    paddingHorizontal: 14,
+    justifyContent: 'flex-end',
+    position: 'relative',
   },
-  bannerWatermark: {
+  watermark: {
     position: 'absolute',
-    bottom: -12,
-    right: 12,
+    top: -20,
+    right: -4,
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 80,
+    fontSize: 140,
     color: Colors.textPrimary,
-    opacity: 0.32,
+    opacity: 0.025,
   },
   badgeNew: {
-    alignSelf: 'flex-end',
+    position: 'absolute',
+    top: 10,
+    left: 12,
     backgroundColor: Colors.accent,
-    borderRadius: Radius.badge,
-    paddingVertical: 3,
-    paddingHorizontal: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
   badgeNewText: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 10,
-    color: '#000000',
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#050505',
+    letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
-  badgeInProgress: {
-    alignSelf: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  badgeDone: {
+    position: 'absolute',
+    top: 10,
+    left: 12,
     borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.badge,
-    paddingVertical: 3,
-    paddingHorizontal: 8,
+    borderColor: '#2A2A2A',
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
-  badgeInProgressText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textSecondary,
+  badgeDoneText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#444444',
+    letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
-  companyLine: {
+  categoryLine: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 4,
+    height: 4,
   },
-  companyName: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textMuted,
-    letterSpacing: 0.5,
+  categoryText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#444444',
+    letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
   body: {
-    padding: Spacing.base,
-  },
-  topicLine: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.accent,
-    letterSpacing: 0.10 * 10,
-    textTransform: 'uppercase',
-    marginBottom: 6,
+    padding: 14,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
   },
   title: {
     fontFamily: FontFamily.dmSerifDisplayRegular,
-    fontSize: 17,
-    lineHeight: 17 * 1.3,
+    fontSize: 16,
+    lineHeight: 16 * 1.3,
     color: Colors.textPrimary,
-    marginBottom: Spacing.sm,
+    marginBottom: 12,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
-    marginBottom: Spacing.sm,
+    gap: 6,
   },
   metaText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
   },
-  difficultyBadge: {
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.badge,
-    paddingVertical: 2,
-    paddingHorizontal: 6,
+  metaSep: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#2A2A2A',
   },
-  difficultyText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
+  progressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
   },
   progressTrack: {
-    marginTop: 4,
-  },
-  progressBar: {
-    height: 3,
-    backgroundColor: Colors.bgSurface2,
-    borderRadius: Radius.pill,
-    overflow: 'hidden',
+    flex: 1,
+    height: 2,
+    backgroundColor: '#222222',
   },
   progressFill: {
-    height: 3,
+    height: 2,
     backgroundColor: Colors.accent,
-    borderRadius: Radius.pill,
   },
-  progressLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textMuted,
-    marginTop: 4,
+  progressPct: {
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: Colors.accent,
+  },
+  arrow: {
+    position: 'absolute',
+    bottom: 14,
+    right: 14,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 12,
+    color: '#2A2A2A',
   },
 });

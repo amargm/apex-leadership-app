@@ -1,5 +1,6 @@
-// ─── APEX Spacing & Layout System ────────────────────────────────────────────
+// ─── APEX Spacing & Layout System — Instrumental ─────────────────────────────
 // Base unit: 8px. All values are multiples of 4px.
+// Zero border-radius aesthetic — everything square-cut.
 
 export const Spacing = {
   xs: 4,
@@ -13,22 +14,24 @@ export const Spacing = {
   huge: 48,
 
   // Screen-level constants
-  screenPaddingH: 24, // horizontal padding — consistent across all screens
+  screenPaddingH: 20, // tighter horizontal padding for instrument feel
   sectionGap: 24,     // vertical gap between major sections
 } as const;
 
 export const Radius = {
-  badge: 6,          // badges, tags
-  card: 14,          // cards (default)
-  cardLg: 16,        // cards (large variant)
-  bottomSheet: 20,   // bottom sheet, featured cards
-  pill: 99,          // progress bars
+  badge: 0,          // square — no radius
+  card: 0,           // square — no radius
+  cardLg: 0,         // square — no radius
+  bottomSheet: 0,    // square — no radius
+  pill: 0,           // progress bars — square
   bottomNav: 0,      // flush to screen edges
+  // Only functional radius (toggle thumb)
+  toggleThumb: 8,
 } as const;
 
 export const BorderWidth = {
   thin: 1,
-  accentBar: 3,      // left-edge accent bar on active items
+  accentBar: 2,      // left-edge accent bar — thinner for precision
   activeTab: 2,      // active tab underline
 } as const;
 

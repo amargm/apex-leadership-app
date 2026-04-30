@@ -1,5 +1,4 @@
-// ─── Takeaway Item ────────────────────────────────────────────────────────────
-// Dot-led takeaway row. Spec: Section 9.
+// ─── Takeaway Item — Instrumental ─────────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -13,51 +12,61 @@ interface Props {
 
 export default function TakeawayItem({ item, isLast }: Props) {
   return (
-    <>
-      <View style={styles.row}>
-        <View style={styles.dot} />
-        <View style={styles.textBlock}>
-          <Text style={styles.headline}>{item.headline}</Text>
-          <Text style={styles.body}>{item.body}</Text>
-        </View>
+    <View style={[styles.card, isLast && { marginBottom: 0 }]}>
+      <View style={styles.accentRail} />
+      <View style={styles.header}>
+        <Text style={styles.index}>0{item.headline.length > 0 ? '1' : '0'}</Text>
       </View>
-      {!isLast && <View style={styles.separator} />}
-    </>
+      <View style={styles.body}>
+        <Text style={styles.headline}>{item.headline}</Text>
+        <Text style={styles.bodyText}>{item.body}</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'flex-start',
-    paddingVertical: Spacing.base,
+  card: {
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    marginBottom: 12,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  accentRail: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 2,
     backgroundColor: Colors.accent,
-    marginTop: 6,
-    flexShrink: 0,
   },
-  textBlock: {
-    flex: 1,
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+  },
+  index: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 8,
+  },
+  body: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 16,
   },
   headline: {
     fontFamily: FontFamily.dmSansSemiBold,
     fontSize: 14,
     color: Colors.textPrimary,
-    marginBottom: 4,
+    lineHeight: 14 * 1.35,
+    marginBottom: 8,
   },
-  body: {
+  bodyText: {
     fontFamily: FontFamily.loraRegular,
-    fontSize: 14,
-    lineHeight: 14 * 1.6,
-    color: Colors.textSecondary,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: Colors.borderDefault,
+    fontSize: 12,
+    lineHeight: 12 * 1.7,
+    color: '#444444',
   },
 });

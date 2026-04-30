@@ -1,5 +1,4 @@
-// ─── CTA Button ───────────────────────────────────────────────────────────────
-// Primary (Accent bg) and Secondary (outline). Spec: Section 9.
+// ─── CTA Button — Instrumental ────────────────────────────────────────────────
 
 import React, { useRef } from 'react';
 import {
@@ -7,9 +6,8 @@ import {
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
-import { Colors, FontFamily, Spacing, Radius } from '../theme';
+import { Colors, FontFamily } from '../theme';
 
 interface Props {
   label: string;
@@ -24,7 +22,7 @@ export default function CTAButton({ label, variant = 'primary', onPress, style }
 
   const handlePressIn = () => {
     Animated.parallel([
-      Animated.timing(scaleAnim, { toValue: 0.99, duration: 100, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 0.97, duration: 100, useNativeDriver: true }),
       Animated.timing(opacityAnim, { toValue: 0.9, duration: 100, useNativeDriver: true }),
     ]).start();
   };
@@ -64,31 +62,31 @@ export default function CTAButton({ label, variant = 'primary', onPress, style }
 const styles = StyleSheet.create({
   base: {
     width: '100%',
-    padding: 16,
-    borderRadius: Radius.cardLg,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primary: {
     backgroundColor: Colors.accent,
-    marginTop: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.accent,
   },
   secondary: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    marginTop: 10,
+    borderColor: '#222222',
   },
   label: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 13,
-    letterSpacing: 0.06 * 13,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 10,
+    letterSpacing: 0.08 * 10,
     textTransform: 'uppercase',
   },
   labelPrimary: {
-    color: '#000000',
+    color: '#050505',
   },
   labelSecondary: {
-    color: Colors.textSecondary,
+    color: '#444444',
   },
 });

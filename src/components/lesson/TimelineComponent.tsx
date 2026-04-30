@@ -1,9 +1,7 @@
-// ─── Timeline Component ───────────────────────────────────────────────────────
-// Vertical timeline with Accent nodes. Spec: Section 9.
+// ─── Timeline Component — Instrumental ────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, FontFamily, Spacing } from '../../theme';
 import type { TimelineEvent } from '../../types/lesson';
 
@@ -14,21 +12,18 @@ interface Props {
 export default function TimelineComponent({ events }: Props) {
   return (
     <View style={styles.container}>
-      {/* Vertical gradient line */}
-      <LinearGradient
-        colors={[Colors.accent, 'transparent']}
-        style={styles.verticalLine}
-      />
+      {/* Vertical line */}
+      <View style={styles.verticalLine} />
 
       {events.map((event, i) => (
         <View key={i} style={styles.item}>
-          {/* Node */}
+          {/* Square Node */}
           <View style={styles.node}>
-            <Text style={styles.nodeNumber}>{event.step}</Text>
+            <View style={styles.nodeDot} />
           </View>
 
           {/* Content */}
-          <View style={styles.content}>
+          <View style={[styles.content, i < events.length - 1 && styles.contentBorder]}>
             <Text style={styles.year}>{event.year}</Text>
             <Text style={styles.title}>{event.title}</Text>
             <Text style={styles.description}>{event.description}</Text>
@@ -42,60 +37,62 @@ export default function TimelineComponent({ events }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    paddingLeft: 52,
+    paddingLeft: 44,
   },
   verticalLine: {
     position: 'absolute',
-    left: 17,
-    top: 28,
-    bottom: 20,
+    left: 21,
+    top: 22,
+    bottom: 0,
     width: 1,
+    backgroundColor: Colors.borderDefault,
   },
   item: {
     flexDirection: 'row',
     gap: 14,
-    marginBottom: 20,
     alignItems: 'flex-start',
-    marginLeft: -52,
+    marginLeft: -44,
   },
   node: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: Colors.bgSurface,
-    borderWidth: 2,
-    borderColor: Colors.accent,
+    width: 44,
     alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+    paddingTop: 3,
+    zIndex: 1,
   },
-  nodeNumber: {
-    fontFamily: FontFamily.bebasNeue,
-    fontSize: 14,
-    color: Colors.accent,
+  nodeDot: {
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: '#2A2A2A',
+    backgroundColor: Colors.bgPrimary,
   },
   content: {
     flex: 1,
-    paddingTop: 4,
+    paddingBottom: 28,
+    paddingLeft: 14,
+  },
+  contentBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
   },
   year: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.accent,
-    textTransform: 'uppercase',
-    letterSpacing: 0.10 * 10,
-    marginBottom: 2,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 9,
+    marginBottom: 6,
   },
   title: {
-    fontFamily: FontFamily.dmSansSemiBold,
+    fontFamily: FontFamily.dmSansMedium,
     fontSize: 14,
     color: Colors.textPrimary,
-    marginBottom: 4,
+    lineHeight: 14 * 1.35,
+    marginBottom: 8,
   },
   description: {
     fontFamily: FontFamily.loraRegular,
-    fontSize: 13,
-    lineHeight: 13 * 1.5,
-    color: Colors.textSecondary,
+    fontSize: 12,
+    lineHeight: 12 * 1.7,
+    color: '#444444',
   },
 });

@@ -1,5 +1,5 @@
-// ─── Profile Screen ───────────────────────────────────────────────────────────
-// Name, role, settings rows, custom minimal toggle. Spec: Section 7 (Screen 5).
+// ─── Profile Screen — Instrumental Redesign ───────────────────────────────────
+// Square corners, monospace labels, ruled borders.
 
 import React, { useRef, useState } from 'react';
 import {
@@ -33,7 +33,7 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
   const thumbLeft = thumbAnim.interpolate({ inputRange: [0, 1], outputRange: [2, 18] });
   const trackColor = thumbAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [Colors.borderDefault, Colors.accent],
+    outputRange: ['#222222', Colors.accent],
   });
 
   return (
@@ -57,7 +57,7 @@ export default function ProfileScreen(_: ProfileScreenProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Profile Header ──────────────────────────────────────────── */}
+        {/* ── Profile Header ── */}
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
             <Text style={styles.avatarInitials}>L</Text>
@@ -70,8 +70,12 @@ export default function ProfileScreen(_: ProfileScreenProps) {
 
         <View style={styles.divider} />
 
-        {/* ── Preferences ─────────────────────────────────────────────── */}
-        <Text style={styles.sectionHeading}>PREFERENCES</Text>
+        {/* ── Preferences ── */}
+        <View style={styles.sectionDivider}>
+          <Text style={styles.sectionDividerLabel}>PREFERENCES</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>01</Text>
+        </View>
 
         <View style={styles.settingsGroup}>
           <View style={[styles.settingsRow, { justifyContent: 'space-between' }]}>
@@ -92,14 +96,18 @@ export default function ProfileScreen(_: ProfileScreenProps) {
             <Text style={styles.settingsLabel}>About APEX</Text>
             <View style={styles.settingsRight}>
               <Text style={styles.settingsMeta}>v1.0</Text>
-              <ChevronRight size={16} color={Colors.textMuted} strokeWidth={1.5} />
+              <ChevronRight size={16} color={'#444444'} strokeWidth={1.5} />
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionHeading}>CONTENT</Text>
+        <View style={styles.sectionDivider}>
+          <Text style={styles.sectionDividerLabel}>CONTENT</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>02</Text>
+        </View>
         <View style={styles.settingsGroup}>
           <View style={styles.settingsRow}>
             <View style={styles.settingsContent}>
@@ -133,23 +141,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarInitials: { fontFamily: FontFamily.dmSansBold, fontSize: 18, color: Colors.textPrimary },
+  avatarInitials: { fontFamily: FontFamily.dmMonoMedium, fontSize: 18, color: Colors.textPrimary },
   profileName: { fontFamily: FontFamily.dmSerifDisplayRegular, fontSize: 22, color: Colors.textPrimary, marginBottom: 2 },
-  profileRole: { fontFamily: FontFamily.dmSansRegular, fontSize: 12, color: Colors.textSecondary },
+  profileRole: { fontFamily: FontFamily.dmMonoLight, fontSize: 10, color: '#444444', letterSpacing: 0.04 * 10 },
   divider: { height: 1, backgroundColor: Colors.borderDefault, marginBottom: Spacing.xl },
-  sectionHeading: {
+  sectionDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
+  },
+  sectionDividerLabel: {
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 15,
-    letterSpacing: 0.14 * 15,
-    color: Colors.textSecondary,
-    textTransform: 'uppercase',
-    marginBottom: Spacing.md,
+    fontSize: 14,
+    letterSpacing: 0.16 * 14,
+    color: '#777777',
+  },
+  sectionDividerRule: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  sectionDividerIndex: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 8,
   },
   settingsGroup: {
-    backgroundColor: Colors.bgSurface,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.cardLg,
     overflow: 'hidden',
     marginBottom: 4,
   },
@@ -161,29 +182,29 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   settingsRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  settingsLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: 14, color: Colors.textPrimary },
-  settingsMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: 13, color: Colors.textMuted },
+  settingsLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: 13, color: Colors.textPrimary },
+  settingsMeta: { fontFamily: FontFamily.dmMonoLight, fontSize: 9, color: '#444444', letterSpacing: 0.04 * 9 },
   settingsContent: { flex: 1 },
   settingsDescription: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: 12,
-    color: Colors.textMuted,
+    color: '#444444',
     lineHeight: 12 * 1.5,
     marginTop: 4,
   },
   rowDivider: { height: 1, backgroundColor: Colors.borderDefault, marginLeft: Spacing.base },
-  // Custom toggle
+  // Custom toggle — keep functional radius for thumb
   track: {
     width: 36,
     height: 20,
-    borderRadius: 10,
+    borderRadius: Radius.toggleThumb,
     justifyContent: 'center',
   },
   thumb: {
     position: 'absolute',
     width: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: Radius.toggleThumb,
     backgroundColor: Colors.bgPrimary,
   },
 });

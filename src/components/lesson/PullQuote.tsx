@@ -1,10 +1,8 @@
-// ─── Pull Quote ───────────────────────────────────────────────────────────────
-// DM Serif Display italic with accent decorative quote mark. Spec: Section 9.
+// ─── Pull Quote — Instrumental ────────────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, FontFamily, Spacing, Radius } from '../../theme';
+import { Colors, FontFamily, Spacing } from '../../theme';
 
 interface Props {
   text: string;
@@ -13,51 +11,53 @@ interface Props {
 
 export default function PullQuote({ text, attribution }: Props) {
   return (
-    <LinearGradient
-      colors={[Colors.accentGradientStart, Colors.accentGradientEnd]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.container}
-    >
-      <Text style={styles.decorativeQuote}>"</Text>
+    <View style={styles.container}>
+      <View style={styles.accentBorder} />
+      <Text style={styles.decorativeQuote}>(</Text>
       <Text style={styles.quoteText}>{text}</Text>
       <Text style={styles.attribution}>{attribution}</Text>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: Colors.accentQuoteBorder,
-    borderRadius: Radius.cardLg,
+    borderLeftWidth: 2,
+    borderLeftColor: Colors.accent,
+    backgroundColor: 'rgba(200, 240, 77, 0.04)',
     padding: 20,
-    paddingLeft: 22,
-    marginVertical: 22,
-    overflow: 'hidden',
+    paddingLeft: 24,
+    marginVertical: 24,
+    position: 'relative',
+  },
+  accentBorder: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: Colors.accent,
   },
   decorativeQuote: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
     fontFamily: FontFamily.dmSerifDisplayRegular,
-    fontSize: 60,
+    fontSize: 36,
     color: Colors.accent,
-    opacity: 0.5,
-    lineHeight: 50,
-    marginBottom: -10,
+    opacity: 0.2,
   },
   quoteText: {
     fontFamily: FontFamily.dmSerifDisplayItalic,
-    fontSize: 17,
-    lineHeight: 17 * 1.55,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
     color: Colors.textPrimary,
-    paddingTop: Spacing.sm,
     marginBottom: Spacing.sm,
   },
   attribution: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textSecondary,
-    textTransform: 'uppercase',
-    letterSpacing: 0.08 * 11,
-    marginTop: Spacing.sm,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
   },
 });

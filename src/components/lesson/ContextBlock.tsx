@@ -1,9 +1,8 @@
-// ─── Context Block ────────────────────────────────────────────────────────────
-// "THE SITUATION" — left-bordered orange block. Spec: Section 9.
+// ─── Context Block — Instrumental ─────────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Colors, FontFamily, Spacing, Radius } from '../../theme';
+import { Colors, FontFamily, Spacing } from '../../theme';
 
 interface Props {
   text: string;
@@ -12,6 +11,7 @@ interface Props {
 export default function ContextBlock({ text }: Props) {
   return (
     <View style={styles.container}>
+      <View style={styles.topAccent} />
       <Text style={styles.label}>THE SITUATION</Text>
       <Text style={styles.body}>{text}</Text>
     </View>
@@ -20,27 +20,34 @@ export default function ContextBlock({ text }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    borderWidth: 1,
+    borderColor: '#222222',
     backgroundColor: Colors.bgSurface,
-    borderLeftWidth: 3,
-    borderLeftColor: Colors.accentOrange,
-    borderTopRightRadius: Radius.card,
-    borderBottomRightRadius: Radius.card,
-    paddingVertical: Spacing.base,
-    paddingHorizontal: 18,
+    padding: 16,
     marginBottom: Spacing.xl,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  topAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: Colors.accent,
   },
   label: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.accentOrange,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: Colors.accent,
     textTransform: 'uppercase',
-    letterSpacing: 0.10 * 10,
+    letterSpacing: 0.12 * 8,
     marginBottom: Spacing.sm,
   },
   body: {
-    fontFamily: FontFamily.loraRegular,
-    fontSize: 14,
-    lineHeight: 14 * 1.6,
-    color: Colors.textSecondary,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: 13,
+    lineHeight: 13 * 1.5,
+    color: Colors.textPrimary,
   },
 });

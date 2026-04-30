@@ -1,12 +1,11 @@
-// ─── Learning Path Screen ─────────────────────────────────────────────────────
-// Vertical node map with connecting line. Spec: Section 7 (Screen 3).
+// ─── Learning Path Screen — Instrumental Redesign ─────────────────────────────
+// Vertical node map with ruled borders and square nodes.
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 
-import { Colors, FontFamily, Spacing, Radius } from '../theme';
+import { Colors, FontFamily, Spacing } from '../theme';
 import type { PathScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
@@ -15,7 +14,7 @@ const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
   orange: Colors.accentOrange,
   blue: Colors.accentBlue,
-  grey: Colors.textMuted,
+  grey: '#444444',
 };
 
 export default function PathScreen({ navigation }: PathScreenProps) {
@@ -39,11 +38,17 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.title}>YOUR TRACK</Text>
-        <Text style={styles.subtitle}>
-          {MOCK_USER_STATS.cases_completed} of {MOCK_LESSONS.length} complete
-        </Text>
+        <View>
+          <Text style={styles.title}>YOUR TRACK</Text>
+          <Text style={styles.subtitle}>
+            {MOCK_USER_STATS.cases_completed} of {MOCK_LESSONS.length} complete
+          </Text>
+        </View>
+        <View style={styles.headerCount}>
+          <Text style={styles.headerCountText}>{MOCK_LESSONS.length} cases</Text>
+        </View>
       </View>
 
       <ScrollView
@@ -52,11 +57,8 @@ export default function PathScreen({ navigation }: PathScreenProps) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.nodeList}>
-          {/* Vertical gradient line */}
-          <LinearGradient
-            colors={[Colors.accent, Colors.borderDefault]}
-            style={styles.verticalLine}
-          />
+          {/* Vertical line */}
+          <View style={styles.verticalLine} />
 
           {MOCK_LESSONS.map((lesson, index) => {
             const isCompleted = lesson.status === 'completed';
@@ -67,10 +69,10 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
             return (
               <View key={lesson.lesson_id} style={styles.nodeRow}>
-                {/* Node circle */}
+                {/* Square Node */}
                 <TouchableOpacity
                   style={[
-                    styles.nodeCircle,
+                    styles.nodeSquare,
                     isCompleted && styles.nodeCompleted,
                     isInProgress && styles.nodeInProgress,
                     isLocked && styles.nodeLocked,
@@ -122,6 +124,9 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bgPrimary },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     paddingHorizontal: Spacing.screenPaddingH,
     paddingTop: Spacing.base,
     paddingBottom: Spacing.xl,
@@ -135,10 +140,23 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   subtitle: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 12,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#2A2A2A',
+    letterSpacing: 0.04 * 9,
     marginTop: 2,
+  },
+  headerCount: {
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  headerCountText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#2A2A2A',
+    letterSpacing: 0.04 * 9,
   },
   scroll: { flex: 1 },
   content: { paddingHorizontal: Spacing.screenPaddingH, paddingTop: Spacing.xl, paddingBottom: 48 },
@@ -149,6 +167,7 @@ const styles = StyleSheet.create({
     top: 40,
     bottom: 20,
     width: 1,
+    backgroundColor: Colors.borderDefault,
   },
   nodeRow: {
     flexDirection: 'row',
@@ -156,10 +175,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
     alignItems: 'flex-start',
   },
-  nodeCircle: {
+  nodeSquare: {
     width: 40,
     height: 40,
-    borderRadius: 20,
     borderWidth: 1,
     borderColor: Colors.accent,
     backgroundColor: Colors.bgSurface,
@@ -177,65 +195,68 @@ const styles = StyleSheet.create({
     borderColor: Colors.accent,
   },
   nodeLocked: {
-    borderColor: Colors.borderDefault,
+    borderColor: '#222222',
     backgroundColor: Colors.bgSurface,
   },
   nodeCheckmark: {
-    fontFamily: FontFamily.dmSansBold,
+    fontFamily: FontFamily.dmMonoMedium,
     fontSize: 14,
-    color: '#000000',
+    color: '#050505',
   },
   nodeNumber: {
-    fontFamily: FontFamily.bebasNeue,
-    fontSize: 14,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 12,
     color: Colors.accent,
   },
   nodeNumberLocked: {
-    color: Colors.textMuted,
+    color: '#444444',
   },
   nodeContent: { flex: 1, paddingTop: 4 },
   nodeContentLocked: { opacity: 0.45 },
   nodeTopRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 2 },
-  categoryDot: { width: 6, height: 6, borderRadius: 3 },
+  categoryDot: { width: 4, height: 4 },
   nodeCategory: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textMuted,
-    letterSpacing: 0.5,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
   nodeTitle: {
-    fontFamily: FontFamily.dmSansSemiBold,
-    fontSize: 15,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: 14,
     color: Colors.textPrimary,
     marginBottom: 2,
+    lineHeight: 14 * 1.3,
   },
-  nodeMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: 11, color: Colors.textMuted },
+  nodeMeta: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
+  },
   lockedHint: {
     marginTop: Spacing.sm,
-    backgroundColor: Colors.bgSurface2,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.badge,
     paddingVertical: 4,
     paddingHorizontal: 10,
     alignSelf: 'flex-start',
   },
   lockedHintText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
     color: Colors.accentBlue,
+    letterSpacing: 0.04 * 9,
   },
   progressTrack: {
-    height: 3,
-    backgroundColor: Colors.bgSurface2,
-    borderRadius: Radius.pill,
+    height: 2,
+    backgroundColor: '#222222',
     marginTop: Spacing.sm,
     overflow: 'hidden',
   },
   progressFill: {
-    height: 3,
+    height: 2,
     backgroundColor: Colors.accent,
-    borderRadius: Radius.pill,
   },
 });

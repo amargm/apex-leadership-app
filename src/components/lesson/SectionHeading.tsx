@@ -1,5 +1,4 @@
-// ─── Section Heading ──────────────────────────────────────────────────────────
-// Bebas Neue with trailing horizontal rule. Spec: Section 9.
+// ─── Section Heading — Instrumental ───────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -22,15 +21,15 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginTop: 22,
-    marginBottom: 10,
+    gap: 10,
+    marginTop: 24,
+    marginBottom: 14,
   },
   heading: {
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 16,
-    letterSpacing: 0.12 * 16,
-    color: Colors.textPrimary,
+    fontSize: 14,
+    letterSpacing: 0.12 * 14,
+    color: '#777777',
     textTransform: 'uppercase',
   },
   rule: {

@@ -29,6 +29,12 @@ import {
   DMSerifDisplay_400Regular_Italic,
 } from '@expo-google-fonts/dm-serif-display';
 
+import {
+  DMMono_300Light,
+  DMMono_400Regular,
+  DMMono_500Medium,
+} from '@expo-google-fonts/dm-mono';
+
 import AppNavigator from './src/navigation/AppNavigator';
 import { Colors } from './src/theme';
 
@@ -47,6 +53,9 @@ export default function App() {
     DMSans_700Bold,
     DMSerifDisplay_400Regular,
     DMSerifDisplay_400Regular_Italic,
+    DMMono_300Light,
+    DMMono_400Regular,
+    DMMono_500Medium,
   });
 
   const onLayoutRootView = useCallback(async () => {

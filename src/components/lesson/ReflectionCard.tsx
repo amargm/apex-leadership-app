@@ -1,9 +1,8 @@
-// ─── Reflection Card ──────────────────────────────────────────────────────────
-// Numbered prompt card. Spec: Section 9.
+// ─── Reflection Card — Instrumental ───────────────────────────────────────────
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Colors, FontFamily, Spacing, Radius } from '../../theme';
+import { Colors, FontFamily, Spacing } from '../../theme';
 
 interface Props {
   number: number;
@@ -13,47 +12,57 @@ interface Props {
 export default function ReflectionCard({ number, prompt }: Props) {
   return (
     <View style={styles.card}>
-      <View style={styles.numberBox}>
-        <Text style={styles.number}>{number}</Text>
+      <View style={styles.accentRail} />
+      <View style={styles.header}>
+        <Text style={styles.number}>0{number}</Text>
       </View>
-      <Text style={styles.prompt}>{prompt}</Text>
+      <View style={styles.headerDivider} />
+      <View style={styles.body}>
+        <Text style={styles.prompt}>{prompt}</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
-    gap: 14,
-    backgroundColor: Colors.bgSurface,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.cardLg,
-    padding: 18,
-    marginBottom: 12,
-    alignItems: 'flex-start',
+    marginBottom: 14,
+    position: 'relative',
+    overflow: 'hidden',
   },
-  numberBox: {
-    width: 28,
-    height: 28,
-    backgroundColor: Colors.bgPrimary,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Spacing.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+  accentRail: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: Colors.accent,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 12,
+  },
+  headerDivider: {
+    height: 1,
+    backgroundColor: Colors.borderDefault,
   },
   number: {
-    fontFamily: FontFamily.bebasNeue,
-    fontSize: 14,
-    color: Colors.accent,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 9,
+  },
+  body: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   prompt: {
-    flex: 1,
-    fontFamily: FontFamily.loraRegular,
-    fontSize: 14,
-    lineHeight: 14 * 1.55,
+    fontFamily: FontFamily.dmSerifDisplayRegular,
+    fontSize: 16,
+    lineHeight: 16 * 1.4,
     color: Colors.textPrimary,
   },
 });

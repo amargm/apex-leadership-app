@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Colors, FontFamily, Spacing, Radius } from '../theme';
+import { Colors, FontFamily, Spacing } from '../theme';
 import type { PushNotification } from '../types/lesson';
 
 interface Props {
@@ -87,17 +87,15 @@ export default function PushNotificationPanel({ notification, onOpen, onDismiss 
 const styles = StyleSheet.create({
   panel: {
     position: 'absolute',
-    left: 24,
-    right: 24,
+    left: 20,
+    right: 20,
     top: 0,
     backgroundColor: Colors.bgSurface2,
     borderWidth: 1,
     borderColor: '#2A2A2A',
-    borderRadius: Radius.bottomSheet,
     padding: 16,
     paddingHorizontal: 18,
     zIndex: 999,
-    // elevation for Android shadow
     elevation: 20,
   },
   headerRow: {
@@ -106,28 +104,29 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   appTag: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: '#444444',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.10 * 9,
   },
   time: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
   },
   title: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 14,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: 13,
     color: Colors.textPrimary,
     marginBottom: 4,
   },
   body: {
     fontFamily: FontFamily.dmSansRegular,
-    fontSize: 13,
-    color: Colors.textSecondary,
-    lineHeight: 13 * 1.4,
+    fontSize: 12,
+    color: '#777777',
+    lineHeight: 12 * 1.4,
     marginBottom: Spacing.md,
   },
   actions: {
@@ -136,27 +135,26 @@ const styles = StyleSheet.create({
   },
   openButton: {
     backgroundColor: Colors.accent,
-    borderRadius: 10,
-    paddingVertical: 9,
+    paddingVertical: 8,
     paddingHorizontal: 16,
   },
   openText: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 12,
-    color: '#000000',
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 9,
+    color: '#050505',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.08 * 9,
   },
   laterButton: {
     borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: 10,
-    paddingVertical: 9,
+    borderColor: '#222222',
+    paddingVertical: 8,
     paddingHorizontal: 16,
   },
   laterText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 12,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
   },
 });

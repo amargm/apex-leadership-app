@@ -1,11 +1,11 @@
-// ─── Wins / Achievements Screen ───────────────────────────────────────────────
-// Type-led achievement rows. Spec: Section 7 (Screen 4).
+// ─── Wins / Achievements Screen — Instrumental Redesign ──────────────────────
+// Ruled borders, monospace data, square corners.
 
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors, FontFamily, Spacing, Radius } from '../theme';
+import { Colors, FontFamily, Spacing } from '../theme';
 import type { WinsScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS } from '../data/mockLessons';
 
@@ -31,7 +31,7 @@ export default function WinsScreen(_: WinsScreenProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Streak ──────────────────────────────────────────────────── */}
+        {/* ── Streak ── */}
         <View style={styles.streakBlock}>
           <Text style={styles.streakNumber}>{MOCK_USER_STATS.day_streak}</Text>
           <Text style={styles.streakLabel}>DAY STREAK</Text>
@@ -39,19 +39,27 @@ export default function WinsScreen(_: WinsScreenProps) {
 
         <View style={styles.divider} />
 
-        {/* ── Stats Grid ──────────────────────────────────────────────── */}
-        <Text style={styles.sectionHeading}>STATS</Text>
+        {/* ── Stats Grid ── */}
+        <View style={styles.sectionDivider}>
+          <Text style={styles.sectionDividerLabel}>STATS</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>01</Text>
+        </View>
         <View style={styles.statsGrid}>
-          <StatCard label="Cases Completed" value={String(MOCK_USER_STATS.cases_completed)} />
-          <StatCard label="Time This Week" value={`${MOCK_USER_STATS.time_this_week_minutes}m`} />
-          <StatCard label="In Progress" value={String(MOCK_LESSONS.filter(l => l.status === 'in_progress').length)} />
-          <StatCard label="Unlocked Ahead" value={String(MOCK_LESSONS.filter(l => !l.is_locked).length)} />
+          <StatCard label="COMPLETED" value={String(MOCK_USER_STATS.cases_completed)} />
+          <StatCard label="THIS WEEK" value={`${MOCK_USER_STATS.time_this_week_minutes}m`} />
+          <StatCard label="IN PROGRESS" value={String(MOCK_LESSONS.filter(l => l.status === 'in_progress').length)} />
+          <StatCard label="UNLOCKED" value={String(MOCK_LESSONS.filter(l => !l.is_locked).length)} />
         </View>
 
         <View style={styles.divider} />
 
-        {/* ── Achievements ────────────────────────────────────────────── */}
-        <Text style={styles.sectionHeading}>ACHIEVEMENTS</Text>
+        {/* ── Achievements ── */}
+        <View style={styles.sectionDivider}>
+          <Text style={styles.sectionDividerLabel}>ACHIEVEMENTS</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>02</Text>
+        </View>
         <View style={styles.achievementList}>
           {ACHIEVEMENTS.map((a, i) => (
             <View key={a.id}>
@@ -67,11 +75,15 @@ export default function WinsScreen(_: WinsScreenProps) {
           ))}
         </View>
 
-        {/* ── Completed Cases ─────────────────────────────────────────── */}
+        {/* ── Completed Cases ── */}
         {completedLessons.length > 0 && (
           <>
             <View style={styles.divider} />
-            <Text style={styles.sectionHeading}>COMPLETED CASES</Text>
+            <View style={styles.sectionDivider}>
+              <Text style={styles.sectionDividerLabel}>COMPLETED CASES</Text>
+              <View style={styles.sectionDividerRule} />
+              <Text style={styles.sectionDividerIndex}>03</Text>
+            </View>
             {completedLessons.map((lesson) => (
               <View key={lesson.lesson_id} style={styles.completedRow}>
                 <View style={styles.completedBar} />
@@ -116,61 +128,75 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: Spacing.screenPaddingH, paddingTop: Spacing.xl, paddingBottom: 48 },
   streakBlock: { alignItems: 'center', marginBottom: Spacing.xl },
   streakNumber: {
-    fontFamily: FontFamily.bebasNeue,
-    fontSize: 80,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 72,
     color: Colors.textPrimary,
-    lineHeight: 80,
-    letterSpacing: 2,
+    lineHeight: 72,
+    letterSpacing: -2,
   },
   streakLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
     textTransform: 'uppercase',
-    letterSpacing: 0.10 * 11,
-    marginTop: 4,
+    letterSpacing: 0.14 * 9,
+    marginTop: 8,
   },
   divider: { height: 1, backgroundColor: Colors.borderDefault, marginVertical: Spacing.xl },
-  sectionHeading: {
+  sectionDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
+  },
+  sectionDividerLabel: {
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 15,
-    letterSpacing: 0.14 * 15,
-    color: Colors.textSecondary,
-    textTransform: 'uppercase',
-    marginBottom: Spacing.md,
+    fontSize: 14,
+    letterSpacing: 0.16 * 14,
+    color: '#777777',
+  },
+  sectionDividerRule: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  sectionDividerIndex: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 8,
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 1,
+    backgroundColor: Colors.borderDefault,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
     marginBottom: 4,
   },
   statCard: {
-    width: '47.5%',
-    backgroundColor: Colors.bgSurface,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.card,
+    width: '49.5%',
+    backgroundColor: Colors.bgPrimary,
     padding: Spacing.base,
   },
   statValue: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 28,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 24,
     color: Colors.textPrimary,
-    marginBottom: 2,
+    marginBottom: 4,
+    letterSpacing: -0.5,
   },
   statLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#444444',
     textTransform: 'uppercase',
-    letterSpacing: 0.4,
+    letterSpacing: 0.12 * 8,
   },
   achievementList: {
-    backgroundColor: Colors.bgSurface,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.cardLg,
     overflow: 'hidden',
   },
   achievementRow: {
@@ -182,25 +208,24 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   achievementBar: {
-    width: 3,
+    width: 2,
     height: 20,
-    backgroundColor: Colors.borderDefault,
-    borderRadius: 2,
+    backgroundColor: '#222222',
   },
   achievementBarEarned: { backgroundColor: Colors.accent },
   achievementLabel: {
     flex: 1,
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 14,
+    fontSize: 13,
     color: Colors.textPrimary,
   },
-  achievementLabelUnearned: { color: Colors.textMuted },
+  achievementLabelUnearned: { color: '#444444' },
   earnedTag: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
     color: Colors.accent,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.10 * 8,
   },
   rowDivider: { height: 1, backgroundColor: Colors.borderDefault, marginLeft: Spacing.base },
   completedRow: {
@@ -211,17 +236,21 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.borderDefault,
   },
   completedBar: {
-    width: 3,
+    width: 2,
     backgroundColor: Colors.accent,
-    borderRadius: 2,
     alignSelf: 'stretch',
   },
   completedContent: { flex: 1 },
   completedTitle: {
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 14,
+    fontSize: 13,
     color: Colors.textPrimary,
     marginBottom: 2,
   },
-  completedMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: 12, color: Colors.textMuted },
+  completedMeta: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
+  },
 });

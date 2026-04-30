@@ -1,5 +1,6 @@
-// ─── APEX Typography System ───────────────────────────────────────────────────
-// Maps exactly to the spec's font stack and type scale.
+// ─── APEX Typography System — Instrumental Redesign ──────────────────────────
+// DM Mono added for all data readouts, labels, metadata, badges, nav.
+// Brutalist precision: tight letter-spacing, uppercase mono labels.
 
 export const FontFamily = {
   // Display / structural
@@ -10,18 +11,23 @@ export const FontFamily = {
   loraMedium: 'Lora_500Medium',
   loraBold: 'Lora_700Bold',
 
-  // UI chrome
+  // UI chrome (used sparingly — body text, descriptions)
   dmSansRegular: 'DMSans_400Regular',
   dmSansMedium: 'DMSans_500Medium',
   dmSansSemiBold: 'DMSans_600SemiBold',
   dmSansBold: 'DMSans_700Bold',
+
+  // Monospace data — instrument readouts, labels, metadata, nav
+  dmMonoLight: 'DMMono_300Light',
+  dmMonoRegular: 'DMMono_400Regular',
+  dmMonoMedium: 'DMMono_500Medium',
 
   // Pull quotes
   dmSerifDisplayRegular: 'DMSerifDisplay_400Regular',
   dmSerifDisplayItalic: 'DMSerifDisplay_400Regular_Italic',
 } as const;
 
-// Type scale from spec
+// Type scale
 export const TypeScale = {
   appWordmark: {
     fontFamily: FontFamily.bebasNeue,
@@ -59,34 +65,67 @@ export const TypeScale = {
     fontSize: 17,
     lineHeight: 17 * 1.3,
   },
+  // ── Monospace data styles ──
   uiLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    letterSpacing: 0.08 * 10,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    letterSpacing: 0.08 * 9,
     textTransform: 'uppercase' as const,
   },
   metadata: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    letterSpacing: 0.04 * 10,
   },
   ctaButton: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 13,
-    letterSpacing: 0.06 * 13,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 12,
+    letterSpacing: 0.06 * 12,
     textTransform: 'uppercase' as const,
   },
   statValue: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 16,
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 18,
+    letterSpacing: -0.5,
+  },
+  statLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 0.1 * 9,
+    textTransform: 'uppercase' as const,
   },
   greetingName: {
     fontFamily: FontFamily.dmSerifDisplayRegular,
     fontSize: 26,
   },
   tabLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    letterSpacing: 0.09 * 11,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 10,
+    letterSpacing: 0.08 * 10,
+    textTransform: 'uppercase' as const,
+  },
+  navLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 0.06 * 9,
+    textTransform: 'uppercase' as const,
+  },
+  cornerIndex: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    letterSpacing: 0.04 * 8,
+    textTransform: 'uppercase' as const,
+  },
+  sectionDividerLabel: {
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    letterSpacing: 0.1 * 9,
+    textTransform: 'uppercase' as const,
+  },
+  badgeText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    letterSpacing: 0.08 * 8,
     textTransform: 'uppercase' as const,
   },
 } as const;

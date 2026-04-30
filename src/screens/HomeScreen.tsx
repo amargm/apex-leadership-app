@@ -1,6 +1,5 @@
-// ─── Home Screen ─────────────────────────────────────────────────────────────
-// Fully wired — FeaturedCard + LessonListItem from mock data.
-// Staggered fade-up animation on mount. Spec: Section 7.
+// ─── Home Screen — Instrumental Redesign ─────────────────────────────────────
+// Brutalist precision: ruled borders, DM Mono data, square corners.
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -12,9 +11,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bell } from 'lucide-react-native';
 
-import { Colors, FontFamily, Spacing, Radius } from '../theme';
+import { Colors, FontFamily, Spacing, TypeScale } from '../theme';
 import type { HomeScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS, MOCK_NOTIFICATION } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
@@ -39,7 +37,7 @@ function useFadeUp(count: number) {
   }));
 }
 
-const SECTION_COUNT = 5;
+const SECTION_COUNT = 6;
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const fadeStyles = useFadeUp(SECTION_COUNT);
@@ -48,6 +46,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   const featuredLessons = MOCK_LESSONS.filter((l) => !l.is_locked);
   const trackLessons = MOCK_LESSONS;
+  const activeCase = MOCK_LESSONS.find((l) => l.status === 'in_progress');
 
   const handleLessonPress = (lesson: Lesson) => {
     navigation.navigate('LessonDetail', { lessonId: lesson.lesson_id });
@@ -84,16 +83,16 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── App Header ──────────────────────────────────────────── */}
+        {/* ── Header ──────────────────────────────────────────────── */}
         <Animated.View style={[styles.header, fadeStyles[0]]}>
           <Text style={styles.wordmark}>
             APE<Text style={styles.wordmarkAccent}>X</Text>
           </Text>
-          <View style={styles.notifButton}>
-            <Bell size={20} color={Colors.textSecondary} strokeWidth={1.5} />
-            <View style={styles.notifDot} />
+          <View style={styles.headerRight}>
+            <Text style={styles.versionText}>v1.0</Text>
           </View>
         </Animated.View>
+        <View style={styles.headerAccentLine} />
 
         {/* ── Greeting ────────────────────────────────────────────── */}
         <Animated.View style={[styles.greeting, fadeStyles[1]]}>
@@ -101,23 +100,67 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           <Text style={styles.greetingName}>Leader</Text>
         </Animated.View>
 
-        {/* ── Stats Row ───────────────────────────────────────────── */}
-        <Animated.View style={[styles.statsRow, fadeStyles[2]]}>
-          <StatPill label="DAY STREAK" value={String(MOCK_USER_STATS.day_streak)} />
-          <StatPill label="CASES" value={String(MOCK_USER_STATS.cases_completed)} />
-          <StatPill label="THIS WEEK" value={formatTime(MOCK_USER_STATS.time_this_week_minutes)} />
+        {/* ── Readout Strip (Instrument Panel) ────────────────────── */}
+        <Animated.View style={[styles.readoutStrip, fadeStyles[2]]}>
+          <ReadoutCell value={String(MOCK_USER_STATS.day_streak)} label="STREAK" />
+          <View style={styles.readoutDivider} />
+          <ReadoutCell value={String(MOCK_USER_STATS.cases_completed)} label="COMPLETED" />
+          <View style={styles.readoutDivider} />
+          <ReadoutCell value={formatTime(MOCK_USER_STATS.time_this_week_minutes)} label="THIS WEEK" />
         </Animated.View>
 
-        {/* ── Fresh Cases ─────────────────────────────────────────── */}
-        <Animated.View style={fadeStyles[3]}>
-          <View style={styles.sectionRow}>
-            <Text style={styles.sectionLabel}>FRESH CASES</Text>
-            <Text style={styles.sectionLink}>All →</Text>
-          </View>
+        {/* ── Active Case (Resume Block) ──────────────────────────── */}
+        {activeCase && (
+          <Animated.View style={fadeStyles[3]}>
+            <TouchableOpacity
+              style={styles.activeCase}
+              onPress={() => handleLessonPress(activeCase)}
+              activeOpacity={0.85}
+            >
+              <View style={styles.activeCaseAccentRail} />
+              <Text style={styles.activeCaseCornerIndex}>L002</Text>
+
+              {/* Top signal row */}
+              <View style={styles.activeCaseSignalRow}>
+                <View style={styles.signalDot} />
+                <Text style={styles.signalLabel}>READING IN PROGRESS</Text>
+              </View>
+
+              {/* Divider */}
+              <View style={styles.activeCaseDivider} />
+
+              {/* Body */}
+              <View style={styles.activeCaseBody}>
+                <Text style={styles.activeCaseTitle} numberOfLines={2}>
+                  {activeCase.title}
+                </Text>
+                <View style={styles.activeCaseMeta}>
+                  <View style={styles.progressGroup}>
+                    <View style={styles.progressTrack}>
+                      <View style={[styles.progressFill, { width: `${activeCase.progress ?? 0}%` }]} />
+                    </View>
+                    <Text style={styles.progressPct}>{activeCase.progress ?? 0}%</Text>
+                  </View>
+                  <Text style={styles.resumeLabel}>Resume →</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
+
+        {/* ── Section Divider: Fresh Cases ─────────────────────────── */}
+        <Animated.View style={[styles.sectionDivider, fadeStyles[4]]}>
+          <Text style={styles.sectionDividerLabel}>FRESH CASES</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>01</Text>
+        </Animated.View>
+
+        {/* ── Cases Rail ───────────────────────────────────────────── */}
+        <Animated.View style={fadeStyles[4]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.featuredScroll}
+            contentContainerStyle={styles.casesRail}
           >
             {featuredLessons.map((lesson) => (
               <FeaturedCard key={lesson.lesson_id} lesson={lesson} onPress={handleLessonPress} />
@@ -125,38 +168,44 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           </ScrollView>
         </Animated.View>
 
-        {/* ── Your Track ──────────────────────────────────────────── */}
-        <Animated.View style={fadeStyles[4]}>
-          <View style={styles.sectionRow}>
-            <Text style={styles.sectionLabel}>YOUR TRACK</Text>
-            <Text style={styles.sectionLinkMuted}>Filter ↓</Text>
-          </View>
+        {/* ── Section Divider: Your Track ──────────────────────────── */}
+        <Animated.View style={[styles.sectionDivider, fadeStyles[5]]}>
+          <Text style={styles.sectionDividerLabel}>YOUR TRACK</Text>
+          <View style={styles.sectionDividerRule} />
+          <Text style={styles.sectionDividerIndex}>02</Text>
+        </Animated.View>
 
+        {/* ── Track List ───────────────────────────────────────────── */}
+        <Animated.View style={fadeStyles[5]}>
           {lockedHint && (
             <View style={styles.lockedHint}>
               <Text style={styles.lockedHintText}>{lockedHint}</Text>
             </View>
           )}
 
-          {trackLessons.map((lesson) => (
-            <LessonListItem
-              key={lesson.lesson_id}
-              lesson={lesson}
-              onPress={handleLessonPress}
-              onLockedPress={handleLockedPress}
-            />
-          ))}
+          <View style={styles.trackList}>
+            {trackLessons.map((lesson, i) => (
+              <LessonListItem
+                key={lesson.lesson_id}
+                lesson={lesson}
+                index={i}
+                onPress={handleLessonPress}
+                onLockedPress={handleLockedPress}
+              />
+            ))}
+          </View>
         </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function StatPill({ label, value }: { label: string; value: string }) {
+// ─── Readout Cell ─────────────────────────────────────────────────────────────
+function ReadoutCell({ value, label }: { value: string; label: string }) {
   return (
-    <View style={styles.statPill}>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
+    <View style={styles.readoutCell}>
+      <Text style={styles.readoutValue}>{value}</Text>
+      <Text style={styles.readoutLabel}>{label}</Text>
     </View>
   );
 }
@@ -165,102 +214,243 @@ function StatPill({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bgPrimary },
   scroll: { flex: 1 },
-  content: { paddingHorizontal: Spacing.screenPaddingH, paddingBottom: Spacing.xl },
+  content: { paddingBottom: Spacing.xl },
+
+  // ── Header ──
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: Spacing.screenPaddingH,
     paddingTop: Spacing.base,
-    marginBottom: Spacing.xl,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
   },
   wordmark: {
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 32,
-    letterSpacing: 0.12 * 32,
+    fontSize: 28,
+    letterSpacing: 0.18 * 28,
     color: Colors.textPrimary,
   },
   wordmarkAccent: { color: Colors.accent },
-  notifButton: {
+  headerRight: { alignItems: 'flex-end' },
+  versionText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.04 * 9,
+  },
+  headerAccentLine: {
     width: 40,
-    height: 40,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.badge,
-    backgroundColor: Colors.bgSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  notifDot: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 7,
-    height: 7,
-    borderRadius: 3.5,
+    height: 1,
     backgroundColor: Colors.accent,
-    borderWidth: 1,
-    borderColor: Colors.bgPrimary,
+    marginLeft: Spacing.screenPaddingH,
+    marginTop: 0,
   },
-  greeting: { marginBottom: Spacing.xl },
+
+  // ── Greeting ──
+  greeting: {
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingTop: 32,
+    marginBottom: 0,
+  },
   greetingLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 11,
-    color: Colors.textMuted,
-    letterSpacing: 0.10 * 11,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: '#444444',
+    letterSpacing: 0.12 * 9,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   greetingName: {
     fontFamily: FontFamily.dmSerifDisplayRegular,
-    fontSize: 26,
+    fontSize: 34,
     color: Colors.textPrimary,
+    lineHeight: 34 * 1.1,
   },
-  statsRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.xl },
-  statPill: {
-    flex: 1,
-    backgroundColor: Colors.bgSurface,
+
+  // ── Readout Strip ──
+  readoutStrip: {
+    flexDirection: 'row',
+    marginHorizontal: Spacing.screenPaddingH,
+    marginTop: 24,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.card,
-    padding: Spacing.md,
+  },
+  readoutCell: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
     alignItems: 'center',
   },
-  statValue: { fontFamily: FontFamily.dmSansBold, fontSize: 16, color: Colors.textPrimary, marginBottom: 2 },
-  statLabel: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 10,
-    color: Colors.textMuted,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    textAlign: 'center',
+  readoutDivider: {
+    width: 1,
+    backgroundColor: Colors.borderDefault,
   },
-  sectionRow: {
+  readoutValue: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 22,
+    color: Colors.textPrimary,
+    lineHeight: 22,
+    marginBottom: 6,
+  },
+  readoutLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#444444',
+    letterSpacing: 0.14 * 8,
+    textTransform: 'uppercase',
+  },
+
+  // ── Active Case ──
+  activeCase: {
+    marginHorizontal: Spacing.screenPaddingH,
+    marginTop: 24,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  activeCaseAccentRail: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 2,
+    backgroundColor: Colors.accent,
+  },
+  activeCaseCornerIndex: {
+    position: 'absolute',
+    top: 8,
+    right: 10,
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 8,
+  },
+  activeCaseSignalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+  },
+  signalDot: {
+    width: 6,
+    height: 6,
+    backgroundColor: Colors.accent,
+  },
+  signalLabel: {
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: Colors.accent,
+    letterSpacing: 0.12 * 9,
+    textTransform: 'uppercase',
+  },
+  activeCaseDivider: {
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  activeCaseBody: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 16,
+  },
+  activeCaseTitle: {
+    fontFamily: FontFamily.dmSerifDisplayRegular,
+    fontSize: 19,
+    color: Colors.textPrimary,
+    lineHeight: 19 * 1.3,
+    marginBottom: 14,
+  },
+  activeCaseMeta: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.md,
   },
-  sectionLabel: {
+  progressGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  progressTrack: {
+    width: 80,
+    height: 2,
+    backgroundColor: '#222222',
+  },
+  progressFill: {
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  progressPct: {
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 11,
+    color: Colors.accent,
+  },
+  resumeLabel: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: 10,
+    color: '#777777',
+    letterSpacing: 0.08 * 10,
+    textTransform: 'uppercase',
+  },
+
+  // ── Section Divider ──
+  sectionDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: Spacing.screenPaddingH,
+    marginTop: 32,
+    marginBottom: 18,
+  },
+  sectionDividerLabel: {
     fontFamily: FontFamily.bebasNeue,
-    fontSize: 20,
-    letterSpacing: 0.10 * 20,
-    color: Colors.textPrimary,
+    fontSize: 14,
+    letterSpacing: 0.16 * 14,
+    color: '#777777',
   },
-  sectionLink: { fontFamily: FontFamily.dmSansRegular, fontSize: 12, color: Colors.accent },
-  sectionLinkMuted: { fontFamily: FontFamily.dmSansRegular, fontSize: 12, color: Colors.textMuted },
-  featuredScroll: { paddingBottom: Spacing.xl },
-  lockedHint: {
-    backgroundColor: Colors.bgSurface2,
+  sectionDividerRule: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  sectionDividerIndex: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: '#2A2A2A',
+    letterSpacing: 0.06 * 8,
+  },
+
+  // ── Cases Rail ──
+  casesRail: {
+    paddingHorizontal: Spacing.screenPaddingH,
+    gap: 12,
+    paddingBottom: 4,
+  },
+
+  // ── Track List ──
+  trackList: {
+    marginHorizontal: Spacing.screenPaddingH,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    borderRadius: Radius.card,
+    overflow: 'hidden',
+  },
+
+  // ── Locked Hint ──
+  lockedHint: {
+    marginHorizontal: Spacing.screenPaddingH,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
   },
   lockedHintText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 12,
-    color: Colors.textMuted,
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 11,
+    color: '#444444',
     textAlign: 'center',
   },
 });
