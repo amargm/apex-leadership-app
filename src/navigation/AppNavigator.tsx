@@ -109,12 +109,6 @@ export default function AppNavigator() {
           border: Colors.borderDefault,
           notification: Colors.accent,
         },
-        fonts: {
-          regular: { fontFamily: 'DMMono_400Regular', fontWeight: '400' },
-          medium: { fontFamily: 'DMMono_500Medium', fontWeight: '500' },
-          bold: { fontFamily: 'DMSans_700Bold', fontWeight: '700' },
-          heavy: { fontFamily: 'DMSans_700Bold', fontWeight: '900' },
-        },
       }}
     >
       <BottomTabs />

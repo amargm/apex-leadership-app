@@ -6,7 +6,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors, FontFamily, Spacing } from '../theme';
-import type { WinsScreenProps } from '../navigation/types';
+import type { NotesScreenProps as WinsScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS } from '../data/mockLessons';
 
 const ACHIEVEMENTS = [
