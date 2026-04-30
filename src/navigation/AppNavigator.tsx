@@ -12,6 +12,7 @@ import type { TabParamList, LearnStackParamList } from './types';
 
 import HomeScreen from '../screens/HomeScreen';
 import LessonDetailScreen from '../screens/LessonDetailScreen';
+import SavedScreen from '../screens/SavedScreen';
 import PathScreen from '../screens/PathScreen';
 import NotesScreen from '../screens/NotesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -28,6 +29,13 @@ function LearnStack() {
       <Stack.Screen
         name="LessonDetail"
         component={LessonDetailScreen}
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="Saved"
+        component={SavedScreen}
         options={{
           animation: 'slide_from_right',
         }}

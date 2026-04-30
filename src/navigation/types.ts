@@ -16,6 +16,7 @@ export type TabParamList = {
 export type LearnStackParamList = {
   Home: undefined;
   LessonDetail: { lessonId: string };
+  Saved: undefined;
 };
 
 // ─── Composite screen props ───────────────────────────────────────────────────

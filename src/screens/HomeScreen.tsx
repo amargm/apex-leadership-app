@@ -82,7 +82,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             APE<Text style={styles.wordmarkAccent}>X</Text>
           </Text>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.savedButton} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.savedButton} activeOpacity={0.7} onPress={() => navigation.navigate('Saved' as any)}>
               <Text style={styles.savedButtonText}>SAVED</Text>
             </TouchableOpacity>
           </View>

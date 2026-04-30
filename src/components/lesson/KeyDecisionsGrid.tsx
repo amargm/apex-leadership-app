@@ -13,9 +13,11 @@ export default function KeyDecisionsGrid({ decisions }: Props) {
   return (
     <View style={styles.grid}>
       {decisions.map((d, i) => (
-        <View key={i} style={styles.card}>
-          <Text style={styles.index}>{String(i + 1).padStart(2, '0')}</Text>
-          <Text style={styles.title}>{d.title}</Text>
+        <View key={i} style={[styles.card, i < decisions.length - 1 && styles.cardBorder]}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.index}>{String(i + 1).padStart(2, '0')}</Text>
+            <Text style={styles.title}>{d.title}</Text>
+          </View>
           <Text style={styles.description}>{d.description}</Text>
         </View>
       ))}
@@ -25,37 +27,41 @@ export default function KeyDecisionsGrid({ decisions }: Props) {
 
 const styles = StyleSheet.create({
   grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 1,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
-    backgroundColor: Colors.borderDefault,
   },
   card: {
-    width: '49.5%',
     backgroundColor: Colors.bgPrimary,
-    padding: 18,
-    paddingTop: 14,
+    padding: 16,
+  },
+  cardBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 10,
+    marginBottom: 6,
   },
   index: {
     fontFamily: FontFamily.dmMonoLight,
-    fontSize: 8,
+    fontSize: 11,
     color: '#555555',
-    letterSpacing: 0.06 * 8,
-    marginBottom: 8,
+    letterSpacing: 0.06 * 11,
   },
   title: {
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 12,
+    fontSize: 15,
     color: Colors.textPrimary,
-    lineHeight: 12 * 1.4,
-    marginBottom: 4,
+    lineHeight: 15 * 1.35,
+    flex: 1,
   },
   description: {
     fontFamily: FontFamily.dmMonoLight,
-    fontSize: 9,
-    color: '#555555',
-    lineHeight: 9 * 1.4,
+    fontSize: 12,
+    color: '#777777',
+    lineHeight: 12 * 1.5,
+    paddingLeft: 30,
   },
 });
