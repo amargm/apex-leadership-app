@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
+import { Colors, FontFamily, BorderWidth } from '../theme';
 import type { Lesson } from '../types/lesson';
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {

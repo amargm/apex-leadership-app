@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Colors, FontFamily, Spacing } from '../../theme';
+import { Colors, FontFamily } from '../../theme';
 import type { TakeawayItem as TakeawayItemType } from '../../types/lesson';
 
 interface Props {

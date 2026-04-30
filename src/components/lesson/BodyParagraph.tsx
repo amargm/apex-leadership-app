@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Colors, FontFamily } from '../../theme';
+import { FontFamily } from '../../theme';
 
 interface Props {
   text: string;

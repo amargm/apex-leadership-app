@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors, FontFamily, Spacing, TypeScale } from '../theme';
+import { Colors, FontFamily, Spacing } from '../theme';
 import type { HomeScreenProps } from '../navigation/types';
 import { MOCK_LESSONS, MOCK_USER_STATS, MOCK_NOTIFICATION } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
