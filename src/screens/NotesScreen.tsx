@@ -14,7 +14,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Plus, Trash2, Edit3, X, BookOpen } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Plus, Trash2, Edit3, X, BookOpen, ArrowUpRight } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import { useAppState, Note } from '../state/AppState';
@@ -22,6 +23,7 @@ import { MOCK_LESSONS } from '../data/mockLessons';
 
 export default function NotesScreen() {
   const { state, addNote, updateNote, deleteNote } = useAppState();
+  const navigation = useNavigation<any>();
   const [modalVisible, setModalVisible] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [noteContent, setNoteContent] = useState('');
@@ -127,16 +129,30 @@ export default function NotesScreen() {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <Text style={styles.cardContent} numberOfLines={4}>
-                  {note.content}
-                </Text>
+                {note.heading && (
+                  <Text style={styles.cardHeading} numberOfLines={2}>
+                    {note.heading}
+                  </Text>
+                )}
+                {note.content ? (
+                  <Text style={styles.cardContent} numberOfLines={4}>
+                    {note.content}
+                  </Text>
+                ) : (
+                  <Text style={styles.cardPlaceholder}>Tap edit to add your reflections...</Text>
+                )}
                 {lessonTitle && (
-                  <View style={styles.cardLesson}>
-                    <BookOpen size={10} color="#555555" strokeWidth={1.5} />
+                  <TouchableOpacity
+                    style={styles.cardLesson}
+                    onPress={() => navigation.navigate('Learn', { screen: 'LessonDetail', params: { lessonId: note.lessonId } })}
+                    activeOpacity={0.7}
+                  >
+                    <BookOpen size={10} color="#666666" strokeWidth={1.5} />
                     <Text style={styles.cardLessonText} numberOfLines={1}>
                       {lessonTitle}
                     </Text>
-                  </View>
+                    <ArrowUpRight size={10} color={Colors.accent} strokeWidth={2} />
+                  </TouchableOpacity>
                 )}
               </View>
             );
@@ -326,11 +342,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 16,
   },
+  cardHeading: {
+    fontFamily: FontFamily.dmSerifDisplayRegular,
+    fontSize: 14,
+    color: Colors.accent,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
   cardContent: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: 14,
     color: Colors.textPrimary,
     lineHeight: 21,
+  },
+  cardPlaceholder: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 12,
+    color: '#666666',
+    fontStyle: 'italic',
   },
   cardLesson: {
     flexDirection: 'row',

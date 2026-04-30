@@ -51,13 +51,12 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   }, [lessonId]);
 
   const switchTab = (tab: TabKey) => {
-    Animated.sequence([
-      Animated.timing(contentOpacity, { toValue: 0, duration: 120, useNativeDriver: true }),
-      Animated.timing(contentOpacity, { toValue: 1, duration: 280, useNativeDriver: true }),
-    ]).start();
-    setActiveTab(tab);
-    markTabViewed(lessonId, tab);
-    scrollRef.current?.scrollTo({ y: 0, animated: false });
+    Animated.timing(contentOpacity, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
+      setActiveTab(tab);
+      markTabViewed(lessonId, tab);
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
+      Animated.timing(contentOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+    });
   };
 
   if (!lesson) {
@@ -153,7 +152,6 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
 
           {/* Instrument Panel */}
           <View style={styles.instrumentPanel}>
-            <View style={styles.instrumentAccentLine} />
             <View style={styles.instrumentContent}>
               <View style={styles.instrumentLeft}>
                 <View style={styles.instrumentProgressRow}>
@@ -249,7 +247,7 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
   const { addNote } = useAppState();
 
   const handleAddNote = (prompt: string) => {
-    addNote(`Reflection on: "${prompt}"`, lesson.lesson_id);
+    addNote('', lesson.lesson_id, prompt);
   };
 
   return (
@@ -470,14 +468,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderDefault,
     position: 'relative',
     overflow: 'hidden',
-  },
-  instrumentAccentLine: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: '35%',
-    height: 1,
-    backgroundColor: Colors.accent,
   },
   instrumentContent: {
     flexDirection: 'row',
