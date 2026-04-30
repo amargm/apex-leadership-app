@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   secondary: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#222222',
+    borderColor: '#333333',
   },
   label: {
     fontFamily: FontFamily.dmMonoMedium,

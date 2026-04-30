@@ -21,7 +21,7 @@ export default function ContextBlock({ text }: Props) {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: '#222222',
+    borderColor: '#333333',
     backgroundColor: Colors.bgSurface,
     padding: 16,
     marginBottom: Spacing.xl,

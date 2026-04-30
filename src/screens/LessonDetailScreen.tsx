@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderWidth: 1,
-    borderColor: '#222222',
+    borderColor: '#333333',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     gap: 6,
     borderWidth: 1,
-    borderColor: '#222222',
+    borderColor: '#333333',
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   metaTagDivider: {
     width: 1,
     height: 12,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
   },
   lessonTitle: {
     fontFamily: FontFamily.dmSerifDisplayRegular,
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   instrumentProgressBar: {
     width: 100,
     height: 2,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
   },
   instrumentProgressFill: {
     height: 2,

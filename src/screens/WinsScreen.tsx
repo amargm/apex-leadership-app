@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   achievementBar: {
     width: 2,
     height: 20,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
   },
   achievementBarEarned: { backgroundColor: Colors.accent },
   achievementLabel: {

@@ -1,5 +1,5 @@
 // ─── Learning Path Screen — Instrumental Redesign ─────────────────────────────
-// Vertical node map with ruled borders and square nodes.
+// Vertical node map with ruled borders and square nodes, grouped by module.
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -8,7 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { PathScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
-import type { Lesson } from '../types/lesson';
+import { MODULES } from '../data/modules';
+import type { Lesson, ModuleKey } from '../types/lesson';
 import { useAppState } from '../state/AppState';
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {
@@ -52,6 +53,12 @@ export default function PathScreen({ navigation }: PathScreenProps) {
     }
   });
 
+  // Group filtered lessons by module
+  const groupedByModule = MODULES.map((mod) => ({
+    module: mod,
+    lessons: filteredLessons.filter((l) => l.module === mod.key),
+  })).filter((g) => g.lessons.length > 0);
+
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* ── Header ── */}
@@ -88,70 +95,81 @@ export default function PathScreen({ navigation }: PathScreenProps) {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.nodeList}>
-          {/* Vertical line */}
-          <View style={styles.verticalLine} />
-
-          {filteredLessons.map((lesson, index) => {
-            const lp = getLessonProgress(lesson.lesson_id);
-            const isCompleted = lp.status === 'completed';
-            const isInProgress = lp.status === 'in_progress';
-            const isLocked = !isLessonUnlocked(lesson.lesson_id);
-            const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key];
-            const showHint = lockedMessage?.id === lesson.lesson_id;
-
-            return (
-              <TouchableOpacity
-                key={lesson.lesson_id}
-                style={styles.nodeRow}
-                onPress={() => handleNodePress(lesson)}
-                activeOpacity={isLocked ? 1 : 0.75}
-              >
-                {/* Square Node */}
-                <View
-                  style={[
-                    styles.nodeSquare,
-                    isCompleted && styles.nodeCompleted,
-                    isInProgress && styles.nodeInProgress,
-                    isLocked && styles.nodeLocked,
-                  ]}
-                >
-                  {isCompleted ? (
-                    <Text style={styles.nodeCheckmark}>✓</Text>
-                  ) : (
-                    <Text style={[styles.nodeNumber, isLocked && styles.nodeNumberLocked]}>
-                      {String(index + 1).padStart(2, '0')}
-                    </Text>
-                  )}
+        {groupedByModule.map((group) => {
+          const dotColor = CATEGORY_DOT_COLORS[group.module.colorKey];
+          return (
+            <View key={group.module.key} style={styles.moduleSection}>
+              {/* Module Header */}
+              <View style={styles.moduleHeader}>
+                <View style={[styles.moduleDot, { backgroundColor: dotColor }]} />
+                <View style={styles.moduleHeaderText}>
+                  <Text style={styles.moduleTitle}>{group.module.title.toUpperCase()}</Text>
+                  <Text style={styles.moduleSubtitle}>{group.module.subtitle}</Text>
                 </View>
+                <Text style={styles.moduleCount}>{group.lessons.length}</Text>
+              </View>
 
-                {/* Content */}
-                <View style={[styles.nodeContent, isLocked && styles.nodeContentLocked]}>
-                  <View style={styles.nodeTopRow}>
-                    <View style={[styles.categoryDot, { backgroundColor: dotColor }]} />
-                    <Text style={styles.nodeCategory}>{lesson.category.toUpperCase()}</Text>
-                  </View>
-                  <Text style={styles.nodeTitle}>{lesson.title}</Text>
-                  <Text style={styles.nodeMeta}>
-                    {lesson.read_time_minutes} min · {lesson.difficulty}
-                  </Text>
+              {/* Lessons in this module */}
+              <View style={styles.nodeList}>
+                <View style={styles.verticalLine} />
+                {group.lessons.map((lesson, index) => {
+                  const lp = getLessonProgress(lesson.lesson_id);
+                  const isCompleted = lp.status === 'completed';
+                  const isInProgress = lp.status === 'in_progress';
+                  const isLocked = !isLessonUnlocked(lesson.lesson_id);
+                  const showHint = lockedMessage?.id === lesson.lesson_id;
 
-                  {showHint && (
-                    <View style={styles.lockedHint}>
-                      <Text style={styles.lockedHintText}>{lockedMessage!.msg}</Text>
-                    </View>
-                  )}
+                  return (
+                    <TouchableOpacity
+                      key={lesson.lesson_id}
+                      style={styles.nodeRow}
+                      onPress={() => handleNodePress(lesson)}
+                      activeOpacity={isLocked ? 1 : 0.75}
+                    >
+                      {/* Square Node */}
+                      <View
+                        style={[
+                          styles.nodeSquare,
+                          isCompleted && styles.nodeCompleted,
+                          isInProgress && styles.nodeInProgress,
+                          isLocked && styles.nodeLocked,
+                        ]}
+                      >
+                        {isCompleted ? (
+                          <Text style={styles.nodeCheckmark}>✓</Text>
+                        ) : (
+                          <Text style={[styles.nodeNumber, isLocked && styles.nodeNumberLocked]}>
+                            {String(index + 1).padStart(2, '0')}
+                          </Text>
+                        )}
+                      </View>
 
-                  {isInProgress && lp.progress > 0 && (
-                    <View style={styles.progressTrack}>
-                      <View style={[styles.progressFill, { width: `${lp.progress}%` as any }]} />
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                      {/* Content */}
+                      <View style={[styles.nodeContent, isLocked && styles.nodeContentLocked]}>
+                        <Text style={styles.nodeTitle}>{lesson.title}</Text>
+                        <Text style={styles.nodeMeta}>
+                          {lesson.company} · {lesson.read_time_minutes} min · {lesson.difficulty}
+                        </Text>
+
+                        {showHint && (
+                          <View style={styles.lockedHint}>
+                            <Text style={styles.lockedHintText}>{lockedMessage!.msg}</Text>
+                          </View>
+                        )}
+
+                        {isInProgress && lp.progress > 0 && (
+                          <View style={styles.progressTrack}>
+                            <View style={[styles.progressFill, { width: `${lp.progress}%` as any }]} />
+                          </View>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
@@ -223,8 +241,48 @@ const styles = StyleSheet.create({
     letterSpacing: 0.04 * 9,
   },
   scroll: { flex: 1 },
-  content: { paddingHorizontal: Spacing.screenPaddingH, paddingTop: Spacing.xl, paddingBottom: 48 },
-  nodeList: { position: 'relative' },
+  content: { paddingBottom: 48 },
+
+  // Module sections
+  moduleSection: {
+    marginBottom: 8,
+  },
+  moduleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+    gap: 10,
+  },
+  moduleDot: {
+    width: 6,
+    height: 6,
+  },
+  moduleHeaderText: {
+    flex: 1,
+  },
+  moduleTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 10,
+    color: Colors.textPrimary,
+    letterSpacing: 0.10 * 10,
+  },
+  moduleSubtitle: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: '#666666',
+    marginTop: 1,
+  },
+  moduleCount: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 18,
+    color: '#333333',
+  },
+
+  nodeList: { position: 'relative', paddingHorizontal: Spacing.screenPaddingH, paddingTop: 16, paddingBottom: 8 },
   verticalLine: {
     position: 'absolute',
     left: 20,
@@ -259,7 +317,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.accent,
   },
   nodeLocked: {
-    borderColor: '#222222',
+    borderColor: '#333333',
     backgroundColor: Colors.bgSurface,
   },
   nodeCheckmark: {
@@ -277,15 +335,6 @@ const styles = StyleSheet.create({
   },
   nodeContent: { flex: 1, paddingTop: 4 },
   nodeContentLocked: { opacity: 0.45 },
-  nodeTopRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 2 },
-  categoryDot: { width: 4, height: 4 },
-  nodeCategory: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 8,
-    color: '#666666',
-    letterSpacing: 0.10 * 8,
-    textTransform: 'uppercase',
-  },
   nodeTitle: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: 14,
@@ -315,7 +364,7 @@ const styles = StyleSheet.create({
   },
   progressTrack: {
     height: 2,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
     marginTop: Spacing.sm,
     overflow: 'hidden',
   },

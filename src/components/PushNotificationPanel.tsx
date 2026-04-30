@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   laterButton: {
     borderWidth: 1,
-    borderColor: '#222222',
+    borderColor: '#333333',
     paddingVertical: 8,
     paddingHorizontal: 16,
   },

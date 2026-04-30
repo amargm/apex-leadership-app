@@ -9,9 +9,9 @@ export const Colors = {
   bgSurface2: '#121212',
   bgSurface3: '#161616',
 
-  // Borders — thinner appearance via lower contrast
-  borderDefault: '#1A1A1A',
-  borderSubtle: '#222222',
+  // Borders — slightly visible for structure clarity
+  borderDefault: '#2A2A2A',
+  borderSubtle: '#333333',
 
   // Text — expanded hierarchy
   textPrimary: '#EDEAE5',

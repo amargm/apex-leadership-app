@@ -33,7 +33,7 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
   const thumbLeft = thumbAnim.interpolate({ inputRange: [0, 1], outputRange: [2, 18] });
   const trackColor = thumbAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#222222', Colors.accent],
+    outputRange: ['#333333', Colors.accent],
   });
 
   return (

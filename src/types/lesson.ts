@@ -5,6 +5,23 @@ export type CategoryColorKey = 'green' | 'orange' | 'blue' | 'grey';
 export type Difficulty = 'accessible' | 'medium' | 'complex';
 export type LessonStatus = 'default' | 'in_progress' | 'completed' | 'locked' | 'new';
 
+export type ModuleKey =
+  | 'culture_building'
+  | 'scaling_teams'
+  | 'crisis_leadership'
+  | 'innovation'
+  | 'turnarounds'
+  | 'servant_leadership'
+  | 'decision_making'
+  | 'emotional_intelligence';
+
+export interface Module {
+  key: ModuleKey;
+  title: string;
+  subtitle: string;
+  colorKey: CategoryColorKey;
+}
+
 export interface Decision {
   abbreviation: string; // 2 chars
   title: string;
@@ -53,6 +70,7 @@ export interface Lesson {
   company: string;
   company_abbreviation: string; // 2 chars
   year_range: string;
+  module: ModuleKey;
   category: string;
   category_color_key: CategoryColorKey;
   read_time_minutes: number;

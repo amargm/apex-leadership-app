@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     flex: 1,
     height: 2,
-    backgroundColor: '#222222',
+    backgroundColor: '#333333',
   },
   progressFill: {
     height: 2,
