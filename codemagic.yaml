@@ -1,0 +1,85 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Required Codemagic variable groups (configure in CM web UI → Teams → Env vars):
+#
+#   keystore_credentials        (for signed release builds)
+#     CM_KEYSTORE               base64-encoded .keystore file
+#     CM_KEYSTORE_PASSWORD      keystore password
+#     CM_KEY_ALIAS              key alias
+#     CM_KEY_PASSWORD           key password
+# ─────────────────────────────────────────────────────────────────────────────
+
+workflows:
+
+  # ── 1. Android Debug APK ────────────────────────────────────────────────────
+  android-debug:
+    name: Android Debug APK
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      java: 17
+      vars:
+        PACKAGE_NAME: "com.apex.leadership"
+    scripts:
+      - name: Install dependencies
+        script: npm ci --legacy-peer-deps
+
+      - name: Set Android SDK path
+        script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+
+      - name: Build debug APK
+        script: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+
+    artifacts:
+      - android/app/build/outputs/apk/debug/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - mugaliamar@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ── 2. Android Release APK (Signed) ────────────────────────────────────────
+  android-release:
+    name: Android Release APK (Signed)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      java: 17
+      groups:
+        - keystore_credentials
+      vars:
+        PACKAGE_NAME: "com.apex.leadership"
+        KEYSTORE_PATH: "android/app/apex-release.keystore"
+
+    scripts:
+      - name: Install dependencies
+        script: npm ci --legacy-peer-deps
+
+      - name: Set Android SDK path
+        script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+
+      - name: Decode keystore
+        script: echo $CM_KEYSTORE | base64 --decode > $KEYSTORE_PATH
+
+      - name: Build signed release APK
+        script: |
+          cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file=$CM_BUILD_DIR/$KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - mugaliamar@gmail.com
+        notify:
+          success: true
+          failure: true
