@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Animated,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ViewShot from 'react-native-view-shot';
+import * as Sharing from 'expo-sharing';
 
 import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
 import type { LessonDetailScreenProps } from '../navigation/types';
@@ -27,6 +30,7 @@ import KeyDecisionsGrid from '../components/lesson/KeyDecisionsGrid';
 import TimelineComponent from '../components/lesson/TimelineComponent';
 import ReflectionCard from '../components/lesson/ReflectionCard';
 import TakeawayItem from '../components/lesson/TakeawayItem';
+import ShareCard from '../components/lesson/ShareCard';
 import CTAButton from '../components/CTAButton';
 
 const TABS = ['OVERVIEW', 'TIMELINE', 'REFLECT', 'TAKEAWAYS'] as const;
@@ -37,10 +41,23 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const contentOpacity = useRef(new Animated.Value(1)).current;
   const { lessonId } = route.params;
   const scrollRef = useRef<ScrollView>(null);
+  const shareRef = useRef<ViewShot>(null);
   const { startLesson, markTabViewed, completeLesson, getLessonProgress } = useAppState();
 
   const lesson: Lesson | undefined = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
   const lessonState = getLessonProgress(lessonId);
+
+  const handleShare = async () => {
+    if (!shareRef.current?.capture || !lesson) return;
+    try {
+      const uri = await shareRef.current.capture();
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: `Share: ${lesson.title}` });
+      }
+    } catch {
+      Alert.alert('Error', 'Could not generate share image.');
+    }
+  };
 
   // Start lesson on first open and mark OVERVIEW as viewed
   useEffect(() => {
@@ -91,6 +108,14 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         </TouchableOpacity>
 
         <View style={styles.topBarRight}>
+          <TouchableOpacity
+            onPress={handleShare}
+            style={styles.shareButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.shareLabel}>SHARE</Text>
+          </TouchableOpacity>
           <Text style={styles.caseIndex}>L{String(lessonIndex).padStart(3, '0')} / {String(totalLessons).padStart(2, '0')}</Text>
         </View>
       </View>
@@ -197,6 +222,15 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
           </TouchableOpacity>
         )}
       </Animated.ScrollView>
+
+      {/* Hidden off-screen — for share image capture */}
+      <ViewShot
+        ref={shareRef}
+        options={{ format: 'png', quality: 1 }}
+        style={styles.hiddenCapture}
+      >
+        <ShareCard lesson={lesson} />
+      </ViewShot>
     </SafeAreaView>
   );
 }
@@ -363,11 +397,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
   },
+  shareButton: {
+    borderWidth: 1,
+    borderColor: '#333333',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  shareLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: Colors.accent,
+    letterSpacing: 2,
+  },
   caseIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
     color: '#666666',
     letterSpacing: 0.06 * 9,
+  },
+  hiddenCapture: {
+    position: 'absolute',
+    left: -9999,
+    top: -9999,
+    opacity: 0,
   },
 
   // ── Hero ──
