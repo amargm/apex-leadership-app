@@ -7,8 +7,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { PathScreenProps } from '../navigation/types';
-import { MOCK_LESSONS, MOCK_USER_STATS } from '../data/mockLessons';
+import { MOCK_LESSONS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
+import { useAppState } from '../state/AppState';
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
@@ -23,10 +24,11 @@ type FilterKey = (typeof FILTERS)[number];
 export default function PathScreen({ navigation }: PathScreenProps) {
   const [lockedMessage, setLockedMessage] = useState<{ id: string; msg: string } | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterKey>('ALL');
+  const { state, getLessonProgress, isLessonUnlocked } = useAppState();
 
   const handleNodePress = (lesson: Lesson) => {
-    if (lesson.is_locked) {
-      const remaining = lesson.unlock_after_count - MOCK_USER_STATS.cases_completed;
+    if (!isLessonUnlocked(lesson.lesson_id)) {
+      const remaining = lesson.unlock_after_count - state.stats.casesCompleted;
       setLockedMessage({
         id: lesson.lesson_id,
         msg: `${remaining} lesson${remaining !== 1 ? 's' : ''} away`,
@@ -41,10 +43,11 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   };
 
   const filteredLessons = MOCK_LESSONS.filter((lesson) => {
+    const lp = getLessonProgress(lesson.lesson_id);
     switch (activeFilter) {
-      case 'READING': return lesson.status === 'in_progress';
-      case 'YET TO READ': return lesson.status === 'new' && !lesson.is_locked;
-      case 'COMPLETED': return lesson.status === 'completed';
+      case 'READING': return lp.status === 'in_progress';
+      case 'YET TO READ': return lp.status === 'new' && isLessonUnlocked(lesson.lesson_id);
+      case 'COMPLETED': return lp.status === 'completed';
       default: return true;
     }
   });
@@ -56,7 +59,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
         <View>
           <Text style={styles.title}>YOUR TRACK</Text>
           <Text style={styles.subtitle}>
-            {MOCK_USER_STATS.cases_completed} of {MOCK_LESSONS.length} complete
+            {state.stats.casesCompleted} of {MOCK_LESSONS.length} complete
           </Text>
         </View>
         <View style={styles.headerCount}>
@@ -90,9 +93,10 @@ export default function PathScreen({ navigation }: PathScreenProps) {
           <View style={styles.verticalLine} />
 
           {filteredLessons.map((lesson, index) => {
-            const isCompleted = lesson.status === 'completed';
-            const isInProgress = lesson.status === 'in_progress';
-            const isLocked = lesson.is_locked;
+            const lp = getLessonProgress(lesson.lesson_id);
+            const isCompleted = lp.status === 'completed';
+            const isInProgress = lp.status === 'in_progress';
+            const isLocked = !isLessonUnlocked(lesson.lesson_id);
             const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key];
             const showHint = lockedMessage?.id === lesson.lesson_id;
 
@@ -135,9 +139,9 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                     </View>
                   )}
 
-                  {isInProgress && lesson.progress != null && (
+                  {isInProgress && lp.progress > 0 && (
                     <View style={styles.progressTrack}>
-                      <View style={[styles.progressFill, { width: `${lesson.progress}%` as any }]} />
+                      <View style={[styles.progressFill, { width: `${lp.progress}%` as any }]} />
                     </View>
                   )}
                 </View>

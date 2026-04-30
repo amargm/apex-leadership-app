@@ -1,7 +1,7 @@
 // ─── Lesson Detail Screen — Instrumental Redesign ─────────────────────────────
 // Brutalist case detail: ruled borders, DM Mono data, instrument panel.
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   ScrollView,
@@ -16,6 +16,7 @@ import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
 import type { LessonDetailScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
+import { useAppState } from '../state/AppState';
 
 // Content components
 import ContextBlock from '../components/lesson/ContextBlock';
@@ -36,8 +37,18 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const contentOpacity = useRef(new Animated.Value(1)).current;
   const { lessonId } = route.params;
   const scrollRef = useRef<ScrollView>(null);
+  const { startLesson, markTabViewed, completeLesson, getLessonProgress } = useAppState();
 
   const lesson: Lesson | undefined = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
+  const lessonState = getLessonProgress(lessonId);
+
+  // Start lesson on first open and mark OVERVIEW as viewed
+  useEffect(() => {
+    if (lesson && !lesson.is_locked) {
+      startLesson(lessonId);
+      markTabViewed(lessonId, 'OVERVIEW');
+    }
+  }, [lessonId]);
 
   const switchTab = (tab: TabKey) => {
     Animated.sequence([
@@ -45,6 +56,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
       Animated.timing(contentOpacity, { toValue: 1, duration: 280, useNativeDriver: true }),
     ]).start();
     setActiveTab(tab);
+    markTabViewed(lessonId, tab);
     scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
@@ -62,7 +74,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
 
   const lessonIndex = MOCK_LESSONS.findIndex((l) => l.lesson_id === lessonId) + 1;
   const totalLessons = MOCK_LESSONS.length;
-  const progressPct = lesson.progress ?? 0;
+  const progressPct = lessonState.progress;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -107,7 +119,8 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Hero Section (scrolls with content) ─────────────────── */}
+        {/* ── Hero Section (only in OVERVIEW) ─────────────────────── */}
+        {activeTab === 'OVERVIEW' && (
         <View style={styles.hero}>
           <Text style={styles.watermark}>{String(lessonIndex).padStart(2, '0')}</Text>
 
@@ -158,14 +171,33 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
             </View>
           </View>
         </View>
+        )}
 
         {/* ── Tab Content ── */}
         <View style={styles.tabContent}>
           {activeTab === 'OVERVIEW' && <OverviewTab lesson={lesson} />}
           {activeTab === 'TIMELINE' && <TimelineTab lesson={lesson} />}
           {activeTab === 'REFLECT' && <ReflectTab lesson={lesson} />}
-          {activeTab === 'TAKEAWAYS' && <TakeawaysTab lesson={lesson} onBack={() => navigation.goBack()} />}
+          {activeTab === 'TAKEAWAYS' && <TakeawaysTab lesson={lesson} lessonId={lessonId} onBack={() => navigation.goBack()} />}
         </View>
+
+        {/* ── Continue Button ── */}
+        {activeTab !== 'TAKEAWAYS' && (
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={() => {
+              const currentIndex = TABS.indexOf(activeTab);
+              if (currentIndex < TABS.length - 1) {
+                switchTab(TABS[currentIndex + 1]);
+              }
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.continueText}>
+              {activeTab === 'OVERVIEW' ? 'TIMELINE' : activeTab === 'TIMELINE' ? 'REFLECT' : 'TAKEAWAYS'} →
+            </Text>
+          </TouchableOpacity>
+        )}
       </Animated.ScrollView>
     </SafeAreaView>
   );
@@ -226,7 +258,18 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
   );
 }
 
-function TakeawaysTab({ lesson, onBack }: { lesson: Lesson; onBack: () => void }) {
+function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: string; onBack: () => void }) {
+  const { completeLesson, toggleSaveLesson } = useAppState();
+
+  const handleComplete = () => {
+    completeLesson(lessonId);
+    onBack();
+  };
+
+  const handleSave = () => {
+    toggleSaveLesson(lessonId);
+  };
+
   return (
     <View>
       <View style={styles.tabSectionHeader}>
@@ -243,8 +286,8 @@ function TakeawaysTab({ lesson, onBack }: { lesson: Lesson; onBack: () => void }
         />
       ))}
       <View style={{ marginTop: 24 }}>
-        <CTAButton label="Mark as Complete" onPress={onBack} />
-        <CTAButton label="Save for Later" variant="secondary" onPress={onBack} style={{ marginTop: 12 }} />
+        <CTAButton label="Mark as Complete" onPress={handleComplete} />
+        <CTAButton label="Save for Later" variant="secondary" onPress={handleSave} style={{ marginTop: 12 }} />
       </View>
     </View>
   );
@@ -561,5 +604,24 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderDefault,
+  },
+
+  // ── Continue Button ──
+  continueButton: {
+    alignSelf: 'flex-end',
+    marginRight: Spacing.screenPaddingH,
+    marginTop: 24,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+  },
+  continueText: {
+    fontFamily: FontFamily.dmMonoRegular,
+    fontSize: 9,
+    color: Colors.accent,
+    letterSpacing: 0.10 * 9,
+    textTransform: 'uppercase',
   },
 });

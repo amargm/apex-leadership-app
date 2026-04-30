@@ -36,6 +36,7 @@ import {
 } from '@expo-google-fonts/dm-mono';
 
 import AppNavigator from './src/navigation/AppNavigator';
+import { AppStateProvider } from './src/state/AppState';
 import { Colors } from './src/theme';
 
 // Keep splash visible until fonts are ready
@@ -69,9 +70,11 @@ export default function App() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.bgPrimary }} onLayout={onLayoutRootView}>
-      <StatusBar style="light" backgroundColor="transparent" translucent />
-      <AppNavigator />
-    </View>
+    <AppStateProvider>
+      <View style={{ flex: 1, backgroundColor: Colors.bgPrimary }} onLayout={onLayoutRootView}>
+        <StatusBar style="light" backgroundColor="transparent" translucent />
+        <AppNavigator />
+      </View>
+    </AppStateProvider>
   );
 }

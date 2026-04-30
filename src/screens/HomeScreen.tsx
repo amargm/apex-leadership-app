@@ -14,10 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { HomeScreenProps } from '../navigation/types';
-import { MOCK_LESSONS, MOCK_USER_STATS, MOCK_NOTIFICATION } from '../data/mockLessons';
+import { MOCK_LESSONS, MOCK_NOTIFICATION } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
 import FeaturedCard from '../components/FeaturedCard';
 import PushNotificationPanel from '../components/PushNotificationPanel';
+import { useAppState } from '../state/AppState';
 
 // ─── Staggered fade-up hook ───────────────────────────────────────────────────
 function useFadeUp(count: number) {
@@ -41,9 +42,14 @@ const SECTION_COUNT = 6;
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const fadeStyles = useFadeUp(SECTION_COUNT);
   const [showNotif, setShowNotif] = useState(true);
+  const { state, getLessonProgress, isLessonUnlocked } = useAppState();
 
-  const featuredLessons = MOCK_LESSONS.filter((l) => !l.is_locked);
-  const activeCase = MOCK_LESSONS.find((l) => l.status === 'in_progress');
+  const featuredLessons = MOCK_LESSONS.filter((l) => isLessonUnlocked(l.lesson_id));
+  const activeCase = MOCK_LESSONS.find((l) => {
+    const lp = getLessonProgress(l.lesson_id);
+    return lp.status === 'in_progress';
+  });
+  const activeCaseProgress = activeCase ? getLessonProgress(activeCase.lesson_id).progress : 0;
 
   const handleLessonPress = (lesson: Lesson) => {
     navigation.navigate('LessonDetail', { lessonId: lesson.lesson_id });
@@ -91,11 +97,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
         {/* ── Readout Strip (Instrument Panel) ────────────────────── */}
         <Animated.View style={[styles.readoutStrip, fadeStyles[2]]}>
-          <ReadoutCell value={String(MOCK_USER_STATS.day_streak)} label="STREAK" />
+          <ReadoutCell value={String(state.stats.dayStreak)} label="STREAK" />
           <View style={styles.readoutDivider} />
-          <ReadoutCell value={String(MOCK_USER_STATS.cases_completed)} label="COMPLETED" />
+          <ReadoutCell value={String(state.stats.casesCompleted)} label="COMPLETED" />
           <View style={styles.readoutDivider} />
-          <ReadoutCell value={formatTime(MOCK_USER_STATS.time_this_week_minutes)} label="THIS WEEK" />
+          <ReadoutCell value={formatTime(state.stats.timeThisWeekMinutes)} label="THIS WEEK" />
         </Animated.View>
 
         {/* ── Active Case (Resume Block) ──────────────────────────── */}
@@ -126,9 +132,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                 <View style={styles.activeCaseMeta}>
                   <View style={styles.progressGroup}>
                     <View style={styles.progressTrack}>
-                      <View style={[styles.progressFill, { width: `${activeCase.progress ?? 0}%` }]} />
+                      <View style={[styles.progressFill, { width: `${activeCaseProgress}%` }]} />
                     </View>
-                    <Text style={styles.progressPct}>{activeCase.progress ?? 0}%</Text>
+                    <Text style={styles.progressPct}>{activeCaseProgress}%</Text>
                   </View>
                   <Text style={styles.resumeLabel}>Resume →</Text>
                 </View>
