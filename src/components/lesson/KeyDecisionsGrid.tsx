@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   index: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 11,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 11,
   },
   title: {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   description: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 12,
-    color: '#777777',
+    color: '#999999',
     lineHeight: 12 * 1.5,
     paddingLeft: 30,
   },

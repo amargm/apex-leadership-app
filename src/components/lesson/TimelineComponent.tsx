@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   year: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 9,
     marginBottom: 6,
   },
@@ -93,6 +93,6 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 12,
     lineHeight: 12 * 1.7,
-    color: '#777777',
+    color: '#999999',
   },
 });

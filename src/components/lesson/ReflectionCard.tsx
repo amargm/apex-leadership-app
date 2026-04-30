@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   number: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 9,
   },
   body: {

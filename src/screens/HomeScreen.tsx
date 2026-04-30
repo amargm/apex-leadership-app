@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { HomeScreenProps } from '../navigation/types';
@@ -60,6 +61,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
+      {/* Green ambient glow */}
+      <LinearGradient
+        colors={['rgba(200, 240, 77, 0.06)', 'rgba(200, 240, 77, 0.02)', 'transparent']}
+        style={styles.topGlow}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+      />
+
       {showNotif && (
         <PushNotificationPanel
           notification={MOCK_NOTIFICATION}
@@ -198,6 +207,14 @@ function ReadoutCell({ value, label }: { value: string; label: string }) {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bgPrimary },
+  topGlow: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '28%',
+    zIndex: 0,
+  },
   scroll: { flex: 1 },
   content: { paddingBottom: Spacing.xl },
 
@@ -237,7 +254,7 @@ const styles = StyleSheet.create({
   greetingLabel: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.12 * 9,
     textTransform: 'uppercase',
     marginBottom: 6,
@@ -277,7 +294,7 @@ const styles = StyleSheet.create({
   readoutLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.14 * 8,
     textTransform: 'uppercase',
   },
@@ -305,7 +322,7 @@ const styles = StyleSheet.create({
     right: 10,
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 8,
   },
   activeCaseSignalRow: {
@@ -371,7 +388,7 @@ const styles = StyleSheet.create({
   resumeLabel: {
     fontFamily: FontFamily.dmSansSemiBold,
     fontSize: 10,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.08 * 10,
     textTransform: 'uppercase',
   },
@@ -389,7 +406,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bebasNeue,
     fontSize: 14,
     letterSpacing: 0.16 * 14,
-    color: '#777777',
+    color: '#999999',
   },
   sectionDividerRule: {
     flex: 1,
@@ -399,7 +416,7 @@ const styles = StyleSheet.create({
   sectionDividerIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 8,
   },
 
@@ -437,7 +454,7 @@ const styles = StyleSheet.create({
   quoteAttribution: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
 
@@ -451,7 +468,7 @@ const styles = StyleSheet.create({
   savedButtonText: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
   },

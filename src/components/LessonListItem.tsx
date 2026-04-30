@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   category: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.10 * 8,
   },
   title: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   titleDone: {
     textDecorationLine: 'line-through',
-    color: '#777777',
+    color: '#999999',
   },
   status: {
     fontFamily: FontFamily.dmMonoRegular,

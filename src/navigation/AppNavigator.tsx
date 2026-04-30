@@ -72,7 +72,7 @@ function BottomTabs() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.accent,
-        tabBarInactiveTintColor: '#555555',
+        tabBarInactiveTintColor: '#666666',
         tabBarLabelStyle: styles.tabLabel,
         tabBarItemStyle: styles.tabItem,
         tabBarIcon: ({ focused }) => {

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 15,
     lineHeight: 15 * 1.85,
-    color: '#777777',
+    color: '#999999',
     marginBottom: 14,
     textAlign: 'left',
   },

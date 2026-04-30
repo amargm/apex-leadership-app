@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   errorSub: {
     fontFamily: FontFamily.loraRegular,
     fontSize: 14,
-    color: '#777777',
+    color: '#999999',
     marginBottom: Spacing.xl,
   },
 
@@ -343,12 +343,12 @@ const styles = StyleSheet.create({
   backArrow: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 13,
-    color: '#777777',
+    color: '#999999',
   },
   backLabel: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
   },
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   caseIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 9,
   },
 
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   statusDot: {
     width: 5,
     height: 5,
-    backgroundColor: '#777777',
+    backgroundColor: '#999999',
   },
   statusDotActive: {
     backgroundColor: Colors.accent,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.08 * 8,
     textTransform: 'uppercase',
   },
@@ -423,14 +423,14 @@ const styles = StyleSheet.create({
   metaTag: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
     paddingHorizontal: 10,
   },
   metaTagBold: {
     fontFamily: FontFamily.dmMonoMedium,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
     paddingHorizontal: 10,
   },
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 13,
     lineHeight: 13 * 1.5,
-    color: '#777777',
+    color: '#999999',
     maxWidth: '85%',
     marginBottom: 22,
   },
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   instrumentProgressLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
     marginTop: 4,
@@ -512,13 +512,13 @@ const styles = StyleSheet.create({
   instrumentTimeValue: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 11,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.02 * 11,
   },
   instrumentTimeLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.08 * 8,
     textTransform: 'uppercase',
     marginTop: 4,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
-    color: '#555555',
+    color: '#666666',
   },
   tabLabelActive: { color: Colors.accent },
   tabUnderline: {
@@ -572,13 +572,13 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bebasNeue,
     fontSize: 14,
     letterSpacing: 0.12 * 14,
-    color: '#777777',
+    color: '#999999',
     marginBottom: 2,
   },
   tabSectionSub: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.04 * 9,
   },
   tabSectionCount: {
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   tabSectionCountText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.04 * 9,
   },
 
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.loraRegular,
     fontSize: 13,
     lineHeight: 13 * 1.6,
-    color: '#777777',
+    color: '#999999',
     marginBottom: 24,
     paddingBottom: 20,
     borderBottomWidth: 1,

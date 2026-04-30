@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 11,
-    color: '#777777',
+    color: '#999999',
     marginTop: 2,
   },
   addBtn: {
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   emptyIcon: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 32,
-    color: '#555555',
+    color: '#666666',
     marginBottom: 16,
   },
   emptyTitle: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   emptySub: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 12,
-    color: '#777777',
+    color: '#999999',
     textAlign: 'center',
     lineHeight: 18,
   },
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   cardDate: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.8,
   },
   cardActions: {
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   cardLessonText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#555555',
+    color: '#666666',
     flex: 1,
   },
 
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   lessonPickerLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 1,
     marginBottom: 10,
   },
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.5,
   },
   chipTextActive: {

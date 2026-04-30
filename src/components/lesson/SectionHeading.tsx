@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bebasNeue,
     fontSize: 14,
     letterSpacing: 0.12 * 14,
-    color: '#777777',
+    color: '#999999',
     textTransform: 'uppercase',
   },
   rule: {

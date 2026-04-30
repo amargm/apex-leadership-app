@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 12,
-    color: '#777777',
+    color: '#999999',
     textAlign: 'center',
     lineHeight: 18,
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   cardIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 11,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.5,
     marginTop: 2,
   },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   cardCategory: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 1,
   },
   cardTitle: {
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   cardMeta: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 11,
-    color: '#555555',
+    color: '#666666',
   },
   removeBtn: {
     padding: 8,

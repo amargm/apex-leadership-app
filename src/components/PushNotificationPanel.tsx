@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
   appTag: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     textTransform: 'uppercase',
     letterSpacing: 0.10 * 9,
   },
   time: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
   title: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   body: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: 12,
-    color: '#777777',
+    color: '#999999',
     lineHeight: 12 * 1.4,
     marginBottom: Spacing.md,
   },
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   laterText: {
     fontFamily: FontFamily.dmMonoRegular,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
 });

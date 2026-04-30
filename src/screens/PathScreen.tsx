@@ -101,17 +101,20 @@ export default function PathScreen({ navigation }: PathScreenProps) {
             const showHint = lockedMessage?.id === lesson.lesson_id;
 
             return (
-              <View key={lesson.lesson_id} style={styles.nodeRow}>
+              <TouchableOpacity
+                key={lesson.lesson_id}
+                style={styles.nodeRow}
+                onPress={() => handleNodePress(lesson)}
+                activeOpacity={isLocked ? 1 : 0.75}
+              >
                 {/* Square Node */}
-                <TouchableOpacity
+                <View
                   style={[
                     styles.nodeSquare,
                     isCompleted && styles.nodeCompleted,
                     isInProgress && styles.nodeInProgress,
                     isLocked && styles.nodeLocked,
                   ]}
-                  onPress={() => handleNodePress(lesson)}
-                  activeOpacity={isLocked ? 1 : 0.7}
                 >
                   {isCompleted ? (
                     <Text style={styles.nodeCheckmark}>✓</Text>
@@ -120,7 +123,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                       {String(index + 1).padStart(2, '0')}
                     </Text>
                   )}
-                </TouchableOpacity>
+                </View>
 
                 {/* Content */}
                 <View style={[styles.nodeContent, isLocked && styles.nodeContentLocked]}>
@@ -145,7 +148,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                     </View>
                   )}
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
   filterLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.08 * 9,
     textTransform: 'uppercase',
   },
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.04 * 9,
     marginTop: 2,
   },
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
   headerCountText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.04 * 9,
   },
   scroll: { flex: 1 },
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
     color: Colors.accent,
   },
   nodeNumberLocked: {
-    color: '#777777',
+    color: '#999999',
   },
   nodeContent: { flex: 1, paddingTop: 4 },
   nodeContentLocked: { opacity: 0.45 },
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
   nodeCategory: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -293,7 +296,7 @@ const styles = StyleSheet.create({
   nodeMeta: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
   lockedHint: {

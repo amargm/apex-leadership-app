@@ -12,6 +12,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
 import type { Lesson } from '../types/lesson';
+import { useAppState } from '../state/AppState';
 
 const BANNER_GRADIENTS: Record<string, [string, string]> = {
   green: ['#0d1a10', '#050505'],
@@ -34,6 +35,7 @@ interface Props {
 
 export default function FeaturedCard({ lesson, onPress }: Props) {
   const pressAnim = useRef(new Animated.Value(0)).current;
+  const { getLessonProgress } = useAppState();
 
   const translateY = pressAnim.interpolate({
     inputRange: [0, 1],
@@ -49,7 +51,8 @@ export default function FeaturedCard({ lesson, onPress }: Props) {
 
   const gradient = BANNER_GRADIENTS[lesson.category_color_key] ?? BANNER_GRADIENTS.grey;
   const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key] ?? '#444444';
-  const progressPct = lesson.progress ?? 0;
+  const lessonState = getLessonProgress(lesson.lesson_id);
+  const progressPct = lessonState.progress;
 
   return (
     <TouchableWithoutFeedback
@@ -67,12 +70,12 @@ export default function FeaturedCard({ lesson, onPress }: Props) {
           <Text style={styles.watermark}>{lesson.company_abbreviation}</Text>
 
           {/* Badge */}
-          {lesson.status === 'new' && (
+          {lessonState.status === 'new' && (
             <View style={styles.badgeNew}>
               <Text style={styles.badgeNewText}>NEW</Text>
             </View>
           )}
-          {lesson.status === 'in_progress' && (
+          {lessonState.status === 'in_progress' && (
             <View style={styles.badgeDone}>
               <Text style={styles.badgeDoneText}>IN PROGRESS</Text>
             </View>
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
   badgeDoneText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -180,7 +183,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.10 * 8,
     textTransform: 'uppercase',
   },
@@ -204,13 +207,13 @@ const styles = StyleSheet.create({
   metaText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
   metaSep: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#555555',
+    color: '#666666',
   },
   progressRow: {
     flexDirection: 'row',
@@ -238,6 +241,6 @@ const styles = StyleSheet.create({
     right: 14,
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 12,
-    color: '#555555',
+    color: '#666666',
   },
 });

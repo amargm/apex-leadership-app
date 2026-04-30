@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   streakLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     textTransform: 'uppercase',
     letterSpacing: 0.14 * 9,
     marginTop: 8,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bebasNeue,
     fontSize: 14,
     letterSpacing: 0.16 * 14,
-    color: '#777777',
+    color: '#999999',
   },
   sectionDividerRule: {
     flex: 1,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   sectionDividerIndex: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#555555',
+    color: '#666666',
     letterSpacing: 0.06 * 8,
   },
   statsGrid: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
-    color: '#777777',
+    color: '#999999',
     textTransform: 'uppercase',
     letterSpacing: 0.12 * 8,
   },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.textPrimary,
   },
-  achievementLabelUnearned: { color: '#777777' },
+  achievementLabelUnearned: { color: '#999999' },
   earnedTag: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 8,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   completedMeta: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
-    color: '#777777',
+    color: '#999999',
     letterSpacing: 0.04 * 9,
   },
 });
