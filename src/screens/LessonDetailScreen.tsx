@@ -259,7 +259,8 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
 }
 
 function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: string; onBack: () => void }) {
-  const { completeLesson, toggleSaveLesson } = useAppState();
+  const { completeLesson, toggleSaveLesson, state } = useAppState();
+  const isSaved = state.savedLessonIds.includes(lessonId);
 
   const handleComplete = () => {
     completeLesson(lessonId);
@@ -287,7 +288,7 @@ function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: 
       ))}
       <View style={{ marginTop: 24 }}>
         <CTAButton label="Mark as Complete" onPress={handleComplete} />
-        <CTAButton label="Save for Later" variant="secondary" onPress={handleSave} style={{ marginTop: 12 }} />
+        <CTAButton label={isSaved ? "✓ Saved" : "Save for Later"} variant="secondary" onPress={handleSave} style={{ marginTop: 12 }} />
       </View>
     </View>
   );

@@ -101,8 +101,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       try {
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (stored) {
-          const parsed = JSON.parse(stored) as AppState;
-          setState(parsed);
+          const parsed = JSON.parse(stored);
+          // Merge with defaults to handle missing fields from older versions
+          const defaults = getDefaultState();
+          setState({
+            lessons: parsed.lessons ?? defaults.lessons,
+            stats: parsed.stats ?? defaults.stats,
+            savedLessonIds: parsed.savedLessonIds ?? defaults.savedLessonIds,
+            notes: parsed.notes ?? defaults.notes,
+          });
         }
       } catch {
         // Use defaults if storage fails
