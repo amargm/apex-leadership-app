@@ -18,6 +18,14 @@ interface LessonProgress {
   startedAt?: string; // ISO date if started
 }
 
+export interface Note {
+  id: string;
+  content: string;
+  lessonId?: string; // optional link to a lesson
+  createdAt: string; // ISO date
+  updatedAt: string; // ISO date
+}
+
 interface AppState {
   lessons: Record<string, LessonProgress>;
   stats: {
@@ -27,6 +35,7 @@ interface AppState {
     lastActiveDate: string; // ISO date
   };
   savedLessonIds: string[];
+  notes: Note[];
 }
 
 interface AppContextValue {
@@ -37,6 +46,9 @@ interface AppContextValue {
   toggleSaveLesson: (lessonId: string) => void;
   getLessonProgress: (lessonId: string) => LessonProgress;
   isLessonUnlocked: (lessonId: string) => boolean;
+  addNote: (content: string, lessonId?: string) => void;
+  updateNote: (noteId: string, content: string) => void;
+  deleteNote: (noteId: string) => void;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
@@ -72,6 +84,7 @@ function getDefaultState(): AppState {
       lastActiveDate: new Date().toISOString().split('T')[0],
     },
     savedLessonIds: [],
+    notes: [],
   };
 }
 
@@ -258,6 +271,37 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     [state.stats.casesCompleted],
   );
 
+  const addNote = useCallback((content: string, lessonId?: string) => {
+    const now = new Date().toISOString();
+    const note: Note = {
+      id: `note_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      content,
+      lessonId,
+      createdAt: now,
+      updatedAt: now,
+    };
+    setState((prev) => ({
+      ...prev,
+      notes: [note, ...prev.notes],
+    }));
+  }, []);
+
+  const updateNote = useCallback((noteId: string, content: string) => {
+    setState((prev) => ({
+      ...prev,
+      notes: prev.notes.map((n) =>
+        n.id === noteId ? { ...n, content, updatedAt: new Date().toISOString() } : n,
+      ),
+    }));
+  }, []);
+
+  const deleteNote = useCallback((noteId: string) => {
+    setState((prev) => ({
+      ...prev,
+      notes: prev.notes.filter((n) => n.id !== noteId),
+    }));
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -268,6 +312,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         toggleSaveLesson,
         getLessonProgress,
         isLessonUnlocked,
+        addNote,
+        updateNote,
+        deleteNote,
       }}
     >
       {children}
