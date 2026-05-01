@@ -4,21 +4,23 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontFamily } from '../../theme';
 import type { Decision } from '../../types/lesson';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   decisions: Decision[];
 }
 
 export default function KeyDecisionsGrid({ decisions }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={styles.grid}>
       {decisions.map((d, i) => (
         <View key={i} style={[styles.card, i < decisions.length - 1 && styles.cardBorder]}>
           <View style={styles.cardHeader}>
             <Text style={styles.index}>{String(i + 1).padStart(2, '0')}</Text>
-            <Text style={styles.title}>{d.title}</Text>
+            <Text style={[styles.title, { fontSize: fontSize(15), lineHeight: lineHeight(15, 1.35) }]}>{d.title}</Text>
           </View>
-          <Text style={styles.description}>{d.description}</Text>
+          <Text style={[styles.description, { fontSize: fontSize(12), lineHeight: lineHeight(12, 1.5) }]}>{d.description}</Text>
         </View>
       ))}
     </View>

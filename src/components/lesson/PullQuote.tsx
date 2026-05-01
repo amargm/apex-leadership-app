@@ -3,6 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontFamily, Spacing } from '../../theme';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   text: string;
@@ -10,11 +11,12 @@ interface Props {
 }
 
 export default function PullQuote({ text, attribution }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={styles.container}>
       <View style={styles.accentBorder} />
       <Text style={styles.decorativeQuote}>(</Text>
-      <Text style={styles.quoteText}>{text}</Text>
+      <Text style={[styles.quoteText, { fontSize: fontSize(16), lineHeight: lineHeight(16, 1.5) }]}>{text}</Text>
       <Text style={styles.attribution}>{attribution}</Text>
     </View>
   );

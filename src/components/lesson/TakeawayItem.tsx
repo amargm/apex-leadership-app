@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontFamily } from '../../theme';
 import type { TakeawayItem as TakeawayItemType } from '../../types/lesson';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   item: TakeawayItemType;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function TakeawayItem({ item, isLast, index }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={[styles.card, isLast && { marginBottom: 0 }]}>
       <View style={styles.accentRail} />
@@ -19,8 +21,8 @@ export default function TakeawayItem({ item, isLast, index }: Props) {
         <Text style={styles.index}>{String(index).padStart(2, '0')}</Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.headline}>{item.headline}</Text>
-        <Text style={styles.bodyText}>{item.body}</Text>
+        <Text style={[styles.headline, { fontSize: fontSize(14), lineHeight: lineHeight(14, 1.35) }]}>{item.headline}</Text>
+        <Text style={[styles.bodyText, { fontSize: fontSize(12), lineHeight: lineHeight(12, 1.7) }]}>{item.body}</Text>
       </View>
     </View>
   );

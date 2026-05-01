@@ -4,12 +4,14 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontFamily } from '../../theme';
 import type { TimelineEvent } from '../../types/lesson';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   events: TimelineEvent[];
 }
 
 export default function TimelineComponent({ events }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={styles.container}>
       {/* Vertical line */}
@@ -25,8 +27,8 @@ export default function TimelineComponent({ events }: Props) {
           {/* Content */}
           <View style={[styles.content, i < events.length - 1 && styles.contentBorder]}>
             <Text style={styles.year}>{event.year}</Text>
-            <Text style={styles.title}>{event.title}</Text>
-            <Text style={styles.description}>{event.description}</Text>
+            <Text style={[styles.title, { fontSize: fontSize(14), lineHeight: lineHeight(14, 1.35) }]}>{event.title}</Text>
+            <Text style={[styles.description, { fontSize: fontSize(12), lineHeight: lineHeight(12, 1.7) }]}>{event.description}</Text>
           </View>
         </View>
       ))}

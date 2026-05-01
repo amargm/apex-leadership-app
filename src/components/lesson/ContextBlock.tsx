@@ -3,17 +3,19 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontFamily, Spacing } from '../../theme';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   text: string;
 }
 
 export default function ContextBlock({ text }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={styles.container}>
       <View style={styles.topAccent} />
       <Text style={styles.label}>THE SITUATION</Text>
-      <Text style={styles.body}>{text}</Text>
+      <Text style={[styles.body, { fontSize: fontSize(13), lineHeight: lineHeight(13, 1.5) }]}>{text}</Text>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Edit3 } from 'lucide-react-native';
 import { Colors, FontFamily } from '../../theme';
+import { useReadingScale } from '../../hooks/useReadingScale';
 
 interface Props {
   number: number;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function ReflectionCard({ number, prompt, onAddNote }: Props) {
+  const { fontSize, lineHeight } = useReadingScale();
   return (
     <View style={styles.card}>
       <View style={styles.accentRail} />
@@ -31,7 +33,7 @@ export default function ReflectionCard({ number, prompt, onAddNote }: Props) {
       </View>
       <View style={styles.headerDivider} />
       <View style={styles.body}>
-        <Text style={styles.prompt}>{prompt}</Text>
+        <Text style={[styles.prompt, { fontSize: fontSize(16), lineHeight: lineHeight(16, 1.4) }]}>{prompt}</Text>
       </View>
     </View>
   );
