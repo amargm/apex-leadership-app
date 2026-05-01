@@ -40,6 +40,7 @@ interface AppState {
   notes: Note[];
   userName: string;
   largeFontOn: boolean;
+  hasCompletedOnboarding: boolean;
 }
 
 interface AppContextValue {
@@ -57,6 +58,7 @@ interface AppContextValue {
   addReadingTime: (minutes: number) => void;
   setUserName: (name: string) => void;
   setLargeFont: (on: boolean) => void;
+  completeOnboarding: () => void;
   resetAllProgress: () => void;
 }
 
@@ -108,6 +110,7 @@ function getDefaultState(): AppState {
     notes: [],
     userName: 'Leader',
     largeFontOn: false,
+    hasCompletedOnboarding: false,
   };
 }
 
@@ -139,6 +142,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             notes: parsed.notes ?? defaults.notes,
             userName: parsed.userName ?? defaults.userName,
             largeFontOn: parsed.largeFontOn ?? defaults.largeFontOn,
+            hasCompletedOnboarding: parsed.hasCompletedOnboarding ?? defaults.hasCompletedOnboarding,
           });
         }
       } catch {
@@ -385,6 +389,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, largeFontOn: on }));
   }, []);
 
+  const completeOnboarding = useCallback(() => {
+    setState((prev) => ({ ...prev, hasCompletedOnboarding: true }));
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -402,6 +410,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         addReadingTime,
         setUserName,
         setLargeFont,
+        completeOnboarding,
         resetAllProgress,
       }}
     >

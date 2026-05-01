@@ -1,6 +1,6 @@
 // ─── APEX App Navigator — Instrumental Redesign ──────────────────────────────
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import { BookOpen, Map, FileText, User } from 'lucide-react-native';
 
 import { Colors, FontFamily } from '../theme';
 import type { TabParamList, LearnStackParamList } from './types';
+import { useAppState } from '../state/AppState';
 
 import HomeScreen from '../screens/HomeScreen';
 import LessonDetailScreen from '../screens/LessonDetailScreen';
@@ -16,6 +17,8 @@ import SavedScreen from '../screens/SavedScreen';
 import PathScreen from '../screens/PathScreen';
 import NotesScreen from '../screens/NotesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import SplashScreen from '../screens/SplashScreen';
+import AuthScreen from '../screens/AuthScreen';
 
 // ─── Fade-on-focus wrapper for smooth tab transitions ─────────────────────────
 function FadeInScreen({ children }: { children: React.ReactNode }) {
@@ -141,6 +144,23 @@ function BottomTabs() {
 
 // ─── Root Navigator ───────────────────────────────────────────────────────────
 export default function AppNavigator() {
+  const { state, loaded, completeOnboarding } = useAppState();
+  const [splashDone, setSplashDone] = useState(false);
+
+  // Phase: splash → auth (if first time) → main
+  const showSplash = !splashDone;
+  const showAuth = splashDone && loaded && !state.hasCompletedOnboarding;
+  const showMain = splashDone && loaded && state.hasCompletedOnboarding;
+
+  // While waiting for AppState to load after splash, keep splash visible
+  if (showSplash || (!loaded && splashDone)) {
+    return <SplashScreen onFinish={() => setSplashDone(true)} />;
+  }
+
+  if (showAuth) {
+    return <AuthScreen onGuestEntry={completeOnboarding} />;
+  }
+
   return (
     <NavigationContainer
       theme={{
