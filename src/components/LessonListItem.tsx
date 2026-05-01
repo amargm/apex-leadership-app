@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Colors, FontFamily, BorderWidth } from '../theme';
 import type { Lesson } from '../types/lesson';
+import { useAppState } from '../state/AppState';
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
@@ -28,6 +29,8 @@ interface Props {
 
 export default function LessonListItem({ lesson, index = 0, onPress, onLockedPress }: Props) {
   const pressAnim = useRef(new Animated.Value(0)).current;
+  const { getLessonProgress } = useAppState();
+  const lessonProgress = getLessonProgress(lesson.lesson_id);
 
   const handlePressIn = () => {
     Animated.timing(pressAnim, { toValue: 1, duration: 100, useNativeDriver: true }).start();
@@ -36,9 +39,9 @@ export default function LessonListItem({ lesson, index = 0, onPress, onLockedPre
     Animated.timing(pressAnim, { toValue: 0, duration: 150, useNativeDriver: true }).start();
   };
 
-  const isLocked = lesson.status === 'locked';
-  const isCompleted = lesson.status === 'completed';
-  const isInProgress = lesson.status === 'in_progress';
+  const isLocked = lessonProgress.status === 'locked';
+  const isCompleted = lessonProgress.status === 'completed';
+  const isInProgress = lessonProgress.status === 'in_progress';
 
   const cardOpacity = isCompleted ? 0.55 : isLocked ? 0.35 : 1;
   const dotColor = CATEGORY_DOT_COLORS[lesson.category_color_key] ?? '#444444';
@@ -56,8 +59,8 @@ export default function LessonListItem({ lesson, index = 0, onPress, onLockedPre
   // Status indicator
   let statusText = '→';
   let statusColor = '#2A2A2A';
-  if (isInProgress && lesson.progress != null) {
-    statusText = `${lesson.progress}%`;
+  if (isInProgress) {
+    statusText = `${lessonProgress.progress}%`;
     statusColor = Colors.accent;
   } else if (isCompleted) {
     statusText = '✓';

@@ -45,14 +45,8 @@ export const MODULES: Module[] = [
     subtitle: 'Frameworks for high-stakes choices',
     colorKey: 'green',
   },
-  {
-    key: 'emotional_intelligence',
-    title: 'Emotional Intelligence',
-    subtitle: 'The human side of great leadership',
-    colorKey: 'orange',
-  },
 ];
 
-export function getModule(key: ModuleKey): Module {
-  return MODULES.find((m) => m.key === key)!;
+export function getModule(key: ModuleKey): Module | undefined {
+  return MODULES.find((m) => m.key === key);
 }

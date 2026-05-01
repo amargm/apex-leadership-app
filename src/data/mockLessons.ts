@@ -1,13 +1,7 @@
 // ─── APEX Mock Data ───────────────────────────────────────────────────────────
 // Drives all screens during UI/UX testing. Replace with backend calls in Phase 3.
 
-import type { Lesson, UserStats, ModuleKey } from '../types/lesson';
-
-export const MOCK_USER_STATS: UserStats = {
-  day_streak: 7,
-  cases_completed: 4,
-  time_this_week_minutes: 83,
-};
+import type { Lesson, ModuleKey } from '../types/lesson';
 
 export const MOCK_LESSONS: Lesson[] = [
   {
@@ -71,7 +65,7 @@ export const MOCK_LESSONS: Lesson[] = [
             step: 1,
             year: '2001',
             title: 'The Dot-Com Crash',
-            description: 'Netflix lays off 130 of 120 staff — a third of the company — after losing DVD orders.',
+            description: 'Netflix lays off roughly a third of its workforce after the dot-com bust slashes DVD orders.',
           },
           {
             step: 2,
@@ -1059,12 +1053,3 @@ export const MOCK_LESSONS: Lesson[] = [
     },
   },
 ];
-
-export const MOCK_NOTIFICATION = {
-  notification_id: 'N001',
-  type: 'new_lesson' as const,
-  title: 'New case study available',
-  body: 'The Netflix Culture Bet is ready. 9 min read.',
-  lesson_id: 'L001',
-  sent_at: new Date().toISOString(),
-};

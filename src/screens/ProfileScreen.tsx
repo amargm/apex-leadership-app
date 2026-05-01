@@ -1,12 +1,14 @@
 // ─── Profile Screen — Full Static Implementation ──────────────────────────────
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   Alert,
   Animated,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -46,12 +48,8 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
 }
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
-export default function ProfileScreen(_: ProfileScreenProps) {
-  const [notificationsOn, setNotificationsOn] = useState(true);
-  const [largeFontOn, setLargeFontOn] = useState(false);
-  const [darkModeOn, setDarkModeOn] = useState(true);
-  const [dailyReminderOn, setDailyReminderOn] = useState(true);
-  const { state, resetAllProgress } = useAppState();
+export default function ProfileScreen({ navigation }: ProfileScreenProps) {
+  const { state, resetAllProgress, setLargeFont, setUserName } = useAppState();
 
   const handleResetProgress = () => {
     Alert.alert(
@@ -83,11 +81,19 @@ export default function ProfileScreen(_: ProfileScreenProps) {
         {/* ── Profile Header ── */}
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarInitials}>L</Text>
+            <Text style={styles.avatarInitials}>{state.userName.charAt(0).toUpperCase()}</Text>
           </View>
-          <View>
-            <Text style={styles.profileName}>Leader</Text>
-            <Text style={styles.profileRole}>Team Lead · APEX Member</Text>
+          <View style={{ flex: 1 }}>
+            <TextInput
+              style={styles.profileName}
+              value={state.userName}
+              onChangeText={setUserName}
+              placeholder="Your name"
+              placeholderTextColor="#555555"
+              maxLength={24}
+              returnKeyType="done"
+            />
+            <Text style={styles.profileRole}>APEX Member</Text>
           </View>
         </View>
 
@@ -125,29 +131,8 @@ export default function ProfileScreen(_: ProfileScreenProps) {
 
         <View style={styles.settingsGroup}>
           <View style={[styles.settingsRow, { justifyContent: 'space-between' }]}>
-            <Text style={styles.settingsLabel}>Notifications</Text>
-            <MinimalToggle value={notificationsOn} onToggle={() => setNotificationsOn((v) => !v)} />
-          </View>
-
-          <View style={styles.rowDivider} />
-
-          <View style={[styles.settingsRow, { justifyContent: 'space-between' }]}>
-            <Text style={styles.settingsLabel}>Daily Reminder</Text>
-            <MinimalToggle value={dailyReminderOn} onToggle={() => setDailyReminderOn((v) => !v)} />
-          </View>
-
-          <View style={styles.rowDivider} />
-
-          <View style={[styles.settingsRow, { justifyContent: 'space-between' }]}>
             <Text style={styles.settingsLabel}>Larger Reading Font</Text>
-            <MinimalToggle value={largeFontOn} onToggle={() => setLargeFontOn((v) => !v)} />
-          </View>
-
-          <View style={styles.rowDivider} />
-
-          <View style={[styles.settingsRow, { justifyContent: 'space-between' }]}>
-            <Text style={styles.settingsLabel}>Dark Mode</Text>
-            <MinimalToggle value={darkModeOn} onToggle={() => setDarkModeOn((v) => !v)} />
+            <MinimalToggle value={state.largeFontOn} onToggle={() => setLargeFont(!state.largeFontOn)} />
           </View>
         </View>
 
@@ -161,17 +146,11 @@ export default function ProfileScreen(_: ProfileScreenProps) {
         </View>
 
         <View style={styles.settingsGroup}>
-          <TouchableOpacity style={styles.settingsRow} activeOpacity={0.7}>
-            <Text style={styles.settingsLabel}>Reading History</Text>
-            <View style={styles.settingsRight}>
-              <Text style={styles.settingsMeta}>{state.stats.casesCompleted} cases</Text>
-              <ChevronRight size={16} color={'#666666'} strokeWidth={1.5} />
-            </View>
-          </TouchableOpacity>
-
-          <View style={styles.rowDivider} />
-
-          <TouchableOpacity style={styles.settingsRow} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.settingsRow}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Learn' as any, { screen: 'Saved' })}
+          >
             <Text style={styles.settingsLabel}>Saved Lessons</Text>
             <View style={styles.settingsRight}>
               <Text style={styles.settingsMeta}>{state.savedLessonIds.length} saved</Text>
@@ -201,7 +180,11 @@ export default function ProfileScreen(_: ProfileScreenProps) {
         </View>
 
         <View style={styles.settingsGroup}>
-          <TouchableOpacity style={styles.settingsRow} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.settingsRow}
+            activeOpacity={0.7}
+            onPress={() => Alert.alert('APEX v1.0.0', 'Built for growth.\n\nLearn to lead from those who did.')}
+          >
             <Text style={styles.settingsLabel}>About APEX</Text>
             <View style={styles.settingsRight}>
               <Text style={styles.settingsMeta}>v1.0.0</Text>
@@ -211,7 +194,11 @@ export default function ProfileScreen(_: ProfileScreenProps) {
 
           <View style={styles.rowDivider} />
 
-          <TouchableOpacity style={styles.settingsRow} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.settingsRow}
+            activeOpacity={0.7}
+            onPress={() => Linking.openURL('https://apex-leadership.web.app/privacy-policy')}
+          >
             <Text style={styles.settingsLabel}>Privacy Policy</Text>
             <View style={styles.settingsRight}>
               <ChevronRight size={16} color={'#666666'} strokeWidth={1.5} />
@@ -220,7 +207,11 @@ export default function ProfileScreen(_: ProfileScreenProps) {
 
           <View style={styles.rowDivider} />
 
-          <TouchableOpacity style={styles.settingsRow} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.settingsRow}
+            activeOpacity={0.7}
+            onPress={() => Linking.openURL('https://apex-leadership.web.app/terms-of-use')}
+          >
             <Text style={styles.settingsLabel}>Terms of Use</Text>
             <View style={styles.settingsRight}>
               <ChevronRight size={16} color={'#666666'} strokeWidth={1.5} />

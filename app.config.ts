@@ -6,7 +6,7 @@ const config: ExpoConfig = {
   version: '1.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'dark',
-  backgroundColor: '#0A0A0A',
+  backgroundColor: '#050505',
   android: {
     package: 'com.apex.leadership',
     versionCode: 1,

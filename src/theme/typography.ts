@@ -14,7 +14,7 @@ export const FontFamily = {
   // UI chrome (used sparingly — body text, descriptions)
   dmSansRegular: 'DMSans_400Regular',
   dmSansMedium: 'DMSans_500Medium',
-  dmSansSemiBold: 'DMSans_600SemiBold',
+  dmSansSemiBold: 'DMSans_700Bold', // DM Sans 600 not available; use 700 as closest
   dmSansBold: 'DMSans_700Bold',
 
   // Monospace data — instrument readouts, labels, metadata, nav

@@ -1,7 +1,7 @@
 // ─── Home Screen — Instrumental Redesign ─────────────────────────────────────
 // Brutalist precision: ruled borders, DM Mono data, square corners.
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   ScrollView,
@@ -15,11 +15,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { HomeScreenProps } from '../navigation/types';
-import { MOCK_LESSONS, MOCK_NOTIFICATION } from '../data/mockLessons';
+import { MOCK_LESSONS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
 import FeaturedCard from '../components/FeaturedCard';
-import PushNotificationPanel from '../components/PushNotificationPanel';
 import { useAppState } from '../state/AppState';
+import { getDailyQuote } from '../data/dailyQuotes';
 
 // ─── Staggered fade-up hook ───────────────────────────────────────────────────
 function useFadeUp(count: number) {
@@ -42,8 +42,8 @@ const SECTION_COUNT = 6;
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const fadeStyles = useFadeUp(SECTION_COUNT);
-  const [showNotif, setShowNotif] = useState(true);
   const { state, getLessonProgress, isLessonUnlocked } = useAppState();
+  const dailyQuote = getDailyQuote();
 
   const featuredLessons = MOCK_LESSONS.filter((l) => isLessonUnlocked(l.lesson_id));
   const activeCase = MOCK_LESSONS.find((l) => {
@@ -51,6 +51,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     return lp.status === 'in_progress';
   });
   const activeCaseProgress = activeCase ? getLessonProgress(activeCase.lesson_id).progress : 0;
+  const activeCaseIndex = activeCase
+    ? MOCK_LESSONS.findIndex((l) => l.lesson_id === activeCase.lesson_id) + 1
+    : 0;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -76,17 +79,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         end={{ x: 0.5, y: 1 }}
       />
 
-      {showNotif && (
-        <PushNotificationPanel
-          notification={MOCK_NOTIFICATION}
-          onOpen={(lessonId) => {
-            setShowNotif(false);
-            navigation.navigate('LessonDetail', { lessonId });
-          }}
-          onDismiss={() => setShowNotif(false)}
-        />
-      )}
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -111,7 +103,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* ── Greeting ────────────────────────────────────────────── */}
         <Animated.View style={[styles.greeting, fadeStyles[1]]}>
           <Text style={styles.greetingLabel}>{getGreeting()}</Text>
-          <Text style={styles.greetingName}>Leader</Text>
+          <Text style={styles.greetingName}>{state.userName}</Text>
         </Animated.View>
 
         {/* ── Readout Strip (Instrument Panel) ────────────────────── */}
@@ -132,7 +124,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
               activeOpacity={0.85}
             >
               <View style={styles.activeCaseAccentRail} />
-              <Text style={styles.activeCaseCornerIndex}>L002</Text>
+              <Text style={styles.activeCaseCornerIndex}>L{String(activeCaseIndex).padStart(3, '0')}</Text>
 
               {/* Top signal row */}
               <View style={styles.activeCaseSignalRow}>
@@ -194,9 +186,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           <View style={styles.quoteBlock}>
             <View style={styles.quoteAccentLine} />
             <Text style={styles.quoteText}>
-              "The task of leadership is not to put greatness into people, but to elicit it, for the greatness is there already."
+              "{dailyQuote.text}"
             </Text>
-            <Text style={styles.quoteAttribution}>— John Buchan</Text>
+            <Text style={styles.quoteAttribution}>— {dailyQuote.attribution}</Text>
           </View>
         </Animated.View>
       </ScrollView>

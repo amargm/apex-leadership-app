@@ -2,7 +2,7 @@
 // Manages lesson progress, completion, saves, and stats locally.
 // Uses React Context + AsyncStorage for persistence across app restarts.
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { LessonStatus } from '../types/lesson';
 import { MOCK_LESSONS } from '../data/mockLessons';
@@ -34,13 +34,17 @@ interface AppState {
     casesCompleted: number;
     timeThisWeekMinutes: number;
     lastActiveDate: string; // ISO date
+    isoWeek: string; // e.g. "2026-W18" — used to reset weekly time
   };
   savedLessonIds: string[];
   notes: Note[];
+  userName: string;
+  largeFontOn: boolean;
 }
 
 interface AppContextValue {
   state: AppState;
+  loaded: boolean;
   startLesson: (lessonId: string) => void;
   markTabViewed: (lessonId: string, tab: string) => void;
   completeLesson: (lessonId: string) => void;
@@ -50,12 +54,16 @@ interface AppContextValue {
   addNote: (content: string, lessonId?: string, heading?: string) => void;
   updateNote: (noteId: string, content: string) => void;
   deleteNote: (noteId: string) => void;
+  addReadingTime: (minutes: number) => void;
+  setUserName: (name: string) => void;
+  setLargeFont: (on: boolean) => void;
   resetAllProgress: () => void;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = '@apex_app_state';
+const DEBOUNCE_MS = 500;
 
 const TAB_PROGRESS_MAP: Record<string, number> = {
   OVERVIEW: 25,
@@ -64,33 +72,17 @@ const TAB_PROGRESS_MAP: Record<string, number> = {
   TAKEAWAYS: 100,
 };
 
-function getDefaultState(): AppState {
-  const lessons: Record<string, LessonProgress> = {};
-  MOCK_LESSONS.forEach((l) => {
-    lessons[l.lesson_id] = {
-      status: l.status as LessonStatus,
-      progress: l.progress ?? 0,
-      tabsViewed: l.status === 'completed' ? ['OVERVIEW', 'TIMELINE', 'REFLECT', 'TAKEAWAYS'] : [],
-      savedAt: undefined,
-      completedAt: l.status === 'completed' ? new Date().toISOString() : undefined,
-      startedAt: l.status === 'in_progress' || l.status === 'completed' ? new Date().toISOString() : undefined,
-    };
-  });
-
-  return {
-    lessons,
-    stats: {
-      dayStreak: 7,
-      casesCompleted: MOCK_LESSONS.filter((l) => l.status === 'completed').length,
-      timeThisWeekMinutes: 83,
-      lastActiveDate: new Date().toISOString().split('T')[0],
-    },
-    savedLessonIds: [],
-    notes: [],
-  };
+/** ISO week string e.g. "2026-W18" */
+function getISOWeek(): string {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  const weekNum = 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 
-function getFreshState(): AppState {
+function getDefaultState(): AppState {
   const lessons: Record<string, LessonProgress> = {};
   MOCK_LESSONS.forEach((l) => {
     lessons[l.lesson_id] = {
@@ -110,10 +102,17 @@ function getFreshState(): AppState {
       casesCompleted: 0,
       timeThisWeekMinutes: 0,
       lastActiveDate: new Date().toISOString().split('T')[0],
+      isoWeek: getISOWeek(),
     },
     savedLessonIds: [],
     notes: [],
+    userName: 'Leader',
+    largeFontOn: false,
   };
+}
+
+function getFreshState(): AppState {
+  return getDefaultState();
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -122,6 +121,8 @@ const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(getDefaultState);
+  const [loaded, setLoaded] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load persisted state on mount
   useEffect(() => {
@@ -130,44 +131,66 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored);
-          // Merge with defaults to handle missing fields from older versions
           const defaults = getDefaultState();
           setState({
             lessons: parsed.lessons ?? defaults.lessons,
-            stats: parsed.stats ?? defaults.stats,
+            stats: { ...defaults.stats, ...parsed.stats },
             savedLessonIds: parsed.savedLessonIds ?? defaults.savedLessonIds,
             notes: parsed.notes ?? defaults.notes,
+            userName: parsed.userName ?? defaults.userName,
+            largeFontOn: parsed.largeFontOn ?? defaults.largeFontOn,
           });
         }
       } catch {
         // Use defaults if storage fails
       }
+      setLoaded(true);
     })();
   }, []);
 
-  // Persist state on every change
+  // Debounced persist on state change
   useEffect(() => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
-  }, [state]);
+    if (!loaded) return; // don't persist until initial load is done
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
+    }, DEBOUNCE_MS);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [state, loaded]);
 
-  // Update streak on app open
+  // Update streak + weekly time reset — only after storage has loaded
   useEffect(() => {
+    if (!loaded) return;
     const today = new Date().toISOString().split('T')[0];
-    if (state.stats.lastActiveDate !== today) {
-      const lastDate = new Date(state.stats.lastActiveDate);
-      const todayDate = new Date(today);
-      const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+    const currentWeek = getISOWeek();
 
-      setState((prev) => ({
+    setState((prev) => {
+      let { dayStreak, timeThisWeekMinutes, isoWeek } = prev.stats;
+      let changed = false;
+
+      // Reset weekly time if new ISO week
+      if (isoWeek !== currentWeek) {
+        timeThisWeekMinutes = 0;
+        isoWeek = currentWeek;
+        changed = true;
+      }
+
+      // Update streak if new day
+      if (prev.stats.lastActiveDate !== today) {
+        const lastDate = new Date(prev.stats.lastActiveDate);
+        const todayDate = new Date(today);
+        const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+        dayStreak = diffDays === 1 ? dayStreak + 1 : diffDays > 1 ? 1 : dayStreak;
+        changed = true;
+      }
+
+      if (!changed) return prev;
+      return {
         ...prev,
-        stats: {
-          ...prev.stats,
-          lastActiveDate: today,
-          dayStreak: diffDays === 1 ? prev.stats.dayStreak + 1 : diffDays > 1 ? 1 : prev.stats.dayStreak,
-        },
-      }));
-    }
-  }, []);
+        stats: { ...prev.stats, dayStreak, timeThisWeekMinutes, isoWeek, lastActiveDate: today },
+      };
+    });
+  }, [loaded]);
 
   const startLesson = useCallback((lessonId: string) => {
     setState((prev) => {
@@ -343,10 +366,30 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setState(getFreshState());
   }, []);
 
+  const addReadingTime = useCallback((minutes: number) => {
+    if (minutes <= 0) return;
+    setState((prev) => ({
+      ...prev,
+      stats: {
+        ...prev.stats,
+        timeThisWeekMinutes: prev.stats.timeThisWeekMinutes + Math.round(minutes),
+      },
+    }));
+  }, []);
+
+  const setUserName = useCallback((name: string) => {
+    setState((prev) => ({ ...prev, userName: name.trim() || 'Leader' }));
+  }, []);
+
+  const setLargeFont = useCallback((on: boolean) => {
+    setState((prev) => ({ ...prev, largeFontOn: on }));
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
         state,
+        loaded,
         startLesson,
         markTabViewed,
         completeLesson,
@@ -356,6 +399,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         addNote,
         updateNote,
         deleteNote,
+        addReadingTime,
+        setUserName,
+        setLargeFont,
         resetAllProgress,
       }}
     >

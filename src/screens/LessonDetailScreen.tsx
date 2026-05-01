@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 
@@ -42,7 +43,9 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const { lessonId } = route.params;
   const scrollRef = useRef<ScrollView>(null);
   const shareRef = useRef<ViewShot>(null);
-  const { startLesson, markTabViewed, completeLesson, getLessonProgress } = useAppState();
+  const sessionStart = useRef<number>(Date.now());
+  const isFocused = useIsFocused();
+  const { startLesson, markTabViewed, completeLesson, getLessonProgress, addReadingTime } = useAppState();
 
   const lesson: Lesson | undefined = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
   const lessonState = getLessonProgress(lessonId);
@@ -66,6 +69,20 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
       markTabViewed(lessonId, 'OVERVIEW');
     }
   }, [lessonId]);
+
+  // Track reading time — record elapsed minutes when screen loses focus or unmounts
+  useEffect(() => {
+    if (isFocused) {
+      sessionStart.current = Date.now();
+    } else {
+      const elapsed = Math.round((Date.now() - sessionStart.current) / 60000);
+      if (elapsed > 0) addReadingTime(elapsed);
+    }
+    return () => {
+      const elapsed = Math.round((Date.now() - sessionStart.current) / 60000);
+      if (elapsed > 0) addReadingTime(elapsed);
+    };
+  }, [isFocused]);
 
   const switchTab = (tab: TabKey) => {
     Animated.timing(contentOpacity, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
