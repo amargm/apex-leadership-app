@@ -1,6 +1,6 @@
 # APEX — Production Audit & Backend Requirements
 
-> **Generated:** May 2026 · **Status:** Pre-publish review  
+> **Generated:** May 2026 · **Last Updated:** May 2026 (post client-logic completion)  
 > Covers: static/preview artefacts, client-side logic gaps, Google backend requirements
 
 ---
@@ -471,33 +471,43 @@ Before publishing, these items are required by Google:
 
 ### Phase 1: Fix What's Broken (Ship-blocking)
 
-| # | Task | Effort |
+| # | Task | Status |
 |---|------|--------|
-| 1 | Fix `getDefaultState()` — all stats start at 0 | 5 min |
-| 2 | Fix hardcoded "L002" in active case block | 5 min |
-| 3 | Load `DMSans_600SemiBold` in App.tsx | 5 min |
-| 4 | Fix L001 timeline data error | 5 min |
-| 5 | Write full content for L004, L015, L016 (or hide them) | 2-4 hrs |
-| 6 | Remove `MOCK_NOTIFICATION` panel (or make it dismissable-persistent) | 15 min |
-| 7 | Remove or hide non-functional toggles (Dark Mode, Notifications, Daily Reminder) | 15 min |
-| 8 | Fix `LessonListItem` to read from AppState | 30 min |
-| 9 | Fix `app.config.ts` (backgroundColor, icon, splash) | 30 min |
-| 10 | Add at least 1 lesson for `emotional_intelligence` module | 1-2 hrs |
+| 1 | Fix `getDefaultState()` — all stats start at 0 | ✅ Done |
+| 2 | Fix hardcoded "L002" in active case block | ✅ Done |
+| 3 | Fix `DMSans_600SemiBold` font reference (mapped to 700Bold) | ✅ Done |
+| 4 | Fix L001 timeline data error | ✅ Done |
+| 5 | Write full content for L004, L015, L016 (or hide them) | ❌ Still locked with placeholder content |
+| 6 | Remove `MOCK_NOTIFICATION` panel | ✅ Done (panel + component deleted) |
+| 7 | Remove non-functional toggles (Dark Mode, Notifications, Daily Reminder) | ✅ Done |
+| 8 | Fix `LessonListItem` to read from AppState | ✅ Done |
+| 9 | Fix `app.config.ts` backgroundColor | ✅ Done (#050505) |
+| 10 | Handle `emotional_intelligence` module (no lessons) | ✅ Done (removed from MODULES) |
 
 ### Phase 2: Client Logic Completion
 
-| # | Task | Effort |
+| # | Task | Status |
 |---|------|--------|
-| 1 | Add reading time tracking | 1 hr |
-| 2 | Add weekly time reset logic | 30 min |
-| 3 | Wire "Saved Lessons" profile row → SavedScreen | 15 min |
-| 4 | Wire "Larger Reading Font" toggle with persistence | 1 hr |
-| 5 | Add user name to AppState + display in Home/Profile | 30 min |
-| 6 | Add daily quote rotation (local array) | 30 min |
-| 7 | Fix streak race condition (add `loaded` flag) | 30 min |
-| 8 | Add error boundary | 30 min |
-| 9 | Debounce AsyncStorage writes | 15 min |
-| 10 | Delete WinsScreen or wire it | 15 min |
+| 1 | Add reading time tracking | ✅ Done (useIsFocused in LessonDetail) |
+| 2 | Add weekly time reset logic | ✅ Done (ISO week detection in AppState) |
+| 3 | Wire "Saved Lessons" profile row → SavedScreen | ✅ Done |
+| 4 | Wire "Larger Reading Font" toggle with persistence | ✅ Done (persisted in AppState) |
+| 5 | Add user name to AppState + display in Home/Profile | ✅ Done (editable in Profile, shown in Home) |
+| 6 | Add daily quote rotation (local array) | ✅ Done (31 quotes, day-of-year rotation) |
+| 7 | Fix streak race condition (add `loaded` flag) | ✅ Done |
+| 8 | Add error boundary | ✅ Done (ErrorBoundary in App.tsx) |
+| 9 | Debounce AsyncStorage writes | ✅ Done (500ms debounce) |
+| 10 | Delete WinsScreen (dead code) | ✅ Done |
+
+### Remaining Client-Side Items
+
+| # | Task | Priority |
+|---|------|----------|
+| 1 | Write full case study content for L004 (Intel), L015 (Stripe), L016 (Eisenhower) | HIGH |
+| 2 | Wire "Larger Reading Font" toggle to actually scale font sizes in reading views | MEDIUM |
+| 3 | App icon (512×512 PNG) + adaptive icon for `app.config.ts` | HIGH (Play Store) |
+| 4 | Splash screen asset | MEDIUM |
+| 5 | EAS Project ID (run `eas init`) | HIGH (before build) |
 
 ### Phase 3: Google Backend Setup
 
