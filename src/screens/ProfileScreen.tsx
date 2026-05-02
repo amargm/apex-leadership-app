@@ -63,8 +63,10 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     resetAllProgress();
   };
 
-  const formatTime = (minutes: number) =>
-    minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`;
+  const formatTime = (minutes: number) => {
+    const m = Math.round(minutes);
+    return m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `${m}m`;
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>

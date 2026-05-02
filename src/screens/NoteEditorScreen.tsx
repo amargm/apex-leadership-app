@@ -3,9 +3,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -16,13 +16,14 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, BookOpen, Trash2, Check } from 'lucide-react-native';
+import { ArrowLeft, BookOpen, Trash2, Check, ChevronRight } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import { useAppState, Note } from '../state/AppState';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { NotesStackParamList } from '../navigation/types';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<NotesStackParamList, 'NoteEditor'>;
 
@@ -36,9 +37,12 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   const [lessonId] = useState(existingNote?.lessonId ?? initialLessonId);
   const [heading] = useState(existingNote?.heading ?? initialHeading);
   const [saved, setSaved] = useState(!!existingNote);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const hasChanges = useRef(false);
   const createdNoteId = useRef<string | null>(noteId ?? null);
+  const isExisting = !!existingNote;
+  const rootNav = useNavigation<any>();
 
   // Track if content changed
   useEffect(() => {
@@ -49,10 +53,12 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     }
   }, [content]);
 
-  // Auto-focus the editor
+  // Auto-focus only for new notes
   useEffect(() => {
-    const timer = setTimeout(() => inputRef.current?.focus(), 300);
-    return () => clearTimeout(timer);
+    if (!isExisting) {
+      const timer = setTimeout(() => inputRef.current?.focus(), 300);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Auto-save on navigate away
@@ -82,23 +88,20 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     saveNote();
     Keyboard.dismiss();
     setSaved(true);
+    navigation.goBack();
   };
 
   const handleDelete = () => {
-    Alert.alert('Delete Note', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          if (createdNoteId.current) {
-            deleteNote(createdNoteId.current);
-          }
-          hasChanges.current = false;
-          navigation.goBack();
-        },
-      },
-    ]);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = () => {
+    setDeleteModalVisible(false);
+    if (createdNoteId.current) {
+      deleteNote(createdNoteId.current);
+    }
+    hasChanges.current = false;
+    navigation.goBack();
   };
 
   const handleBack = () => {
@@ -175,12 +178,20 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
           </View>
         )}
 
-        {/* ── Linked lesson ──────────────────────────────────────────────── */}
-        {lessonTitle && (
-          <View style={styles.lessonBar}>
+        {/* ── Linked lesson (tappable) ───────────────────────────────────── */}
+        {lessonTitle && lessonId && (
+          <TouchableOpacity
+            style={styles.lessonBar}
+            activeOpacity={0.7}
+            onPress={() => {
+              saveNote();
+              rootNav.navigate('Learn', { screen: 'LessonDetail', params: { lessonId } });
+            }}
+          >
             <BookOpen size={10} color={Colors.textDark} strokeWidth={1.5} />
             <Text style={styles.lessonBarText} numberOfLines={1}>{lessonTitle}</Text>
-          </View>
+            <ChevronRight size={12} color={Colors.textDark} strokeWidth={1.5} />
+          </TouchableOpacity>
         )}
 
         {/* ── Editor ─────────────────────────────────────────────────────── */}
@@ -206,6 +217,40 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
           />
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* ── Delete Confirmation Modal ── */}
+      <Modal visible={deleteModalVisible} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setDeleteModalVisible(false)}>
+          <Pressable style={styles.modalBox}>
+            <View style={styles.modalAccent} />
+            <Text style={styles.modalTitle}>DELETE NOTE</Text>
+            <Text style={styles.modalBody}>
+              This note will be permanently removed. This cannot be undone.
+            </Text>
+            <View style={styles.modalActions}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalBtn,
+                  pressed && styles.modalBtnPressed,
+                ]}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.modalBtnText}>CANCEL</Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalBtn,
+                  styles.modalBtnRight,
+                  pressed && styles.modalBtnPressed,
+                ]}
+                onPress={confirmDelete}
+              >
+                <Text style={[styles.modalBtnText, styles.modalBtnTextDestructive]}>DELETE</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -317,5 +362,70 @@ const styles = StyleSheet.create({
     lineHeight: 16 * 1.75,
     color: Colors.textPrimary,
     minHeight: 300,
+  },
+
+  // Delete modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  modalBox: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: Colors.bgSurface,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    overflow: 'hidden',
+  },
+  modalAccent: {
+    height: 2,
+    backgroundColor: '#E05252',
+  },
+  modalTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 12,
+    letterSpacing: 12 * 0.12,
+    color: Colors.textPrimary,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+  modalBody: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 13,
+    lineHeight: 13 * 1.6,
+    color: Colors.textSecondary,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 28,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
+  },
+  modalBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.bgSurface,
+  },
+  modalBtnRight: {
+    borderLeftWidth: 1,
+    borderLeftColor: Colors.borderDefault,
+  },
+  modalBtnPressed: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  modalBtnText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.1,
+    color: Colors.textSecondary,
+  },
+  modalBtnTextDestructive: {
+    color: '#E05252',
   },
 });
