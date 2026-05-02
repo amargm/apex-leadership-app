@@ -7,9 +7,17 @@ const config: ExpoConfig = {
   orientation: 'portrait',
   userInterfaceStyle: 'dark',
   backgroundColor: '#050505',
+  splash: {
+    backgroundColor: '#050505',
+    resizeMode: 'contain',
+  },
   android: {
     package: 'com.apex.leadership',
     versionCode: 1,
+    splash: {
+      backgroundColor: '#050505',
+      resizeMode: 'contain',
+    },
   },
   plugins: [
     'expo-font',
