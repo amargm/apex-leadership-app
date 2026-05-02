@@ -1,60 +1,31 @@
-// ─── Notes Screen — Full Implementation ───────────────────────────────────────
+// ─── Notes Screen — List View ──────────────────────────────────────────────
+// Shows all notes as tappable cards. Tap to open full editor.
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Alert,
-  Keyboard,
-  Modal,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { Plus, Trash2, Edit3, X, BookOpen, ArrowUpRight } from 'lucide-react-native';
+import { Plus, BookOpen, Trash2 } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
-import { useAppState, Note } from '../state/AppState';
+import { useAppState } from '../state/AppState';
 import { MOCK_LESSONS } from '../data/mockLessons';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NotesStackParamList } from '../navigation/types';
 
-export default function NotesScreen() {
-  const { state, addNote, updateNote, deleteNote } = useAppState();
-  const navigation = useNavigation<any>();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [noteContent, setNoteContent] = useState('');
-  const [selectedLessonId, setSelectedLessonId] = useState<string | undefined>(undefined);
+type Props = NativeStackScreenProps<NotesStackParamList, 'NotesList'>;
 
-  const openCreate = () => {
-    setEditingNote(null);
-    setNoteContent('');
-    setSelectedLessonId(undefined);
-    setModalVisible(true);
-  };
+export default function NotesScreen({ navigation }: Props) {
+  const { state, deleteNote } = useAppState();
 
-  const openEdit = (note: Note) => {
-    setEditingNote(note);
-    setNoteContent(note.content);
-    setSelectedLessonId(note.lessonId);
-    setModalVisible(true);
-  };
-
-  const handleSave = () => {
-    const trimmed = noteContent.trim();
-    if (!trimmed) return;
-
-    if (editingNote) {
-      updateNote(editingNote.id, trimmed);
-    } else {
-      addNote(trimmed, selectedLessonId);
-    }
-    setModalVisible(false);
-    setNoteContent('');
-    setEditingNote(null);
+  const openEditor = (noteId?: string) => {
+    navigation.navigate('NoteEditor', noteId ? { noteId } : {});
   };
 
   const handleDelete = (noteId: string) => {
@@ -64,19 +35,23 @@ export default function NotesScreen() {
     ]);
   };
 
-  const formatDate = (iso: string) => {
-    const d = new Date(iso);
-    const day = d.getDate();
-    const month = d.toLocaleString('en', { month: 'short' }).toUpperCase();
-    return `${day} ${month}`;
-  };
-
   const getLessonTitle = (lessonId?: string) => {
     if (!lessonId) return null;
     return MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? null;
   };
 
-  const availableLessons = MOCK_LESSONS.filter((l) => !l.is_locked);
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    const day = d.getDate();
+    const month = d.toLocaleString('en', { month: 'short' }).toUpperCase();
+    const year = d.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  const getPreview = (content: string) => {
+    const lines = content.split('\n').filter((l) => l.trim());
+    return lines.slice(0, 3).join('\n');
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -84,179 +59,96 @@ export default function NotesScreen() {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>NOTES</Text>
-          <Text style={styles.subtitle}>{state.notes.length} entries</Text>
+          <Text style={styles.subtitle}>{state.notes.length} {state.notes.length === 1 ? 'entry' : 'entries'}</Text>
         </View>
-        <TouchableOpacity style={styles.addBtn} onPress={openCreate} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.addBtn} onPress={() => openEditor()} activeOpacity={0.7}>
           <Plus size={18} color={Colors.accent} strokeWidth={2} />
         </TouchableOpacity>
       </View>
 
       {state.notes.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyIcon}>—</Text>
+          <View style={styles.emptyAccent} />
           <Text style={styles.emptyTitle}>No notes yet</Text>
           <Text style={styles.emptySub}>
             Tap + to jot down reflections, insights, or key takeaways from your readings.
           </Text>
+          <TouchableOpacity style={styles.emptyBtn} onPress={() => openEditor()} activeOpacity={0.7}>
+            <Plus size={14} color={Colors.bgPrimary} strokeWidth={2} />
+            <Text style={styles.emptyBtnText}>CREATE NOTE</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={styles.content}
+          contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
         >
           {state.notes.map((note, index) => {
             const lessonTitle = getLessonTitle(note.lessonId);
+            const preview = getPreview(note.content);
+            const wordCount = note.content.trim() ? note.content.trim().split(/\s+/).length : 0;
+
             return (
-              <View
+              <TouchableOpacity
                 key={note.id}
-                style={[styles.card, index < state.notes.length - 1 && styles.cardBorder]}
+                style={[styles.card, index < state.notes.length - 1 && styles.cardSpaced]}
+                onPress={() => openEditor(note.id)}
+                activeOpacity={0.7}
               >
-                <View style={styles.cardHeader}>
+                {/* Card top row: date + actions */}
+                <View style={styles.cardTop}>
                   <Text style={styles.cardDate}>{formatDate(note.updatedAt)}</Text>
-                  <View style={styles.cardActions}>
-                    <TouchableOpacity
-                      onPress={() => openEdit(note)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Edit3 size={14} color="#777777" strokeWidth={1.5} />
-                    </TouchableOpacity>
+                  <View style={styles.cardTopRight}>
+                    <Text style={styles.cardWordCount}>{wordCount}w</Text>
                     <TouchableOpacity
                       onPress={() => handleDelete(note.id)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                     >
-                      <Trash2 size={14} color="#555555" strokeWidth={1.5} />
+                      <Trash2 size={13} color={Colors.textDarker} strokeWidth={1.5} />
                     </TouchableOpacity>
                   </View>
                 </View>
+
+                {/* Heading (from reflection prompt) */}
                 {note.heading && (
                   <Text style={styles.cardHeading} numberOfLines={2}>
                     {note.heading}
                   </Text>
                 )}
-                {note.content ? (
-                  <Text style={styles.cardContent} numberOfLines={4}>
-                    {note.content}
+
+                {/* Content preview */}
+                {preview ? (
+                  <Text style={styles.cardContent} numberOfLines={3}>
+                    {preview}
                   </Text>
                 ) : (
-                  <Text style={styles.cardPlaceholder}>Tap edit to add your reflections...</Text>
+                  <Text style={styles.cardEmpty}>Empty note — tap to edit</Text>
                 )}
+
+                {/* Linked lesson */}
                 {lessonTitle && (
-                  <TouchableOpacity
-                    style={styles.cardLesson}
-                    onPress={() => navigation.navigate('Learn', { screen: 'LessonDetail', params: { lessonId: note.lessonId } })}
-                    activeOpacity={0.7}
-                  >
-                    <BookOpen size={10} color="#666666" strokeWidth={1.5} />
+                  <View style={styles.cardLesson}>
+                    <BookOpen size={10} color={Colors.textDark} strokeWidth={1.5} />
                     <Text style={styles.cardLessonText} numberOfLines={1}>
                       {lessonTitle}
                     </Text>
-                    <ArrowUpRight size={10} color={Colors.accent} strokeWidth={2} />
-                  </TouchableOpacity>
+                  </View>
                 )}
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
       )}
-
-      {/* ── Create / Edit Modal ── */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              {/* Modal Header */}
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>
-                  {editingNote ? 'EDIT NOTE' : 'NEW NOTE'}
-                </Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <X size={20} color={Colors.textPrimary} strokeWidth={1.5} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Lesson Picker (create only) */}
-              {!editingNote && (
-                <View style={styles.lessonPicker}>
-                  <Text style={styles.lessonPickerLabel}>LINK TO LESSON</Text>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.lessonChips}
-                  >
-                    <TouchableOpacity
-                      style={[
-                        styles.chip,
-                        !selectedLessonId && styles.chipActive,
-                      ]}
-                      onPress={() => setSelectedLessonId(undefined)}
-                    >
-                      <Text
-                        style={[
-                          styles.chipText,
-                          !selectedLessonId && styles.chipTextActive,
-                        ]}
-                      >
-                        NONE
-                      </Text>
-                    </TouchableOpacity>
-                    {availableLessons.map((l) => (
-                      <TouchableOpacity
-                        key={l.lesson_id}
-                        style={[
-                          styles.chip,
-                          selectedLessonId === l.lesson_id && styles.chipActive,
-                        ]}
-                        onPress={() => setSelectedLessonId(l.lesson_id)}
-                      >
-                        <Text
-                          style={[
-                            styles.chipText,
-                            selectedLessonId === l.lesson_id && styles.chipTextActive,
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {l.company}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                </View>
-              )}
-
-              {/* Text Input */}
-              <TextInput
-                style={styles.textInput}
-                placeholder="Write your thoughts..."
-                placeholderTextColor="#555555"
-                value={noteContent}
-                onChangeText={setNoteContent}
-                multiline
-                autoFocus
-                textAlignVertical="top"
-              />
-
-              {/* Save Button */}
-              <TouchableOpacity
-                style={[styles.saveBtn, !noteContent.trim() && styles.saveBtnDisabled]}
-                onPress={handleSave}
-                disabled={!noteContent.trim()}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.saveBtnText}>
-                  {editingNote ? 'UPDATE' : 'SAVE'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bgPrimary },
+  scroll: { flex: 1 },
+
+  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -276,7 +168,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 11,
-    color: '#999999',
+    color: Colors.textMuted,
     marginTop: 2,
   },
   addBtn: {
@@ -287,46 +179,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scroll: { flex: 1 },
-  content: { paddingBottom: 40 },
 
-  // Empty state
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 40,
-  },
-  emptyIcon: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 32,
-    color: '#666666',
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: 16,
-    color: Colors.textPrimary,
-    marginBottom: 8,
-  },
-  emptySub: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 12,
-    color: '#999999',
-    textAlign: 'center',
-    lineHeight: 18,
+  // List
+  listContent: {
+    padding: Spacing.screenPaddingH,
+    paddingBottom: 40,
   },
 
   // Card
   card: {
-    paddingHorizontal: Spacing.screenPaddingH,
-    paddingVertical: 18,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    padding: 16,
+    backgroundColor: Colors.bgSurface,
   },
-  cardBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderDefault,
+  cardSpaced: {
+    marginBottom: 12,
   },
-  cardHeader: {
+  cardTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -334,13 +204,21 @@ const styles = StyleSheet.create({
   },
   cardDate: {
     fontFamily: FontFamily.dmMonoLight,
-    fontSize: 10,
-    color: '#666666',
+    fontSize: 9,
+    color: Colors.textDark,
     letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
-  cardActions: {
+  cardTopRight: {
     flexDirection: 'row',
-    gap: 16,
+    alignItems: 'center',
+    gap: 12,
+  },
+  cardWordCount: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: Colors.textDarker,
+    letterSpacing: 0.5,
   },
   cardHeading: {
     fontFamily: FontFamily.dmSerifDisplayRegular,
@@ -350,22 +228,22 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardContent: {
-    fontFamily: FontFamily.dmSansRegular,
+    fontFamily: FontFamily.loraRegular,
     fontSize: 14,
-    color: Colors.textPrimary,
-    lineHeight: 21,
+    color: Colors.textSecondary,
+    lineHeight: 14 * 1.6,
   },
-  cardPlaceholder: {
+  cardEmpty: {
     fontFamily: FontFamily.dmMonoLight,
-    fontSize: 12,
-    color: '#666666',
+    fontSize: 11,
+    color: Colors.textDarker,
     fontStyle: 'italic',
   },
   cardLesson: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 10,
+    marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: Colors.borderDefault,
@@ -373,99 +251,49 @@ const styles = StyleSheet.create({
   cardLessonText: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 10,
-    color: '#666666',
+    color: Colors.textDark,
     flex: 1,
   },
 
-  // Modal
-  modalOverlay: {
+  // Empty state
+  emptyState: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: Colors.bgSurface,
-    borderTopWidth: 1,
-    borderTopColor: Colors.borderDefault,
-    paddingHorizontal: Spacing.screenPaddingH,
-    paddingTop: 20,
-    paddingBottom: 40,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'center',
+    paddingHorizontal: 40,
   },
-  modalTitle: {
-    fontFamily: FontFamily.dmMonoMedium,
-    fontSize: 13,
-    color: Colors.textPrimary,
-    letterSpacing: 1.2,
-  },
-
-  // Lesson Picker
-  lessonPicker: {
-    marginBottom: 16,
-  },
-  lessonPickerLabel: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 10,
-    color: '#999999',
-    letterSpacing: 1,
-    marginBottom: 10,
-  },
-  lessonChips: {
-    gap: 8,
-  },
-  chip: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-  },
-  chipActive: {
-    borderColor: Colors.accent,
-    backgroundColor: 'rgba(200, 240, 77, 0.08)',
-  },
-  chipText: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 10,
-    color: '#999999',
-    letterSpacing: 0.5,
-  },
-  chipTextActive: {
-    color: Colors.accent,
-  },
-
-  // Text Input
-  textInput: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: 15,
-    color: Colors.textPrimary,
-    lineHeight: 22,
-    minHeight: 140,
-    maxHeight: 280,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    padding: 16,
-    marginBottom: 20,
-  },
-
-  // Save Button
-  saveBtn: {
+  emptyAccent: {
+    width: 32,
+    height: 2,
     backgroundColor: Colors.accent,
-    paddingVertical: 14,
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: 16,
+    color: Colors.textPrimary,
+    marginBottom: 8,
+  },
+  emptySub: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 11,
+    color: Colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 18,
+    marginBottom: 24,
+  },
+  emptyBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+    backgroundColor: Colors.accent,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
-  saveBtnDisabled: {
-    opacity: 0.3,
-  },
-  saveBtnText: {
+  emptyBtnText: {
     fontFamily: FontFamily.dmMonoMedium,
-    fontSize: 13,
+    fontSize: 11,
+    letterSpacing: 11 * 0.12,
     color: Colors.bgPrimary,
-    letterSpacing: 1.5,
   },
 });

@@ -1,0 +1,321 @@
+// ─── APEX — Full-screen Note Editor ─────────────────────────────────────────
+// Opens for new notes or existing notes. Auto-saves on back navigation.
+
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft, BookOpen, Trash2, Check } from 'lucide-react-native';
+
+import { Colors, FontFamily, Spacing } from '../theme';
+import { useAppState, Note } from '../state/AppState';
+import { MOCK_LESSONS } from '../data/mockLessons';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NotesStackParamList } from '../navigation/types';
+
+type Props = NativeStackScreenProps<NotesStackParamList, 'NoteEditor'>;
+
+export default function NoteEditorScreen({ navigation, route }: Props) {
+  const { noteId, lessonId: initialLessonId, heading: initialHeading } = route.params ?? {};
+  const { state, addNote, updateNote, deleteNote } = useAppState();
+
+  const existingNote = noteId ? state.notes.find((n) => n.id === noteId) : undefined;
+
+  const [content, setContent] = useState(existingNote?.content ?? '');
+  const [lessonId] = useState(existingNote?.lessonId ?? initialLessonId);
+  const [heading] = useState(existingNote?.heading ?? initialHeading);
+  const [saved, setSaved] = useState(!!existingNote);
+  const inputRef = useRef<TextInput>(null);
+  const hasChanges = useRef(false);
+  const createdNoteId = useRef<string | null>(noteId ?? null);
+
+  // Track if content changed
+  useEffect(() => {
+    if (existingNote && content !== existingNote.content) {
+      hasChanges.current = true;
+    } else if (!existingNote && content.trim().length > 0) {
+      hasChanges.current = true;
+    }
+  }, [content]);
+
+  // Auto-focus the editor
+  useEffect(() => {
+    const timer = setTimeout(() => inputRef.current?.focus(), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Auto-save on navigate away
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      saveNote();
+    });
+    return unsubscribe;
+  }, [navigation, content]);
+
+  const saveNote = () => {
+    const trimmed = content.trim();
+    if (!trimmed) return;
+
+    if (createdNoteId.current) {
+      // Update existing or previously-created-this-session note
+      updateNote(createdNoteId.current, trimmed);
+    } else {
+      // Create new — store the returned ID for subsequent saves
+      createdNoteId.current = addNote(trimmed, lessonId, heading);
+    }
+    setSaved(true);
+    hasChanges.current = false;
+  };
+
+  const handleSave = () => {
+    saveNote();
+    Keyboard.dismiss();
+    setSaved(true);
+  };
+
+  const handleDelete = () => {
+    Alert.alert('Delete Note', 'This cannot be undone.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          if (createdNoteId.current) {
+            deleteNote(createdNoteId.current);
+          }
+          hasChanges.current = false;
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
+  // Derived data
+  const lessonTitle = lessonId
+    ? MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? null
+    : null;
+
+  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+
+  const formatDate = (iso?: string) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  return (
+    <SafeAreaView style={styles.safe} edges={['top']}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <View style={styles.header}>
+          <Pressable onPress={handleBack} hitSlop={12} style={styles.backBtn}>
+            <ArrowLeft size={20} color={Colors.textPrimary} strokeWidth={1.5} />
+          </Pressable>
+
+          <View style={styles.headerActions}>
+            {existingNote && (
+              <TouchableOpacity onPress={handleDelete} hitSlop={12} style={styles.headerBtn}>
+                <Trash2 size={16} color={Colors.textDark} strokeWidth={1.5} />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={handleSave}
+              hitSlop={12}
+              style={[styles.saveChip, !content.trim() && styles.saveChipDisabled]}
+              disabled={!content.trim()}
+              activeOpacity={0.7}
+            >
+              <Check size={14} color={content.trim() ? Colors.bgPrimary : Colors.textDark} strokeWidth={2} />
+              <Text style={[styles.saveChipText, !content.trim() && styles.saveChipTextDisabled]}>
+                SAVE
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* ── Meta bar ───────────────────────────────────────────────────── */}
+        <View style={styles.metaBar}>
+          {existingNote && (
+            <Text style={styles.metaText}>
+              {formatDate(existingNote.updatedAt)}
+            </Text>
+          )}
+          {!existingNote && <Text style={styles.metaText}>NEW NOTE</Text>}
+          <Text style={styles.metaText}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</Text>
+        </View>
+
+        {/* ── Heading (if from reflection prompt) ────────────────────────── */}
+        {heading && (
+          <View style={styles.headingBar}>
+            <Text style={styles.headingText}>{heading}</Text>
+          </View>
+        )}
+
+        {/* ── Linked lesson ──────────────────────────────────────────────── */}
+        {lessonTitle && (
+          <View style={styles.lessonBar}>
+            <BookOpen size={10} color={Colors.textDark} strokeWidth={1.5} />
+            <Text style={styles.lessonBarText} numberOfLines={1}>{lessonTitle}</Text>
+          </View>
+        )}
+
+        {/* ── Editor ─────────────────────────────────────────────────────── */}
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.editorContent}
+          keyboardDismissMode="interactive"
+          showsVerticalScrollIndicator={false}
+        >
+          <TextInput
+            ref={inputRef}
+            style={styles.editor}
+            value={content}
+            onChangeText={(text) => {
+              setContent(text);
+              setSaved(false);
+            }}
+            placeholder="Start writing..."
+            placeholderTextColor={Colors.textDark}
+            multiline
+            textAlignVertical="top"
+            scrollEnabled={false}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.bgPrimary },
+  flex: { flex: 1 },
+
+  // Header
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  backBtn: {
+    padding: 4,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  headerBtn: {
+    padding: 4,
+  },
+  saveChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.accent,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+  },
+  saveChipDisabled: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  saveChipText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 10,
+    letterSpacing: 10 * 0.12,
+    color: Colors.bgPrimary,
+  },
+  saveChipTextDisabled: {
+    color: Colors.textDark,
+  },
+
+  // Meta bar
+  metaBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  metaText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.1,
+    color: Colors.textDark,
+    textTransform: 'uppercase',
+  },
+
+  // Heading bar
+  headingBar: {
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+    backgroundColor: Colors.accentGhost,
+  },
+  headingText: {
+    fontFamily: FontFamily.dmSerifDisplayRegular,
+    fontSize: 15,
+    color: Colors.accent,
+    lineHeight: 22,
+  },
+
+  // Lesson bar
+  lessonBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  lessonBarText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textMuted,
+    flex: 1,
+  },
+
+  // Editor
+  editorContent: {
+    paddingHorizontal: Spacing.screenPaddingH,
+    paddingTop: 20,
+    paddingBottom: 120,
+  },
+  editor: {
+    fontFamily: FontFamily.loraRegular,
+    fontSize: 16,
+    lineHeight: 16 * 1.75,
+    color: Colors.textPrimary,
+    minHeight: 300,
+  },
+});

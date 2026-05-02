@@ -52,7 +52,7 @@ interface AppContextValue {
   toggleSaveLesson: (lessonId: string) => void;
   getLessonProgress: (lessonId: string) => LessonProgress;
   isLessonUnlocked: (lessonId: string) => boolean;
-  addNote: (content: string, lessonId?: string, heading?: string) => void;
+  addNote: (content: string, lessonId?: string, heading?: string) => string;
   updateNote: (noteId: string, content: string) => void;
   deleteNote: (noteId: string) => void;
   addReadingTime: (minutes: number) => void;
@@ -338,10 +338,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     [state.stats.casesCompleted],
   );
 
-  const addNote = useCallback((content: string, lessonId?: string, heading?: string) => {
+  const addNote = useCallback((content: string, lessonId?: string, heading?: string): string => {
     const now = new Date().toISOString();
+    const noteId = `note_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const note: Note = {
-      id: `note_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      id: noteId,
       content,
       heading,
       lessonId,
@@ -352,6 +353,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       notes: [note, ...prev.notes],
     }));
+    return noteId;
   }, []);
 
   const updateNote = useCallback((noteId: string, content: string) => {

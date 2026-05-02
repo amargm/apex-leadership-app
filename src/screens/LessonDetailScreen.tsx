@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 
@@ -301,10 +301,13 @@ function TimelineTab({ lesson }: { lesson: Lesson }) {
 }
 
 function ReflectTab({ lesson }: { lesson: Lesson }) {
-  const { addNote } = useAppState();
+  const nav = useNavigation<any>();
 
   const handleAddNote = (prompt: string) => {
-    addNote('', lesson.lesson_id, prompt);
+    nav.navigate('Notes', {
+      screen: 'NoteEditor',
+      params: { lessonId: lesson.lesson_id, heading: prompt },
+    });
   };
 
   return (

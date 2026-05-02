@@ -18,7 +18,15 @@ export type LearnStackParamList = {
   LessonDetail: { lessonId: string };
   Saved: undefined;
 };
-
+// ─── Notes Stack ──────────────────────────────────────────────────────────
+export type NotesStackParamList = {
+  NotesList: undefined;
+  NoteEditor: {
+    noteId?: string;
+    lessonId?: string;
+    heading?: string;
+  };
+};
 // ─── Composite screen props ───────────────────────────────────────────────────
 export type HomeScreenProps = CompositeScreenProps<
   NativeStackScreenProps<LearnStackParamList, 'Home'>,

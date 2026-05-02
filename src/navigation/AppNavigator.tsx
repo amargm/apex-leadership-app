@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BookOpen, Map, FileText, User } from 'lucide-react-native';
 
 import { Colors, FontFamily } from '../theme';
-import type { TabParamList, LearnStackParamList } from './types';
+import type { TabParamList, LearnStackParamList, NotesStackParamList } from './types';
 import { useAppState } from '../state/AppState';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -16,6 +16,7 @@ import LessonDetailScreen from '../screens/LessonDetailScreen';
 import SavedScreen from '../screens/SavedScreen';
 import PathScreen from '../screens/PathScreen';
 import NotesScreen from '../screens/NotesScreen';
+import NoteEditorScreen from '../screens/NoteEditorScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SplashScreen from '../screens/SplashScreen';
 import AuthScreen from '../screens/AuthScreen';
@@ -45,15 +46,13 @@ function FadeInScreen({ children }: { children: React.ReactNode }) {
 function FadedPathScreen(props: any) {
   return <FadeInScreen><PathScreen {...props} /></FadeInScreen>;
 }
-function FadedNotesScreen(props: any) {
-  return <FadeInScreen><NotesScreen {...props} /></FadeInScreen>;
-}
 function FadedProfileScreen(props: any) {
   return <FadeInScreen><ProfileScreen {...props} /></FadeInScreen>;
 }
 
 // ─── Navigators ───────────────────────────────────────────────────────────────
 const Stack = createNativeStackNavigator<LearnStackParamList>();
+const NStack = createNativeStackNavigator<NotesStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
 // ─── Learn Stack (Home + Lesson Detail) ──────────────────────────────────────
@@ -86,6 +85,24 @@ function LearnStack() {
         }}
       />
     </Stack.Navigator>
+  );
+}
+
+// ─── Notes Stack (NotesList + NoteEditor) ─────────────────────────────────────
+function NotesStack() {
+  return (
+    <NStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animation: 'slide_from_right',
+        animationDuration: 250,
+        gestureEnabled: true,
+        fullScreenGestureEnabled: true,
+      }}
+    >
+      <NStack.Screen name="NotesList" component={NotesScreen} />
+      <NStack.Screen name="NoteEditor" component={NoteEditorScreen} />
+    </NStack.Navigator>
   );
 }
 
@@ -136,7 +153,7 @@ function BottomTabs() {
     >
       <Tab.Screen name="Learn" component={LearnStack} options={{ title: 'LEARN' }} />
       <Tab.Screen name="Path" component={FadedPathScreen} options={{ title: 'PATH' }} />
-      <Tab.Screen name="Notes" component={FadedNotesScreen} options={{ title: 'NOTES' }} />
+      <Tab.Screen name="Notes" component={NotesStack} options={{ title: 'NOTES' }} />
       <Tab.Screen name="Profile" component={FadedProfileScreen} options={{ title: 'PROFILE' }} />
     </Tab.Navigator>
   );
