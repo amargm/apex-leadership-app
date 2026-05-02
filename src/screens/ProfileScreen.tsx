@@ -1,10 +1,12 @@
 // ─── Profile Screen — Full Static Implementation ──────────────────────────────
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Alert,
   Animated,
   Linking,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -50,22 +52,15 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   const { state, resetAllProgress, setLargeFont, setUserName } = useAppState();
+  const [resetModalVisible, setResetModalVisible] = useState(false);
 
   const handleResetProgress = () => {
-    Alert.alert(
-      'Reset All Progress',
-      'This will clear all lesson progress, notes, and stats. This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: () => {
-            resetAllProgress();
-          },
-        },
-      ],
-    );
+    setResetModalVisible(true);
+  };
+
+  const confirmReset = () => {
+    setResetModalVisible(false);
+    resetAllProgress();
   };
 
   const formatTime = (minutes: number) =>
@@ -226,6 +221,45 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <Text style={styles.footerText}>APEX LEADERSHIP · BUILT FOR GROWTH</Text>
         </View>
       </ScrollView>
+
+      {/* ── Reset Confirmation Modal ── */}
+      <Modal visible={resetModalVisible} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setResetModalVisible(false)}>
+          <Pressable style={styles.modalBox}>
+            {/* Accent top line */}
+            <View style={styles.modalAccent} />
+
+            <Text style={styles.modalTitle}>RESET ALL PROGRESS</Text>
+            <Text style={styles.modalBody}>
+              This will clear all lesson progress, notes, and stats. This cannot be undone.
+            </Text>
+
+            <View style={styles.modalActions}>
+              {/* "No" — highlighted / primary action */}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalBtnPrimary,
+                  pressed && styles.modalBtnPrimaryPressed,
+                ]}
+                onPress={() => setResetModalVisible(false)}
+              >
+                <Text style={styles.modalBtnPrimaryText}>NO, KEEP DATA</Text>
+              </Pressable>
+
+              {/* "Yes, Reset" — subdued / destructive */}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalBtnDestructive,
+                  pressed && styles.modalBtnDestructivePressed,
+                ]}
+                onPress={confirmReset}
+              >
+                <Text style={styles.modalBtnDestructiveText}>YES, RESET</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -356,5 +390,80 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: Radius.toggleThumb,
     backgroundColor: Colors.bgPrimary,
+  },
+
+  // Reset modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  modalBox: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: Colors.bgSurface,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    overflow: 'hidden',
+  },
+  modalAccent: {
+    height: 2,
+    backgroundColor: '#E05252',
+  },
+  modalTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 12,
+    letterSpacing: 12 * 0.12,
+    color: Colors.textPrimary,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+  modalBody: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 13,
+    lineHeight: 13 * 1.6,
+    color: Colors.textSecondary,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 28,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
+  },
+  modalBtnPrimary: {
+    flex: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.accent,
+  },
+  modalBtnPrimaryPressed: {
+    opacity: 0.85,
+  },
+  modalBtnPrimaryText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.1,
+    color: Colors.bgPrimary,
+  },
+  modalBtnDestructive: {
+    flex: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.bgSurface,
+    borderLeftWidth: 1,
+    borderLeftColor: Colors.borderDefault,
+  },
+  modalBtnDestructivePressed: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  modalBtnDestructiveText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 11,
+    letterSpacing: 11 * 0.1,
+    color: '#E05252',
   },
 });
