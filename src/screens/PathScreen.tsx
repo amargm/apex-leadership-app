@@ -166,7 +166,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
         {groupedByModule.map((group) => {
           const dotColor = CATEGORY_DOT_COLORS[group.module.colorKey];
-          const isCollapsed = !!collapsedModules[group.module.key] && !isSearching;
+          const isCollapsed = !collapsedModules[group.module.key] && !isSearching;
           const completedInGroup = group.lessons.filter(
             (l) => getLessonProgress(l.lesson_id).status === 'completed',
           ).length;
