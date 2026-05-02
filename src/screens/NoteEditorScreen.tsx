@@ -16,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, BookOpen, Trash2, Check, ChevronRight } from 'lucide-react-native';
+import { ArrowLeft, BookOpen, Trash2, Check, ChevronRight, ChevronDown, Link } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import { useAppState, Note } from '../state/AppState';
@@ -34,10 +34,11 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   const existingNote = noteId ? state.notes.find((n) => n.id === noteId) : undefined;
 
   const [content, setContent] = useState(existingNote?.content ?? '');
-  const [lessonId] = useState(existingNote?.lessonId ?? initialLessonId);
-  const [heading] = useState(existingNote?.heading ?? initialHeading);
+  const [lessonId, setLessonId] = useState<string | undefined>(existingNote?.lessonId ?? initialLessonId);
+  const [heading, setHeading] = useState(existingNote?.heading ?? initialHeading ?? '');
   const [saved, setSaved] = useState(!!existingNote);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [lessonPickerVisible, setLessonPickerVisible] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const hasChanges = useRef(false);
   const createdNoteId = useRef<string | null>(noteId ?? null);
@@ -48,10 +49,10 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   useEffect(() => {
     if (existingNote && content !== existingNote.content) {
       hasChanges.current = true;
-    } else if (!existingNote && content.trim().length > 0) {
+    } else if (!existingNote && (content.trim().length > 0 || heading.trim().length > 0)) {
       hasChanges.current = true;
     }
-  }, [content]);
+  }, [content, heading]);
 
   // Auto-focus only for new notes
   useEffect(() => {
@@ -73,12 +74,12 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     const trimmed = content.trim();
     if (!trimmed) return;
 
+    const headingVal = heading.trim() || undefined;
+
     if (createdNoteId.current) {
-      // Update existing or previously-created-this-session note
-      updateNote(createdNoteId.current, trimmed);
+      updateNote(createdNoteId.current, trimmed, headingVal, lessonId);
     } else {
-      // Create new — store the returned ID for subsequent saves
-      createdNoteId.current = addNote(trimmed, lessonId, heading);
+      createdNoteId.current = addNote(trimmed, lessonId, headingVal);
     }
     setSaved(true);
     hasChanges.current = false;
@@ -171,26 +172,55 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
           <Text style={styles.metaText}>{wordCount} {wordCount === 1 ? 'word' : 'words'}</Text>
         </View>
 
-        {/* ── Heading (if from reflection prompt) ────────────────────────── */}
-        {heading && (
-          <View style={styles.headingBar}>
-            <Text style={styles.headingText}>{heading}</Text>
-          </View>
-        )}
+        {/* ── Heading ─────────────────────────────────────────────────── */}
+        <View style={styles.headingBar}>
+          <TextInput
+            style={styles.headingInput}
+            value={heading}
+            onChangeText={(t) => {
+              setHeading(t.slice(0, 25));
+              setSaved(false);
+            }}
+            placeholder="Add heading..."
+            placeholderTextColor={Colors.textDarker}
+            maxLength={25}
+            returnKeyType="done"
+          />
+          <Text style={styles.headingCount}>{heading.length}/25</Text>
+        </View>
 
-        {/* ── Linked lesson (tappable) ───────────────────────────────────── */}
-        {lessonTitle && lessonId && (
+        {/* ── Linked lesson ──────────────────────────────────────────────── */}
+        {lessonTitle && lessonId ? (
+          <View style={styles.lessonBar}>
+            <TouchableOpacity
+              style={styles.lessonBarLink}
+              activeOpacity={0.7}
+              onPress={() => {
+                saveNote();
+                rootNav.navigate('Learn', { screen: 'LessonDetail', params: { lessonId } });
+              }}
+            >
+              <BookOpen size={10} color={Colors.textDark} strokeWidth={1.5} />
+              <Text style={styles.lessonBarText} numberOfLines={1}>{lessonTitle}</Text>
+              <ChevronRight size={12} color={Colors.textDark} strokeWidth={1.5} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { setLessonId(undefined); setSaved(false); }}
+              hitSlop={8}
+              style={styles.lessonBarUnlink}
+            >
+              <Text style={styles.lessonBarUnlinkText}>×</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
           <TouchableOpacity
             style={styles.lessonBar}
             activeOpacity={0.7}
-            onPress={() => {
-              saveNote();
-              rootNav.navigate('Learn', { screen: 'LessonDetail', params: { lessonId } });
-            }}
+            onPress={() => setLessonPickerVisible(true)}
           >
-            <BookOpen size={10} color={Colors.textDark} strokeWidth={1.5} />
-            <Text style={styles.lessonBarText} numberOfLines={1}>{lessonTitle}</Text>
-            <ChevronRight size={12} color={Colors.textDark} strokeWidth={1.5} />
+            <Link size={10} color={Colors.textDark} strokeWidth={1.5} />
+            <Text style={styles.lessonBarText}>Link to case study...</Text>
+            <ChevronDown size={12} color={Colors.textDark} strokeWidth={1.5} />
           </TouchableOpacity>
         )}
 
@@ -248,6 +278,33 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
                 <Text style={[styles.modalBtnText, styles.modalBtnTextDestructive]}>DELETE</Text>
               </Pressable>
             </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* ── Lesson Picker Modal ── */}
+      <Modal visible={lessonPickerVisible} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setLessonPickerVisible(false)}>
+          <Pressable style={styles.pickerBox}>
+            <View style={styles.pickerAccent} />
+            <Text style={styles.pickerTitle}>LINK TO CASE STUDY</Text>
+            <ScrollView style={styles.pickerScroll} showsVerticalScrollIndicator={false}>
+              {MOCK_LESSONS.map((lesson) => (
+                <TouchableOpacity
+                  key={lesson.lesson_id}
+                  style={styles.pickerItem}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    setLessonId(lesson.lesson_id);
+                    setSaved(false);
+                    setLessonPickerVisible(false);
+                  }}
+                >
+                  <Text style={styles.pickerCategory}>{lesson.category.toUpperCase()}</Text>
+                  <Text style={styles.pickerLessonTitle} numberOfLines={1}>{lesson.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </Pressable>
         </Pressable>
       </Modal>
@@ -320,17 +377,27 @@ const styles = StyleSheet.create({
 
   // Heading bar
   headingBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Spacing.screenPaddingH,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderDefault,
     backgroundColor: Colors.accentGhost,
   },
-  headingText: {
+  headingInput: {
+    flex: 1,
     fontFamily: FontFamily.dmSerifDisplayRegular,
     fontSize: 15,
     color: Colors.accent,
     lineHeight: 22,
+    padding: 0,
+  },
+  headingCount: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    color: Colors.textDarker,
+    marginLeft: 8,
   },
 
   // Lesson bar
@@ -342,6 +409,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderDefault,
+  },
+  lessonBarLink: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  lessonBarUnlink: {
+    paddingLeft: 8,
+  },
+  lessonBarUnlinkText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 16,
+    color: Colors.textDark,
   },
   lessonBarText: {
     fontFamily: FontFamily.dmMonoLight,
@@ -359,7 +440,7 @@ const styles = StyleSheet.create({
   editor: {
     fontFamily: FontFamily.loraRegular,
     fontSize: 16,
-    lineHeight: 16 * 1.75,
+    lineHeight: 16 * 1.5,
     color: Colors.textPrimary,
     minHeight: 300,
   },
@@ -427,5 +508,51 @@ const styles = StyleSheet.create({
   },
   modalBtnTextDestructive: {
     color: '#E05252',
+  },
+
+  // Lesson picker modal
+  pickerBox: {
+    width: '100%',
+    maxWidth: 360,
+    maxHeight: '70%',
+    backgroundColor: Colors.bgSurface,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    overflow: 'hidden',
+  },
+  pickerAccent: {
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  pickerTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.12,
+    color: Colors.textPrimary,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 12,
+  },
+  pickerScroll: {
+    maxHeight: 360,
+  },
+  pickerItem: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
+  },
+  pickerCategory: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 8,
+    letterSpacing: 8 * 0.15,
+    color: Colors.textDark,
+    marginBottom: 3,
+  },
+  pickerLessonTitle: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 13,
+    color: Colors.textPrimary,
+    lineHeight: 18,
   },
 });
