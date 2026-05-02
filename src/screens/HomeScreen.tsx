@@ -4,6 +4,8 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Animated,
+  Dimensions,
+  Easing,
   ScrollView,
   StyleSheet,
   Text,
@@ -37,6 +39,77 @@ function useFadeUp(count: number) {
     transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
   }));
 }
+
+// ─── Ambient drift lines — slow looping geometric fragments ───────────────────
+const SCREEN_W = Dimensions.get('window').width;
+const DRIFT_LINES = [
+  { width: SCREEN_W * 0.35, top: 8,  opacity: 0.045, duration: 18000, delay: 0 },
+  { width: SCREEN_W * 0.22, top: 28, opacity: 0.07,  duration: 24000, delay: 4000 },
+  { width: SCREEN_W * 0.40, top: 52, opacity: 0.035, duration: 21000, delay: 9000 },
+];
+
+function DriftLines() {
+  const anims = useRef(DRIFT_LINES.map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    DRIFT_LINES.forEach((line, i) => {
+      const loop = () => {
+        anims[i].setValue(0);
+        Animated.timing(anims[i], {
+          toValue: 1,
+          duration: line.duration,
+          easing: Easing.linear,
+          useNativeDriver: true,
+          delay: line.delay,
+        }).start(() => {
+          // Reset delay to 0 after first pass so loop is seamless
+          DRIFT_LINES[i].delay = 0;
+          loop();
+        });
+      };
+      loop();
+    });
+  }, []);
+
+  return (
+    <View style={driftStyles.container} pointerEvents="none">
+      {DRIFT_LINES.map((line, i) => {
+        // Translate from off-screen right to off-screen left
+        const translateX = anims[i].interpolate({
+          inputRange: [0, 1],
+          outputRange: [SCREEN_W + line.width, -(line.width * 2)],
+        });
+        return (
+          <Animated.View
+            key={i}
+            style={[
+              driftStyles.line,
+              {
+                width: line.width,
+                top: line.top,
+                opacity: line.opacity,
+                transform: [{ translateX }],
+              },
+            ]}
+          />
+        );
+      })}
+    </View>
+  );
+}
+
+const driftStyles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  line: {
+    position: 'absolute',
+    height: 1,
+    backgroundColor: Colors.accent,
+    right: 0,
+  },
+});
 
 const SECTION_COUNT = 6;
 
@@ -104,6 +177,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
         {/* ── Greeting ────────────────────────────────────────────── */}
         <Animated.View style={[styles.greeting, fadeStyles[1]]}>
+          <DriftLines />
           <Text style={styles.greetingLabel}>{getGreeting()}</Text>
           <Text style={styles.greetingName}>{state.userName}</Text>
         </Animated.View>
@@ -262,6 +336,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.screenPaddingH,
     paddingTop: 32,
     marginBottom: 0,
+    overflow: 'hidden',
   },
   greetingLabel: {
     fontFamily: FontFamily.dmMonoRegular,
