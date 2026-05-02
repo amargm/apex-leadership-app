@@ -22,6 +22,7 @@ import type { Lesson } from '../types/lesson';
 import FeaturedCard from '../components/FeaturedCard';
 import { useAppState } from '../state/AppState';
 import { getDailyQuote } from '../data/dailyQuotes';
+import { Crown } from 'lucide-react-native';
 
 // ─── Staggered fade-up hook ───────────────────────────────────────────────────
 function useFadeUp(count: number) {
@@ -266,6 +267,23 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </Text>
             <Text style={styles.quoteAttribution}>— {dailyQuote.attribution}</Text>
           </View>
+        </Animated.View>
+
+        {/* ── Pro Upgrade Banner ────────────────────────────────────── */}
+        <Animated.View style={fadeStyles[5]}>
+          <TouchableOpacity
+            style={styles.proBanner}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Pro' as any)}
+          >
+            <View style={styles.proBannerAccent} />
+            <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+            <View style={styles.proBannerText}>
+              <Text style={styles.proBannerTitle}>UPGRADE TO PRO</Text>
+              <Text style={styles.proBannerSub}>Unlock all cases & deep-dive extras</Text>
+            </View>
+            <Text style={styles.proBannerArrow}>→</Text>
+          </TouchableOpacity>
         </Animated.View>
       </ScrollView>
     </SafeAreaView>
@@ -558,5 +576,46 @@ const styles = StyleSheet.create({
     color: '#999999',
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
+  },
+
+  // ── Pro Banner ──
+  proBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: Spacing.screenPaddingH,
+    marginTop: 24,
+    marginBottom: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+    overflow: 'hidden',
+    gap: 12,
+  },
+  proBannerAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  proBannerText: { flex: 1, gap: 2 },
+  proBannerTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    color: Colors.textPrimary,
+    letterSpacing: 11 * 0.1,
+  },
+  proBannerSub: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textMuted,
+  },
+  proBannerArrow: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 16,
+    color: Colors.accent,
   },
 });

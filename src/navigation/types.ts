@@ -17,6 +17,7 @@ export type LearnStackParamList = {
   Home: undefined;
   LessonDetail: { lessonId: string };
   Saved: undefined;
+  Pro: undefined;
 };
 // ─── Notes Stack ──────────────────────────────────────────────────────────
 export type NotesStackParamList = {

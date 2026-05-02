@@ -16,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, RotateCcw } from 'lucide-react-native';
+import { ChevronRight, Crown, RotateCcw } from 'lucide-react-native';
 import { Colors, FontFamily, Spacing, Radius } from '../theme';
 import type { ProfileScreenProps } from '../navigation/types';
 import { useAppState } from '../state/AppState';
@@ -114,6 +114,21 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <Text style={styles.statLabel}>NOTES</Text>
           </View>
         </View>
+
+        {/* ── Pro Upgrade Banner ── */}
+        <TouchableOpacity
+          style={styles.proBanner}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Learn' as any, { screen: 'Pro' })}
+        >
+          <View style={styles.proBannerAccent} />
+          <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+          <View style={styles.proBannerContent}>
+            <Text style={styles.proBannerTitle}>UPGRADE TO PRO</Text>
+            <Text style={styles.proBannerSub}>All cases · Deep-dives · Offline</Text>
+          </View>
+          <Text style={styles.proBannerArrow}>→</Text>
+        </TouchableOpacity>
 
         <View style={styles.divider} />
 
@@ -316,6 +331,46 @@ const styles = StyleSheet.create({
   },
 
   divider: { height: 1, backgroundColor: Colors.borderDefault, marginBottom: Spacing.xl },
+
+  // Pro banner
+  proBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+    overflow: 'hidden',
+    gap: 12,
+  },
+  proBannerAccent: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  proBannerContent: { flex: 1, gap: 2 },
+  proBannerTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    color: Colors.textPrimary,
+    letterSpacing: 11 * 0.1,
+  },
+  proBannerSub: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textMuted,
+  },
+  proBannerArrow: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 16,
+    color: Colors.accent,
+  },
+
   sectionDivider: {
     flexDirection: 'row',
     alignItems: 'center',

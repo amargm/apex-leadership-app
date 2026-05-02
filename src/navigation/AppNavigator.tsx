@@ -18,6 +18,7 @@ import PathScreen from '../screens/PathScreen';
 import NotesScreen from '../screens/NotesScreen';
 import NoteEditorScreen from '../screens/NoteEditorScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProScreen from '../screens/ProScreen';
 import SplashScreen from '../screens/SplashScreen';
 import AuthScreen from '../screens/AuthScreen';
 
@@ -79,6 +80,14 @@ function LearnStack() {
       <Stack.Screen
         name="Saved"
         component={SavedScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Pro"
+        component={ProScreen}
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,
