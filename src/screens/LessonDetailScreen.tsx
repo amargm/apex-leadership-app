@@ -44,6 +44,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const scrollRef = useRef<ScrollView>(null);
   const shareRef = useRef<ViewShot>(null);
   const sessionStart = useRef<number>(Date.now());
+  const hasRecorded = useRef(false);
   const isFocused = useIsFocused();
   const { startLesson, markTabViewed, completeLesson, getLessonProgress, addReadingTime } = useAppState();
 
@@ -74,13 +75,18 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   useEffect(() => {
     if (isFocused) {
       sessionStart.current = Date.now();
-    } else {
-      const elapsed = Math.round((Date.now() - sessionStart.current) / 60000);
-      if (elapsed > 0) addReadingTime(elapsed);
+      hasRecorded.current = false;
+    } else if (!hasRecorded.current) {
+      hasRecorded.current = true;
+      const elapsedMin = (Date.now() - sessionStart.current) / 60000;
+      if (elapsedMin >= 0.1) addReadingTime(elapsedMin); // ≥6 seconds counts
     }
     return () => {
-      const elapsed = Math.round((Date.now() - sessionStart.current) / 60000);
-      if (elapsed > 0) addReadingTime(elapsed);
+      if (!hasRecorded.current) {
+        hasRecorded.current = true;
+        const elapsedMin = (Date.now() - sessionStart.current) / 60000;
+        if (elapsedMin >= 0.1) addReadingTime(elapsedMin);
+      }
     };
   }, [isFocused]);
 

@@ -66,8 +66,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     navigation.navigate('LessonDetail', { lessonId: lesson.lesson_id });
   };
 
-  const formatTime = (minutes: number) =>
-    minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`;
+  const formatTime = (raw: number) => {
+    const minutes = Math.round(raw);
+    return minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`;
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>

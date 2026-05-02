@@ -103,7 +103,7 @@ function getDefaultState(): AppState {
       dayStreak: 0,
       casesCompleted: 0,
       timeThisWeekMinutes: 0,
-      lastActiveDate: new Date().toISOString().split('T')[0],
+      lastActiveDate: '', // empty = first ever open; streak effect will set it
       isoWeek: getISOWeek(),
     },
     savedLessonIds: [],
@@ -169,7 +169,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const currentWeek = getISOWeek();
 
     setState((prev) => {
-      let { dayStreak, timeThisWeekMinutes, isoWeek } = prev.stats;
+      let { dayStreak, timeThisWeekMinutes, isoWeek, lastActiveDate } = prev.stats;
       let changed = false;
 
       // Reset weekly time if new ISO week
@@ -179,19 +179,24 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         changed = true;
       }
 
-      // Update streak if new day
-      if (prev.stats.lastActiveDate !== today) {
-        const lastDate = new Date(prev.stats.lastActiveDate);
-        const todayDate = new Date(today);
-        const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
-        dayStreak = diffDays === 1 ? dayStreak + 1 : diffDays > 1 ? 1 : dayStreak;
+      if (lastActiveDate !== today) {
+        if (lastActiveDate === '') {
+          // First ever app open — start streak at 1
+          dayStreak = 1;
+        } else {
+          const lastDate = new Date(lastActiveDate + 'T00:00:00');
+          const todayDate = new Date(today + 'T00:00:00');
+          const diffDays = Math.round((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+          dayStreak = diffDays === 1 ? dayStreak + 1 : diffDays > 1 ? 1 : dayStreak;
+        }
+        lastActiveDate = today;
         changed = true;
       }
 
       if (!changed) return prev;
       return {
         ...prev,
-        stats: { ...prev.stats, dayStreak, timeThisWeekMinutes, isoWeek, lastActiveDate: today },
+        stats: { ...prev.stats, dayStreak, timeThisWeekMinutes, isoWeek, lastActiveDate },
       };
     });
   }, [loaded]);
@@ -372,13 +377,29 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   const addReadingTime = useCallback((minutes: number) => {
     if (minutes <= 0) return;
-    setState((prev) => ({
-      ...prev,
-      stats: {
-        ...prev.stats,
-        timeThisWeekMinutes: prev.stats.timeThisWeekMinutes + Math.round(minutes),
-      },
-    }));
+    const today = new Date().toISOString().split('T')[0];
+    setState((prev) => {
+      let { dayStreak, lastActiveDate } = prev.stats;
+
+      // Keep streak alive when user reads on a new day (covers mid-session day roll)
+      if (lastActiveDate !== today && lastActiveDate !== '') {
+        const lastDate = new Date(lastActiveDate + 'T00:00:00');
+        const todayDate = new Date(today + 'T00:00:00');
+        const diffDays = Math.round((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+        dayStreak = diffDays === 1 ? dayStreak + 1 : diffDays > 1 ? 1 : dayStreak;
+        lastActiveDate = today;
+      }
+
+      return {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          dayStreak,
+          lastActiveDate,
+          timeThisWeekMinutes: prev.stats.timeThisWeekMinutes + minutes,
+        },
+      };
+    });
   }, []);
 
   const setUserName = useCallback((name: string) => {
