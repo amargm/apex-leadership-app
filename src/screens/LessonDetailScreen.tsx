@@ -5,6 +5,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -302,12 +304,31 @@ function TimelineTab({ lesson }: { lesson: Lesson }) {
 
 function ReflectTab({ lesson }: { lesson: Lesson }) {
   const nav = useNavigation<any>();
+  const { addNote } = useAppState();
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const pendingNoteId = useRef<string | null>(null);
 
   const handleAddNote = (prompt: string) => {
-    nav.navigate('Notes', {
-      screen: 'NoteEditor',
-      params: { lessonId: lesson.lesson_id, heading: prompt },
-    });
+    // Create the note immediately
+    const noteId = addNote('', lesson.lesson_id, prompt);
+    pendingNoteId.current = noteId;
+    setConfirmVisible(true);
+  };
+
+  const goToNote = () => {
+    setConfirmVisible(false);
+    if (pendingNoteId.current) {
+      nav.navigate('Notes', {
+        screen: 'NoteEditor',
+        params: { noteId: pendingNoteId.current },
+      });
+    }
+    pendingNoteId.current = null;
+  };
+
+  const stayHere = () => {
+    setConfirmVisible(false);
+    pendingNoteId.current = null;
   };
 
   return (
@@ -318,6 +339,41 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
       {lesson.tabs.reflect.prompts.map((prompt, i) => (
         <ReflectionCard key={i} number={i + 1} prompt={prompt} onAddNote={handleAddNote} />
       ))}
+
+      {/* ── Note Added Confirmation Modal ── */}
+      <Modal visible={confirmVisible} transparent animationType="fade">
+        <Pressable style={styles.noteModalOverlay} onPress={stayHere}>
+          <Pressable style={styles.noteModalBox}>
+            <View style={styles.noteModalAccent} />
+            <Text style={styles.noteModalTitle}>NOTE CREATED</Text>
+            <Text style={styles.noteModalBody}>
+              Your reflection has been saved to Notes. Would you like to open it now?
+            </Text>
+            <View style={styles.noteModalActions}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.noteModalBtn,
+                  pressed && styles.noteModalBtnPressed,
+                ]}
+                onPress={stayHere}
+              >
+                <Text style={styles.noteModalBtnText}>LATER</Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.noteModalBtn,
+                  styles.noteModalBtnRight,
+                  styles.noteModalBtnAccent,
+                  pressed && styles.noteModalBtnAccentPressed,
+                ]}
+                onPress={goToNote}
+              >
+                <Text style={styles.noteModalBtnAccentText}>GO TO NOTE</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -699,5 +755,79 @@ const styles = StyleSheet.create({
     color: Colors.accent,
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
+  },
+
+  // ── Note confirmation modal ──
+  noteModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  noteModalBox: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: Colors.bgSurface,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    overflow: 'hidden',
+  },
+  noteModalAccent: {
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  noteModalTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 12,
+    letterSpacing: 12 * 0.12,
+    color: Colors.textPrimary,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+  noteModalBody: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 13,
+    lineHeight: 13 * 1.6,
+    color: Colors.textSecondary,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 28,
+  },
+  noteModalActions: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
+  },
+  noteModalBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: Colors.bgSurface,
+  },
+  noteModalBtnRight: {
+    borderLeftWidth: 1,
+    borderLeftColor: Colors.borderDefault,
+  },
+  noteModalBtnPressed: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  noteModalBtnText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.1,
+    color: Colors.textSecondary,
+  },
+  noteModalBtnAccent: {
+    backgroundColor: Colors.accent,
+  },
+  noteModalBtnAccentPressed: {
+    opacity: 0.85,
+  },
+  noteModalBtnAccentText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.1,
+    color: Colors.bgPrimary,
   },
 });
