@@ -157,17 +157,6 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
               <ChevronRight size={16} color={'#666666'} strokeWidth={1.5} />
             </View>
           </TouchableOpacity>
-
-          <View style={styles.rowDivider} />
-
-          <View style={styles.settingsRow}>
-            <View style={styles.settingsContent}>
-              <Text style={styles.settingsLabel}>Case Study Sources</Text>
-              <Text style={styles.settingsDescription}>
-                All lessons are built from publicly disclosed events — SEC filings, books, interviews, and official reporting.
-              </Text>
-            </View>
-          </View>
         </View>
 
         <View style={styles.divider} />
