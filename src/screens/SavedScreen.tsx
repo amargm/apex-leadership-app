@@ -1,9 +1,9 @@
 // ─── Saved Lessons Screen ─────────────────────────────────────────────────────
 
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Bookmark } from 'lucide-react-native';
+import { ArrowLeft, Bookmark, Search, X } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import { MOCK_LESSONS } from '../data/mockLessons';
@@ -15,10 +15,25 @@ type Props = NativeStackScreenProps<LearnStackParamList, 'Saved'>;
 
 export default function SavedScreen({ navigation }: Props) {
   const { state, toggleSaveLesson } = useAppState();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const savedLessons = MOCK_LESSONS.filter((l) =>
-    state.savedLessonIds.includes(l.lesson_id),
-  );
+  const savedLessons = useMemo(() => {
+    const base = MOCK_LESSONS.filter((l) =>
+      state.savedLessonIds.includes(l.lesson_id),
+    );
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter(
+      (l) =>
+        l.title.toLowerCase().includes(q) ||
+        l.category.toLowerCase().includes(q) ||
+        l.company.toLowerCase().includes(q) ||
+        l.subtitle.toLowerCase().includes(q) ||
+        (l.tags && l.tags.some((t) => t.toLowerCase().includes(q))),
+    );
+  }, [state.savedLessonIds, searchQuery]);
+
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -31,7 +46,7 @@ export default function SavedScreen({ navigation }: Props) {
         <View style={{ width: 20 }} />
       </View>
 
-      {savedLessons.length === 0 ? (
+      {savedLessons.length === 0 && !isSearching ? (
         <View style={styles.emptyState}>
           <Bookmark size={32} color="#555555" strokeWidth={1} />
           <Text style={styles.emptyTitle}>No saved lessons yet</Text>
@@ -44,8 +59,33 @@ export default function SavedScreen({ navigation }: Props) {
           style={styles.scroll}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          {savedLessons.map((lesson, index) => (
+          {/* Search bar */}
+          <View style={styles.searchBar}>
+            <Search size={14} color={Colors.textDark} strokeWidth={1.5} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search saved..."
+              placeholderTextColor={Colors.textDarker}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              returnKeyType="search"
+              autoCorrect={false}
+            />
+            {isSearching && (
+              <TouchableOpacity onPress={() => setSearchQuery('')} hitSlop={12}>
+                <X size={14} color={Colors.textMuted} strokeWidth={1.5} />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {savedLessons.length === 0 ? (
+            <View style={styles.noResults}>
+              <Text style={styles.noResultsText}>No matches found</Text>
+            </View>
+          ) : (
+            savedLessons.map((lesson, index) => (
             <TouchableOpacity
               key={lesson.lesson_id}
               style={[styles.card, index < savedLessons.length - 1 && styles.cardBorder]}
@@ -76,7 +116,8 @@ export default function SavedScreen({ navigation }: Props) {
                 <Bookmark size={16} color={Colors.accent} strokeWidth={1.5} fill={Colors.accent} />
               </TouchableOpacity>
             </TouchableOpacity>
-          ))}
+          ))
+          )}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -167,5 +208,36 @@ const styles = StyleSheet.create({
   },
   removeBtn: {
     padding: 8,
+  },
+  // Search
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: Spacing.screenPaddingH,
+    marginTop: 12,
+    marginBottom: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 13,
+    color: Colors.textPrimary,
+    padding: 0,
+  },
+  noResults: {
+    alignItems: 'center',
+    paddingTop: 40,
+  },
+  noResultsText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 12,
+    color: Colors.textMuted,
+    letterSpacing: 0.5,
   },
 });
