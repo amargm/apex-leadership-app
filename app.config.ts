@@ -27,15 +27,21 @@ const config: ExpoConfig = {
   slug: 'apex-leadership',
   version: '1.0.0',
   orientation: 'portrait',
+  icon: './assets/icon/icon.png',
   userInterfaceStyle: 'dark',
   backgroundColor: '#050505',
   splash: {
+    image: './assets/icon/icon.png',
     backgroundColor: '#050505',
     resizeMode: 'contain',
   },
   android: {
     package: 'com.apex.leadership',
     versionCode: 1,
+    adaptiveIcon: {
+      foregroundImage: './assets/icon/adaptive-foreground.png',
+      backgroundColor: '#050505',
+    },
     splash: {
       backgroundColor: '#050505',
       resizeMode: 'contain',
