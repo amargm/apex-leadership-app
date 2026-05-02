@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.bebasNeue,
     fontSize: 280,
     color: Colors.textPrimary,
-    opacity: 0.016,
+    opacity: 0.06,
   },
   statusRow: { marginBottom: 18 },
   statusPill: {
