@@ -37,9 +37,6 @@ workflows:
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
-      - name: Restore gradle.properties
-        script: cp android/gradle.properties.ci android/gradle.properties
-
       - name: Build debug APK
         script: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
 
@@ -80,9 +77,8 @@ workflows:
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
-      - name: Restore gradle.properties
+      - name: Inject signing passwords
         script: |
-          cp android/gradle.properties.ci android/gradle.properties
           printf '\nAPEX_STORE_PASSWORD=%s\n' "$CM_KEYSTORE_PASSWORD" >> android/gradle.properties
           printf 'APEX_KEY_PASSWORD=%s\n' "$CM_KEY_PASSWORD" >> android/gradle.properties
 
