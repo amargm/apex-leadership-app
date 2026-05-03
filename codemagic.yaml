@@ -30,7 +30,9 @@ workflows:
         script: npm ci --legacy-peer-deps
 
       - name: Decode google-services.json
-        script: echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+        script: |
+          echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+          cp google-services.json android/app/google-services.json
 
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
@@ -71,7 +73,9 @@ workflows:
         script: npm ci --legacy-peer-deps
 
       - name: Decode google-services.json
-        script: echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+        script: |
+          echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+          cp google-services.json android/app/google-services.json
 
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
