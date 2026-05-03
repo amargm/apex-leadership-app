@@ -31,7 +31,7 @@ workflows:
 
       - name: Decode google-services.json
         script: |
-          echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+          echo -n "$GOOGLE_SERVICES_JSON" | tr -d ' \n\r' | base64 --decode > google-services.json
           cp google-services.json android/app/google-services.json
 
       - name: Set Android SDK path
@@ -74,7 +74,7 @@ workflows:
 
       - name: Decode google-services.json
         script: |
-          echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+          echo -n "$GOOGLE_SERVICES_JSON" | tr -d ' \n\r' | base64 --decode > google-services.json
           cp google-services.json android/app/google-services.json
 
       - name: Set Android SDK path
@@ -88,9 +88,22 @@ workflows:
 
       - name: Decode keystore for signing
         script: |
-          printf '%s' "$CM_KEYSTORE" | base64 --decode > apex-upload.keystore
-          echo "Keystore decoded: $(wc -c < apex-upload.keystore) bytes"
-          keytool -list -keystore apex-upload.keystore -storepass "$CM_KEYSTORE_PASSWORD" -alias "$CM_KEY_ALIAS" 2>&1 | head -5
+          set -e
+          echo -n "$CM_KEYSTORE" | tr -d ' \n\r' | base64 --decode > apex-upload.keystore
+          ACTUAL=$(wc -c < apex-upload.keystore | tr -d ' ')
+          echo "Keystore decoded: ${ACTUAL} bytes"
+          echo "Keystore SHA-256: $(shasum -a 256 apex-upload.keystore | cut -d' ' -f1)"
+          echo "CM_KEYSTORE var length: ${#CM_KEYSTORE} chars"
+          echo "First 8 hex bytes: $(xxd -l 8 -p apex-upload.keystore)"
+          if [ "$ACTUAL" -lt 2000 ]; then
+            echo "ERROR: Keystore too small. Base64 decode likely failed."
+            exit 1
+          fi
+          keytool -list -keystore apex-upload.keystore -storepass "$CM_KEYSTORE_PASSWORD" -alias "$CM_KEY_ALIAS" 2>&1 || {
+            echo "ERROR: keytool cannot read keystore — file or password is incorrect."
+            echo "Hint: re-encode locally with: base64 -i apex-upload.keystore | tr -d '\\n'"
+            exit 1
+          }
 
       - name: Build signed release AAB
         script: |

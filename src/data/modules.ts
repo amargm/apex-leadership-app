@@ -45,6 +45,12 @@ export const MODULES: Module[] = [
     subtitle: 'Frameworks for high-stakes choices',
     colorKey: 'green',
   },
+  {
+    key: 'emotional_intelligence',
+    title: 'Emotional Intelligence',
+    subtitle: 'Leading with empathy and self-awareness',
+    colorKey: 'blue',
+  },
 ];
 
 export function getModule(key: ModuleKey): Module | undefined {
