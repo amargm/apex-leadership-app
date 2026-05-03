@@ -84,7 +84,7 @@ export default function App() {
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {
-    return null;
+    return <View style={{ flex: 1, backgroundColor: Colors.bgPrimary }} />;
   }
 
   return (

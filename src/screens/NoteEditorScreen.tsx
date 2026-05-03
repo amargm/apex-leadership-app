@@ -111,7 +111,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
 
   // Derived data
   const lessonTitle = lessonId
-    ? MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? null
+    ? MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? 'Removed case study'
     : null;
 
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -178,15 +178,13 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
             style={styles.headingInput}
             value={heading}
             onChangeText={(t) => {
-              setHeading(t.slice(0, 25));
+              setHeading(t);
               setSaved(false);
             }}
             placeholder="Add heading..."
             placeholderTextColor={Colors.textDarker}
-            maxLength={25}
             returnKeyType="done"
           />
-          <Text style={styles.headingCount}>{heading.length}/25</Text>
         </View>
 
         {/* ── Linked lesson ──────────────────────────────────────────────── */}
@@ -392,12 +390,6 @@ const styles = StyleSheet.create({
     color: Colors.accent,
     lineHeight: 22,
     padding: 0,
-  },
-  headingCount: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 8,
-    color: Colors.textDarker,
-    marginLeft: 8,
   },
 
   // Lesson bar

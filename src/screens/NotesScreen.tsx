@@ -37,7 +37,7 @@ export default function NotesScreen({ navigation }: Props) {
 
   const getLessonTitle = (lessonId?: string) => {
     if (!lessonId) return null;
-    return MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? null;
+    return MOCK_LESSONS.find((l) => l.lesson_id === lessonId)?.title ?? 'Removed case study';
   };
 
   const formatDate = (iso: string) => {
