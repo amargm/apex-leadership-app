@@ -81,18 +81,18 @@ workflows:
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
       - name: Restore gradle.properties
-        script: cp android/gradle.properties.ci android/gradle.properties
+        script: |
+          cp android/gradle.properties.ci android/gradle.properties
+          echo "" >> android/gradle.properties
+          echo "APEX_STORE_PASSWORD=$CM_KEYSTORE_PASSWORD" >> android/gradle.properties
+          echo "APEX_KEY_PASSWORD=$CM_KEY_PASSWORD" >> android/gradle.properties
 
       - name: Decode keystore for signing
-        script: echo $CM_KEYSTORE | base64 --decode > android/app/apex-release.keystore
+        script: echo $CM_KEYSTORE | base64 --decode > apex-upload.keystore
 
       - name: Build signed release AAB
         script: |
-          cd android && chmod +x gradlew && ./gradlew bundleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$CM_BUILD_DIR/android/app/apex-release.keystore \
-            -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+          cd android && chmod +x gradlew && ./gradlew bundleRelease --no-daemon
 
     artifacts:
       - android/app/build/outputs/bundle/release/*.aab
