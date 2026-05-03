@@ -27,11 +27,11 @@ const config: ExpoConfig = {
   slug: 'apex-leadership',
   version: '1.0.0',
   orientation: 'portrait',
-  icon: './assets/icon/icon.png',
+  icon: './icon.png',
   userInterfaceStyle: 'dark',
   backgroundColor: '#050505',
   splash: {
-    image: './assets/icon/icon.png',
+    image: './icon.png',
     backgroundColor: '#050505',
     resizeMode: 'contain',
   },
@@ -40,7 +40,7 @@ const config: ExpoConfig = {
     versionCode: 1,
     googleServicesFile: './google-services.json',
     adaptiveIcon: {
-      foregroundImage: './assets/icon/adaptive-foreground.png',
+      foregroundImage: './icon.png',
       backgroundColor: '#050505',
     },
     splash: {
