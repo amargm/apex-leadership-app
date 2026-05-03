@@ -42,6 +42,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   const inputRef = useRef<TextInput>(null);
   const hasChanges = useRef(false);
   const createdNoteId = useRef<string | null>(noteId ?? null);
+  const skipAutoSave = useRef(false);
   const isExisting = !!existingNote;
   const rootNav = useNavigation<any>();
 
@@ -73,6 +74,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   // Auto-save on navigate away
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
+      if (skipAutoSave.current) return;
       const trimmed = contentRef.current.trim();
       if (!trimmed) return;
       const headingVal = headingRef.current.trim() || undefined;
@@ -105,7 +107,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   const handleSave = () => {
     saveNote();
     Keyboard.dismiss();
-    setSaved(true);
+    skipAutoSave.current = true;
     navigation.goBack();
   };
 
@@ -118,7 +120,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     if (createdNoteId.current) {
       deleteNote(createdNoteId.current);
     }
-    hasChanges.current = false;
+    skipAutoSave.current = true;
     navigation.goBack();
   };
 
@@ -200,6 +202,9 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
             }}
             placeholder="Add heading..."
             placeholderTextColor={Colors.textDarker}
+            multiline
+            scrollEnabled={false}
+            blurOnSubmit={true}
             returnKeyType="done"
           />
         </View>
@@ -392,8 +397,6 @@ const styles = StyleSheet.create({
 
   // Heading bar
   headingBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: Spacing.screenPaddingH,
     paddingVertical: 8,
     borderBottomWidth: 1,
@@ -401,7 +404,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accentGhost,
   },
   headingInput: {
-    flex: 1,
     fontFamily: FontFamily.dmSerifDisplayRegular,
     fontSize: 15,
     color: Colors.accent,
