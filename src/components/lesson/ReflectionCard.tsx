@@ -27,7 +27,7 @@ export default function ReflectionCard({ number, prompt, onAddNote }: Props) {
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Edit3 size={12} color={Colors.accent} strokeWidth={1.5} />
-            <Text style={styles.noteBtnText}>TAKE TO NOTE</Text>
+            <Text style={styles.noteBtnText}>TAKE A NOTE</Text>
           </TouchableOpacity>
         )}
       </View>

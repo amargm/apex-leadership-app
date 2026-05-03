@@ -62,13 +62,29 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     }
   }, []);
 
+  // Keep refs in sync for the beforeRemove closure
+  const contentRef = useRef(content);
+  const headingRef = useRef(heading);
+  const lessonIdRef = useRef(lessonId);
+  useEffect(() => { contentRef.current = content; }, [content]);
+  useEffect(() => { headingRef.current = heading; }, [heading]);
+  useEffect(() => { lessonIdRef.current = lessonId; }, [lessonId]);
+
   // Auto-save on navigate away
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
-      saveNote();
+      const trimmed = contentRef.current.trim();
+      if (!trimmed) return;
+      const headingVal = headingRef.current.trim() || undefined;
+      if (createdNoteId.current) {
+        updateNote(createdNoteId.current, trimmed, headingVal, lessonIdRef.current);
+      } else {
+        const id = addNote(trimmed, lessonIdRef.current, headingVal);
+        if (id) createdNoteId.current = id;
+      }
     });
     return unsubscribe;
-  }, [navigation, content]);
+  }, [navigation, addNote, updateNote]);
 
   const saveNote = () => {
     const trimmed = content.trim();
@@ -79,7 +95,8 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     if (createdNoteId.current) {
       updateNote(createdNoteId.current, trimmed, headingVal, lessonId);
     } else {
-      createdNoteId.current = addNote(trimmed, lessonId, headingVal);
+      const id = addNote(trimmed, lessonId, headingVal);
+      if (id) createdNoteId.current = id;
     }
     setSaved(true);
     hasChanges.current = false;
