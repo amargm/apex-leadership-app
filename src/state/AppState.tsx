@@ -27,6 +27,32 @@ export interface Note {
   updatedAt: string; // ISO date
 }
 
+// ─── Tier System ──────────────────────────────────────────────────────────────
+
+export type UserTier = 'guest' | 'free' | 'pro';
+
+/** Lessons available to guest users (no account) */
+export const GUEST_LESSON_IDS = ['L001', 'L002'];
+
+/** Lessons available to free (signed-up) users — includes guest lessons */
+export const FREE_LESSON_IDS = ['L001', 'L002', 'L009', 'L007'];
+
+/** Returns accessible lesson IDs for a given tier */
+export function getAccessibleLessonIds(tier: UserTier): string[] | null {
+  switch (tier) {
+    case 'guest': return GUEST_LESSON_IDS;
+    case 'free': return FREE_LESSON_IDS;
+    case 'pro': return null; // null = all lessons
+  }
+}
+
+/** Check if a specific lesson is accessible for a tier */
+export function isLessonAccessible(lessonId: string, tier: UserTier): boolean {
+  if (tier === 'pro') return true;
+  const ids = getAccessibleLessonIds(tier);
+  return ids ? ids.includes(lessonId) : true;
+}
+
 interface AppState {
   lessons: Record<string, LessonProgress>;
   stats: {
@@ -41,6 +67,7 @@ interface AppState {
   userName: string;
   largeFontOn: boolean;
   hasCompletedOnboarding: boolean;
+  userTier: UserTier;
 }
 
 interface AppContextValue {
@@ -58,6 +85,7 @@ interface AppContextValue {
   addReadingTime: (minutes: number) => void;
   setUserName: (name: string) => void;
   setLargeFont: (on: boolean) => void;
+  setUserTier: (tier: UserTier) => void;
   completeOnboarding: () => void;
   resetAllProgress: () => void;
 }
@@ -111,6 +139,7 @@ function getDefaultState(): AppState {
     userName: 'Leader',
     largeFontOn: false,
     hasCompletedOnboarding: false,
+    userTier: 'guest',
   };
 }
 
@@ -143,6 +172,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             userName: parsed.userName ?? defaults.userName,
             largeFontOn: parsed.largeFontOn ?? defaults.largeFontOn,
             hasCompletedOnboarding: parsed.hasCompletedOnboarding ?? defaults.hasCompletedOnboarding,
+            userTier: parsed.userTier ?? defaults.userTier,
           });
         }
       } catch {
@@ -152,9 +182,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  // Debounced persist on state change
+  // Debounced persist on state change — skip for guest (no progress saved)
   useEffect(() => {
     if (!loaded) return; // don't persist until initial load is done
+    if (state.userTier === 'guest') return; // guests don't persist
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
@@ -420,6 +451,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, largeFontOn: on }));
   }, []);
 
+  const setUserTier = useCallback((tier: UserTier) => {
+    setState((prev) => ({ ...prev, userTier: tier }));
+  }, []);
+
   const completeOnboarding = useCallback(() => {
     setState((prev) => ({ ...prev, hasCompletedOnboarding: true }));
   }, []);
@@ -441,6 +476,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         addReadingTime,
         setUserName,
         setLargeFont,
+        setUserTier,
         completeOnboarding,
         resetAllProgress,
       }}

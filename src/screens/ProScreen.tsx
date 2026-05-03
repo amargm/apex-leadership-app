@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Crown, BookOpen, Zap, Download, Bell, Sparkles } from 'lucide-react-native';
 import { Colors, FontFamily, Spacing } from '../theme';
+import { useAppState } from '../state/AppState';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { LearnStackParamList } from '../navigation/types';
 
@@ -22,12 +23,12 @@ const BENEFITS = [
   {
     icon: BookOpen,
     title: 'ALL CASE STUDIES',
-    description: 'Unlock every leadership case study — past, present, and future additions.',
+    description: 'Unlock every leadership case study — 40+ and growing. Yours forever.',
   },
   {
     icon: Zap,
-    title: 'EARLY ACCESS',
-    description: 'Get new cases before anyone else, straight from our research team.',
+    title: 'LIFETIME ACCESS',
+    description: 'One-time purchase. No subscriptions. Every future case study included.',
   },
   {
     icon: Sparkles,
@@ -36,19 +37,26 @@ const BENEFITS = [
   },
   {
     icon: Download,
-    title: 'OFFLINE READING',
-    description: 'Download cases for reading anywhere — no connection needed.',
+    title: 'FULL OFFLINE LIBRARY',
+    description: 'All cases available offline — read anywhere, anytime.',
   },
   {
     icon: Bell,
-    title: 'PRIORITY UPDATES',
-    description: 'Be first to know about new features and content drops.',
+    title: 'FUTURE UPDATES',
+    description: 'New case studies added regularly. All included in your purchase.',
   },
 ];
 
 export default function ProScreen({ navigation }: Props) {
+  const { state, setUserTier } = useAppState();
+  const isPro = state.userTier === 'pro';
+
   const handleUpgrade = () => {
-    Alert.alert('Coming Soon', 'Pro subscriptions will be available in a future update.');
+    // TODO: Replace with real Google Play one-time IAP
+    Alert.alert(
+      'Coming Soon',
+      'One-time Pro purchase will be available in a future update.\n\nPrice: One-time payment — no subscription.',
+    );
   };
 
   return (
@@ -73,9 +81,11 @@ export default function ProScreen({ navigation }: Props) {
           <View style={styles.crownRow}>
             <Crown size={28} color={Colors.accent} strokeWidth={1.5} />
           </View>
-          <Text style={styles.heroTitle}>UPGRADE TO PRO</Text>
+          <Text style={styles.heroTitle}>{isPro ? 'YOU\'RE PRO' : 'UPGRADE TO PRO'}</Text>
           <Text style={styles.heroSubtitle}>
-            Unlock the full APEX experience.{'\n'}Learn deeper. Lead better.
+            {isPro
+              ? 'All case studies unlocked. Every future addition included.'
+              : 'Unlock the full APEX experience.\nOne-time purchase. Yours forever.'}
           </Text>
         </View>
 
@@ -104,19 +114,21 @@ export default function ProScreen({ navigation }: Props) {
 
         {/* Pricing hint */}
         <View style={styles.pricingHint}>
-          <Text style={styles.pricingLabel}>PRO MEMBERSHIP</Text>
-          <Text style={styles.pricingNote}>Pricing will be announced soon</Text>
+          <Text style={styles.pricingLabel}>ONE-TIME PURCHASE</Text>
+          <Text style={styles.pricingNote}>{isPro ? 'Thank you for your support' : 'Pay once — no subscriptions, ever'}</Text>
         </View>
       </ScrollView>
 
       {/* Sticky bottom CTA */}
-      <View style={styles.ctaContainer}>
-        <TouchableOpacity style={styles.ctaButton} onPress={handleUpgrade} activeOpacity={0.85}>
-          <Crown size={16} color={Colors.bgPrimary} strokeWidth={2} />
-          <Text style={styles.ctaText}>UPGRADE TO PRO</Text>
-        </TouchableOpacity>
-        <Text style={styles.ctaHint}>No charge — subscriptions coming soon</Text>
-      </View>
+      {!isPro && (
+        <View style={styles.ctaContainer}>
+          <TouchableOpacity style={styles.ctaButton} onPress={handleUpgrade} activeOpacity={0.85}>
+            <Crown size={16} color={Colors.bgPrimary} strokeWidth={2} />
+            <Text style={styles.ctaText}>UNLOCK ALL CASE STUDIES</Text>
+          </TouchableOpacity>
+          <Text style={styles.ctaHint}>One-time payment · No subscription</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }

@@ -16,14 +16,14 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronDown, Search, X } from 'lucide-react-native';
+import { ChevronDown, Lock, Search, X } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
 import type { PathScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import { MODULES } from '../data/modules';
 import type { Lesson } from '../types/lesson';
-import { useAppState } from '../state/AppState';
+import { useAppState, isLessonAccessible } from '../state/AppState';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -46,6 +46,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [collapsedModules, setCollapsedModules] = useState<Record<string, boolean>>({});
   const { state, getLessonProgress, isLessonUnlocked } = useAppState();
+  const tier = state.userTier;
 
   const toggleModule = (key: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -53,6 +54,13 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   };
 
   const handleNodePress = (lesson: Lesson) => {
+    // Tier gating — check if lesson is accessible for user's tier
+    if (!isLessonAccessible(lesson.lesson_id, tier)) {
+      const label = tier === 'guest' ? 'Create a free account' : 'Upgrade to Pro';
+      setLockedMessage({ id: lesson.lesson_id, msg: label });
+      setTimeout(() => setLockedMessage(null), 2500);
+      return;
+    }
     if (!isLessonUnlocked(lesson.lesson_id)) {
       const remaining = lesson.unlock_after_count - state.stats.casesCompleted;
       setLockedMessage({
@@ -113,7 +121,9 @@ export default function PathScreen({ navigation }: PathScreenProps) {
           </Text>
         </View>
         <View style={styles.headerCount}>
-          <Text style={styles.headerCountText}>{MOCK_LESSONS.length} cases</Text>
+          <Text style={styles.headerCountText}>
+            {tier === 'pro' ? MOCK_LESSONS.length : tier === 'free' ? 4 : 2} unlocked
+          </Text>
         </View>
       </View>
 
@@ -202,7 +212,8 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                     const lp = getLessonProgress(lesson.lesson_id);
                     const isCompleted = lp.status === 'completed';
                     const isInProgress = lp.status === 'in_progress';
-                    const isLocked = !isLessonUnlocked(lesson.lesson_id);
+                    const isTierLocked = !isLessonAccessible(lesson.lesson_id, tier);
+                    const isLocked = isTierLocked || !isLessonUnlocked(lesson.lesson_id);
                     const showHint = lockedMessage?.id === lesson.lesson_id;
 
                     return (
@@ -221,7 +232,9 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                             isLocked && styles.nodeLocked,
                           ]}
                         >
-                          {isCompleted ? (
+                          {isTierLocked ? (
+                            <Lock size={10} color={Colors.textDarker} strokeWidth={1.5} />
+                          ) : isCompleted ? (
                             <Text style={styles.nodeCheckmark}>✓</Text>
                           ) : (
                             <Text style={[styles.nodeNumber, isLocked && styles.nodeNumberLocked]}>
@@ -232,7 +245,16 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
                         {/* Content */}
                         <View style={[styles.nodeContent, isLocked && styles.nodeContentLocked]}>
-                          <Text style={styles.nodeTitle}>{lesson.title}</Text>
+                          <View style={styles.nodeTitleRow}>
+                            <Text style={[styles.nodeTitle, { flex: 1 }]}>{lesson.title}</Text>
+                            {isTierLocked && (
+                              <View style={styles.proBadge}>
+                                <Text style={styles.proBadgeText}>
+                                  {tier === 'guest' ? 'FREE' : 'PRO'}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
                           <Text style={styles.nodeMeta}>
                             {lesson.company} · {lesson.read_time_minutes} min · {lesson.difficulty}
                           </Text>
@@ -470,12 +492,29 @@ const styles = StyleSheet.create({
   },
   nodeContent: { flex: 1, paddingTop: 4 },
   nodeContentLocked: { opacity: 0.45 },
+  nodeTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   nodeTitle: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: 14,
     color: Colors.textPrimary,
     marginBottom: 2,
     lineHeight: 14 * 1.3,
+  },
+  proBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderColor: Colors.accent,
+  },
+  proBadgeText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 7,
+    letterSpacing: 7 * 0.15,
+    color: Colors.accent,
   },
   nodeMeta: {
     fontFamily: FontFamily.dmMonoLight,

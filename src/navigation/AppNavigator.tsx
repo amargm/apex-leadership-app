@@ -170,7 +170,7 @@ function BottomTabs() {
 
 // ─── Root Navigator ───────────────────────────────────────────────────────────
 export default function AppNavigator() {
-  const { state, loaded, completeOnboarding } = useAppState();
+  const { state, loaded, completeOnboarding, setUserTier, setUserName } = useAppState();
   const [splashDone, setSplashDone] = useState(false);
 
   // Phase: splash → auth (if first time) → main
@@ -184,7 +184,19 @@ export default function AppNavigator() {
   }
 
   if (showAuth) {
-    return <AuthScreen onGuestEntry={completeOnboarding} />;
+    return (
+      <AuthScreen
+        onGuestEntry={() => {
+          setUserTier('guest');
+          completeOnboarding();
+        }}
+        onFreeSignup={(name: string) => {
+          setUserTier('free');
+          setUserName(name);
+          completeOnboarding();
+        }}
+      />
+    );
   }
 
   return (

@@ -23,6 +23,7 @@ type Props = NativeStackScreenProps<NotesStackParamList, 'NotesList'>;
 
 export default function NotesScreen({ navigation }: Props) {
   const { state, deleteNote } = useAppState();
+  const isGuest = state.userTier === 'guest';
 
   const openEditor = (noteId?: string) => {
     navigation.navigate('NoteEditor', noteId ? { noteId } : {});
@@ -61,12 +62,20 @@ export default function NotesScreen({ navigation }: Props) {
           <Text style={styles.title}>NOTES</Text>
           <Text style={styles.subtitle}>{state.notes.length} {state.notes.length === 1 ? 'entry' : 'entries'}</Text>
         </View>
-        <TouchableOpacity style={styles.addBtn} onPress={() => openEditor()} activeOpacity={0.7}>
+        <TouchableOpacity style={[styles.addBtn, isGuest && { opacity: 0 }]} onPress={() => !isGuest && openEditor()} activeOpacity={0.7} disabled={isGuest}>
           <Plus size={18} color={Colors.accent} strokeWidth={2} />
         </TouchableOpacity>
       </View>
 
-      {state.notes.length === 0 ? (
+      {isGuest ? (
+        <View style={styles.emptyState}>
+          <View style={styles.emptyAccent} />
+          <Text style={styles.emptyTitle}>Notes require an account</Text>
+          <Text style={styles.emptySub}>
+            Create a free account to save notes, reflections, and key takeaways from your readings.
+          </Text>
+        </View>
+      ) : state.notes.length === 0 ? (
         <View style={styles.emptyState}>
           <View style={styles.emptyAccent} />
           <Text style={styles.emptyTitle}>No notes yet</Text>

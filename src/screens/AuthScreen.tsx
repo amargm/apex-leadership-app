@@ -1,11 +1,12 @@
 // ─── APEX — Auth / Welcome Screen ───────────────────────────────────────────
-// Minimal brutalist welcome gate. "Explore as Guest" skips auth entirely.
+// Two-path entry: Guest (2 case studies, no persistence) or Free (4 case studies, progress saved).
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,9 +14,13 @@ import { Colors, FontFamily, Spacing } from '../theme';
 
 interface Props {
   onGuestEntry: () => void;
+  onFreeSignup: (name: string) => void;
 }
 
-export default function AuthScreen({ onGuestEntry }: Props) {
+export default function AuthScreen({ onGuestEntry, onFreeSignup }: Props) {
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [name, setName] = useState('');
+
   return (
     <View style={styles.container}>
       {/* Top gradient fade */}
@@ -48,21 +53,70 @@ export default function AuthScreen({ onGuestEntry }: Props) {
 
       {/* ── Bottom actions ─────────────────────────────────────────────────── */}
       <View style={styles.bottomSection}>
-        {/* Primary CTA — Guest entry */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.guestButton,
-            pressed && styles.guestButtonPressed,
-          ]}
-          onPress={onGuestEntry}
-        >
-          <Text style={styles.guestButtonText}>EXPLORE AS GUEST</Text>
-        </Pressable>
+        {showNameInput ? (
+          <>
+            <Text style={styles.nameLabel}>YOUR NAME</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              placeholder="Enter your name..."
+              placeholderTextColor={Colors.textDarker}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={() => name.trim() && onFreeSignup(name.trim())}
+            />
+            <Pressable
+              style={({ pressed }) => [
+                styles.primaryButton,
+                (!name.trim()) && styles.primaryButtonDisabled,
+                pressed && name.trim() ? styles.primaryButtonPressed : undefined,
+              ]}
+              onPress={() => name.trim() && onFreeSignup(name.trim())}
+              disabled={!name.trim()}
+            >
+              <Text style={[styles.primaryButtonText, !name.trim() && styles.primaryButtonTextDisabled]}>
+                START LEARNING
+              </Text>
+            </Pressable>
+            <Pressable onPress={() => setShowNameInput(false)} style={{ marginTop: 12 }}>
+              <Text style={styles.backLink}>← Back</Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            {/* Primary — Free signup */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.primaryButton,
+                pressed && styles.primaryButtonPressed,
+              ]}
+              onPress={() => setShowNameInput(true)}
+            >
+              <Text style={styles.primaryButtonText}>GET STARTED FREE</Text>
+            </Pressable>
+            <Text style={styles.primaryHint}>4 case studies · Progress saved</Text>
 
-        {/* Future auth hint */}
-        <Text style={styles.authHint}>
-          Sign-in coming soon — your progress saves locally.
-        </Text>
+            {/* Divider */}
+            <View style={styles.orDivider}>
+              <View style={styles.orLine} />
+              <Text style={styles.orText}>OR</Text>
+              <View style={styles.orLine} />
+            </View>
+
+            {/* Secondary — Guest */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.guestButton,
+                pressed && styles.guestButtonPressed,
+              ]}
+              onPress={onGuestEntry}
+            >
+              <Text style={styles.guestButtonText}>EXPLORE AS GUEST</Text>
+            </Pressable>
+            <Text style={styles.guestHint}>2 case studies · No progress saved</Text>
+          </>
+        )}
 
         {/* Version */}
         <Text style={styles.version}>V 1.0</Text>
@@ -133,21 +187,102 @@ const styles = StyleSheet.create({
     paddingBottom: 48,
     alignItems: 'center',
   },
-  guestButton: {
+  primaryButton: {
     width: '100%',
     backgroundColor: Colors.accent,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  guestButtonPressed: {
+  primaryButtonPressed: {
     opacity: 0.85,
   },
-  guestButtonText: {
+  primaryButtonDisabled: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  primaryButtonText: {
     fontFamily: FontFamily.dmMonoMedium,
     fontSize: 12,
     letterSpacing: 12 * 0.14,
     color: Colors.bgPrimary,
     textTransform: 'uppercase',
+  },
+  primaryButtonTextDisabled: {
+    color: Colors.textDark,
+  },
+  primaryHint: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.08,
+    color: Colors.textMuted,
+    marginTop: 10,
+  },
+  orDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 20,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  orText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.15,
+    color: Colors.textDark,
+    marginHorizontal: 12,
+  },
+  guestButton: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  guestButtonPressed: {
+    backgroundColor: Colors.bgSurface2,
+  },
+  guestButtonText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.14,
+    color: Colors.textSecondary,
+    textTransform: 'uppercase',
+  },
+  guestHint: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.08,
+    color: Colors.textDark,
+    marginTop: 10,
+  },
+  nameLabel: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 9,
+    letterSpacing: 9 * 0.15,
+    color: Colors.textMuted,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+  },
+  nameInput: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontFamily: FontFamily.loraRegular,
+    fontSize: 16,
+    color: Colors.textPrimary,
+    marginBottom: 16,
+  },
+  backLink: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textMuted,
   },
   authHint: {
     fontFamily: FontFamily.dmMonoLight,

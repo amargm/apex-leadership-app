@@ -20,7 +20,7 @@ import type { HomeScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
 import FeaturedCard from '../components/FeaturedCard';
-import { useAppState } from '../state/AppState';
+import { useAppState, isLessonAccessible } from '../state/AppState';
 import { getDailyQuote } from '../data/dailyQuotes';
 import { Crown } from 'lucide-react-native';
 
@@ -117,12 +117,15 @@ const SECTION_COUNT = 6;
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const fadeStyles = useFadeUp(SECTION_COUNT);
   const { state, getLessonProgress, isLessonUnlocked } = useAppState();
+  const tier = state.userTier;
   const dailyQuote = getDailyQuote();
 
-  const featuredLessons = MOCK_LESSONS.filter((l) => isLessonUnlocked(l.lesson_id));
+  const featuredLessons = MOCK_LESSONS.filter(
+    (l) => isLessonUnlocked(l.lesson_id) && isLessonAccessible(l.lesson_id, tier),
+  );
   const activeCase = MOCK_LESSONS.find((l) => {
     const lp = getLessonProgress(l.lesson_id);
-    return lp.status === 'in_progress';
+    return lp.status === 'in_progress' && isLessonAccessible(l.lesson_id, tier);
   });
   const activeCaseProgress = activeCase ? getLessonProgress(activeCase.lesson_id).progress : 0;
   const activeCaseIndex = activeCase

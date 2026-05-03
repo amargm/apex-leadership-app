@@ -22,7 +22,7 @@ import { Colors, FontFamily, Spacing, BorderWidth } from '../theme';
 import type { LessonDetailScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import type { Lesson } from '../types/lesson';
-import { useAppState } from '../state/AppState';
+import { useAppState, isLessonAccessible } from '../state/AppState';
 
 // Content components
 import ContextBlock from '../components/lesson/ContextBlock';
@@ -48,10 +48,17 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const sessionStart = useRef<number>(Date.now());
   const hasRecorded = useRef(false);
   const isFocused = useIsFocused();
-  const { startLesson, markTabViewed, completeLesson, getLessonProgress, addReadingTime } = useAppState();
+  const { startLesson, markTabViewed, completeLesson, getLessonProgress, addReadingTime, state: appState } = useAppState();
 
   const lesson: Lesson | undefined = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
   const lessonState = getLessonProgress(lessonId);
+
+  // Block access if lesson is not available for user's tier
+  useEffect(() => {
+    if (!isLessonAccessible(lessonId, appState.userTier)) {
+      navigation.goBack();
+    }
+  }, [lessonId, appState.userTier]);
 
   const handleShare = async () => {
     if (!shareRef.current?.capture || !lesson) return;

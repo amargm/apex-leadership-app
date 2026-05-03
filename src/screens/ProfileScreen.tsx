@@ -51,8 +51,9 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function ProfileScreen({ navigation }: ProfileScreenProps) {
-  const { state, resetAllProgress, setLargeFont, setUserName } = useAppState();
+  const { state, resetAllProgress, setLargeFont, setUserName, setUserTier, completeOnboarding } = useAppState();
   const [resetModalVisible, setResetModalVisible] = useState(false);
+  const tier = state.userTier;
 
   const handleResetProgress = () => {
     setResetModalVisible(true);
@@ -90,7 +91,9 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
               maxLength={24}
               returnKeyType="done"
             />
-            <Text style={styles.profileRole}>APEX Member</Text>
+            <Text style={styles.profileRole}>
+              {tier === 'pro' ? 'APEX PRO' : tier === 'free' ? 'FREE MEMBER' : 'GUEST'}
+            </Text>
           </View>
         </View>
 
@@ -117,20 +120,48 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           </View>
         </View>
 
-        {/* ── Pro Upgrade Banner ── */}
-        <TouchableOpacity
-          style={styles.proBanner}
-          activeOpacity={0.85}
-          onPress={() => navigation.navigate('Learn' as any, { screen: 'Pro' })}
-        >
-          <View style={styles.proBannerAccent} />
-          <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
-          <View style={styles.proBannerContent}>
-            <Text style={styles.proBannerTitle}>UPGRADE TO PRO</Text>
-            <Text style={styles.proBannerSub}>All cases · Deep-dives · Offline</Text>
+        {/* ── Tier Banner ── */}
+        {tier === 'guest' ? (
+          <TouchableOpacity
+            style={styles.proBanner}
+            activeOpacity={0.85}
+            onPress={() => {
+              setUserTier('free');
+              setUserName(state.userName === 'Leader' ? '' : state.userName);
+            }}
+          >
+            <View style={styles.proBannerAccent} />
+            <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+            <View style={styles.proBannerContent}>
+              <Text style={styles.proBannerTitle}>CREATE FREE ACCOUNT</Text>
+              <Text style={styles.proBannerSub}>Save progress · 4 case studies</Text>
+            </View>
+            <Text style={styles.proBannerArrow}>→</Text>
+          </TouchableOpacity>
+        ) : tier === 'free' ? (
+          <TouchableOpacity
+            style={styles.proBanner}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Learn' as any, { screen: 'Pro' })}
+          >
+            <View style={styles.proBannerAccent} />
+            <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+            <View style={styles.proBannerContent}>
+              <Text style={styles.proBannerTitle}>UPGRADE TO PRO</Text>
+              <Text style={styles.proBannerSub}>All cases · One-time purchase</Text>
+            </View>
+            <Text style={styles.proBannerArrow}>→</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.proBanner}>
+            <View style={styles.proBannerAccent} />
+            <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+            <View style={styles.proBannerContent}>
+              <Text style={styles.proBannerTitle}>APEX PRO</Text>
+              <Text style={styles.proBannerSub}>All case studies unlocked</Text>
+            </View>
           </View>
-          <Text style={styles.proBannerArrow}>→</Text>
-        </TouchableOpacity>
+        )}
 
         <View style={styles.divider} />
 
