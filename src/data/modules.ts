@@ -25,31 +25,31 @@ export const MODULES: Module[] = [
     key: 'innovation',
     title: 'Innovation Under Pressure',
     subtitle: 'Betting on the future when stakes are highest',
-    colorKey: 'green',
+    colorKey: 'purple',
   },
   {
     key: 'turnarounds',
     title: 'Turnarounds',
     subtitle: 'Bringing organisations back from the brink',
-    colorKey: 'orange',
+    colorKey: 'red',
   },
   {
     key: 'servant_leadership',
     title: 'Servant Leadership',
     subtitle: 'Leading by putting others first',
-    colorKey: 'blue',
+    colorKey: 'teal',
   },
   {
     key: 'decision_making',
     title: 'Decision Making',
     subtitle: 'Frameworks for high-stakes choices',
-    colorKey: 'green',
+    colorKey: 'pink',
   },
   {
     key: 'emotional_intelligence',
     title: 'Emotional Intelligence',
     subtitle: 'Leading with empathy and self-awareness',
-    colorKey: 'blue',
+    colorKey: 'grey',
   },
 ];
 

@@ -17,6 +17,10 @@ const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
   orange: Colors.accentOrange,
   blue: Colors.accentBlue,
+  purple: Colors.accentPurple,
+  red: Colors.accentRed,
+  teal: Colors.accentTeal,
+  pink: Colors.accentPink,
   grey: '#444444',
 };
 

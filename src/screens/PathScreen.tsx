@@ -23,7 +23,7 @@ import type { PathScreenProps } from '../navigation/types';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import { MODULES } from '../data/modules';
 import type { Lesson } from '../types/lesson';
-import { useAppState, isLessonAccessible } from '../state/AppState';
+import { useAppState, isLessonAccessible, FREE_LESSON_IDS } from '../state/AppState';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -34,6 +34,10 @@ const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
   orange: Colors.accentOrange,
   blue: Colors.accentBlue,
+  purple: Colors.accentPurple,
+  red: Colors.accentRed,
+  teal: Colors.accentTeal,
+  pink: Colors.accentPink,
   grey: '#444444',
 };
 
@@ -208,12 +212,13 @@ export default function PathScreen({ navigation }: PathScreenProps) {
               {!isCollapsed && (
                 <View style={styles.nodeList}>
                   <View style={styles.verticalLine} />
-                  {group.lessons.map((lesson, index) => {
+                  {group.lessons
+                    .filter((lesson) => isLessonAccessible(lesson.lesson_id, tier))
+                    .map((lesson, index) => {
                     const lp = getLessonProgress(lesson.lesson_id);
                     const isCompleted = lp.status === 'completed';
                     const isInProgress = lp.status === 'in_progress';
-                    const isTierLocked = !isLessonAccessible(lesson.lesson_id, tier);
-                    const isLocked = isTierLocked || !isLessonUnlocked(lesson.lesson_id);
+                    const isLocked = !isLessonUnlocked(lesson.lesson_id);
                     const showHint = lockedMessage?.id === lesson.lesson_id;
 
                     return (
@@ -232,9 +237,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                             isLocked && styles.nodeLocked,
                           ]}
                         >
-                          {isTierLocked ? (
-                            <Lock size={10} color={Colors.textDarker} strokeWidth={1.5} />
-                          ) : isCompleted ? (
+                          {isCompleted ? (
                             <Text style={styles.nodeCheckmark}>✓</Text>
                           ) : (
                             <Text style={[styles.nodeNumber, isLocked && styles.nodeNumberLocked]}>
@@ -247,13 +250,6 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                         <View style={[styles.nodeContent, isLocked && styles.nodeContentLocked]}>
                           <View style={styles.nodeTitleRow}>
                             <Text style={[styles.nodeTitle, { flex: 1 }]}>{lesson.title}</Text>
-                            {isTierLocked && (
-                              <View style={styles.proBadge}>
-                                <Text style={styles.proBadgeText}>
-                                  {tier === 'guest' ? 'FREE' : 'PRO'}
-                                </Text>
-                              </View>
-                            )}
                           </View>
                           <Text style={styles.nodeMeta}>
                             {lesson.company} · {lesson.read_time_minutes} min · {lesson.difficulty}
@@ -274,6 +270,31 @@ export default function PathScreen({ navigation }: PathScreenProps) {
                       </TouchableOpacity>
                     );
                   })}
+                  {/* Show locked lessons as a summary row */}
+                  {(() => {
+                    const lockedCount = group.lessons.filter(
+                      (l) => !isLessonAccessible(l.lesson_id, tier),
+                    ).length;
+                    if (lockedCount === 0) return null;
+                    const freeLockedCount = tier === 'guest'
+                      ? group.lessons.filter(
+                          (l) => !isLessonAccessible(l.lesson_id, tier) && FREE_LESSON_IDS.includes(l.lesson_id),
+                        ).length
+                      : 0;
+                    const proLockedCount = lockedCount - freeLockedCount;
+                    return (
+                      <View style={styles.lockedSummaryRow}>
+                        <Lock size={12} color={Colors.textDarker} strokeWidth={1.5} />
+                        <Text style={styles.lockedSummaryText}>
+                          {freeLockedCount > 0 && proLockedCount > 0
+                            ? `+${freeLockedCount} with FREE · +${proLockedCount} with PRO`
+                            : freeLockedCount > 0
+                            ? `+${freeLockedCount} more with FREE`
+                            : `+${proLockedCount} more with PRO`}
+                        </Text>
+                      </View>
+                    );
+                  })()}
                 </View>
               )}
             </View>
@@ -515,6 +536,19 @@ const styles = StyleSheet.create({
     fontSize: 7,
     letterSpacing: 7 * 0.15,
     color: Colors.accent,
+  },
+  lockedSummaryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 36,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  lockedSummaryText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: Colors.textDarker,
+    letterSpacing: 0.5,
   },
   nodeMeta: {
     fontFamily: FontFamily.dmMonoLight,

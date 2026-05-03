@@ -18,6 +18,10 @@ const BANNER_GRADIENTS: Record<string, [string, string]> = {
   green: ['#0d1a10', '#050505'],
   orange: ['#1a140a', '#050505'],
   blue: ['#0a1018', '#050505'],
+  purple: ['#120a1a', '#050505'],
+  red: ['#1a0a0a', '#050505'],
+  teal: ['#0a1a18', '#050505'],
+  pink: ['#1a0a12', '#050505'],
   grey: ['#121212', '#050505'],
 };
 
@@ -25,6 +29,10 @@ const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
   orange: Colors.accentOrange,
   blue: Colors.accentBlue,
+  purple: Colors.accentPurple,
+  red: Colors.accentRed,
+  teal: Colors.accentTeal,
+  pink: Colors.accentPink,
   grey: '#444444',
 };
 

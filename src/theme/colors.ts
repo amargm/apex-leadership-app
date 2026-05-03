@@ -24,6 +24,10 @@ export const Colors = {
   accent: '#C8F04D',       // primary — sharp yellow-green
   accentOrange: '#FF6B35', // secondary — difficulty tags, warnings
   accentBlue: '#4DB8FF',   // tertiary — locked states, progress
+  accentPurple: '#B388FF', // modules
+  accentRed: '#FF5252',    // modules
+  accentTeal: '#64FFDA',   // modules
+  accentPink: '#FF80AB',   // modules
 
   // Semantic
   danger: '#E85454',

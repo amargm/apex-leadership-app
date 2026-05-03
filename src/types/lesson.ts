@@ -1,7 +1,7 @@
 // ─── APEX Data Types ──────────────────────────────────────────────────────────
 // Mirrors the backend/CMS contract from the spec (Section 11).
 
-export type CategoryColorKey = 'green' | 'orange' | 'blue' | 'grey';
+export type CategoryColorKey = 'green' | 'orange' | 'blue' | 'purple' | 'red' | 'teal' | 'pink' | 'grey';
 export type Difficulty = 'accessible' | 'medium' | 'complex';
 export type LessonStatus = 'default' | 'in_progress' | 'completed' | 'locked' | 'new';
 
