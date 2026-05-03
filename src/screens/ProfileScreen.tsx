@@ -126,16 +126,16 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             style={styles.proBanner}
             activeOpacity={0.85}
-            onPress={() => {
-              setUserTier('free');
-              setUserName(state.userName === 'Leader' ? '' : state.userName);
+            onPress={async () => {
+              const ok = await handleGoogleSignIn();
+              if (ok) Alert.alert('Welcome!', 'Your progress will now be saved and synced.');
             }}
           >
             <View style={styles.proBannerAccent} />
             <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
             <View style={styles.proBannerContent}>
-              <Text style={styles.proBannerTitle}>CREATE FREE ACCOUNT</Text>
-              <Text style={styles.proBannerSub}>Save progress · 4 case studies</Text>
+              <Text style={styles.proBannerTitle}>SIGN IN WITH GOOGLE</Text>
+              <Text style={styles.proBannerSub}>Save progress · Sync across devices</Text>
             </View>
             <Text style={styles.proBannerArrow}>→</Text>
           </TouchableOpacity>
@@ -230,7 +230,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             style={styles.settingsRow}
             activeOpacity={0.7}
-            onPress={() => Linking.openURL('https://apex-leadership.web.app/privacy-policy')}
+            onPress={() => Linking.openURL('https://apex-leadership-2b72a.web.app/privacy-policy').catch(() => {})}
           >
             <Text style={styles.settingsLabel}>Privacy Policy</Text>
             <View style={styles.settingsRight}>
@@ -243,7 +243,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             style={styles.settingsRow}
             activeOpacity={0.7}
-            onPress={() => Linking.openURL('https://apex-leadership.web.app/terms-of-use')}
+            onPress={() => Linking.openURL('https://apex-leadership-2b72a.web.app/terms-of-use').catch(() => {})}
           >
             <Text style={styles.settingsLabel}>Terms of Use</Text>
             <View style={styles.settingsRight}>

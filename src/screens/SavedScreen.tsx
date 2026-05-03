@@ -16,6 +16,7 @@ type Props = NativeStackScreenProps<LearnStackParamList, 'Saved'>;
 export default function SavedScreen({ navigation }: Props) {
   const { state, toggleSaveLesson } = useAppState();
   const [searchQuery, setSearchQuery] = useState('');
+  const isGuest = state.userTier === 'guest';
 
   const savedLessons = useMemo(() => {
     const base = MOCK_LESSONS.filter((l) =>
@@ -46,7 +47,15 @@ export default function SavedScreen({ navigation }: Props) {
         <View style={{ width: 20 }} />
       </View>
 
-      {savedLessons.length === 0 && !isSearching ? (
+      {isGuest ? (
+        <View style={styles.emptyState}>
+          <Bookmark size={32} color="#555555" strokeWidth={1} />
+          <Text style={styles.emptyTitle}>Saved lessons require an account</Text>
+          <Text style={styles.emptySubtitle}>
+            Sign in with Google to save lessons and sync your progress.
+          </Text>
+        </View>
+      ) : savedLessons.length === 0 && !isSearching ? (
         <View style={styles.emptyState}>
           <Bookmark size={32} color="#555555" strokeWidth={1} />
           <Text style={styles.emptyTitle}>No saved lessons yet</Text>

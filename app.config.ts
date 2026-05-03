@@ -38,6 +38,7 @@ const config: ExpoConfig = {
   android: {
     package: 'com.apex.leadership',
     versionCode: 1,
+    googleServicesFile: './google-services.json',
     adaptiveIcon: {
       foregroundImage: './assets/icon/adaptive-foreground.png',
       backgroundColor: '#050505',
@@ -51,6 +52,7 @@ const config: ExpoConfig = {
     'expo-font',
     '@react-native-firebase/app',
     '@react-native-firebase/auth',
+    '@react-native-firebase/firestore',
     '@react-native-google-signin/google-signin',
     ['react-native-android-widget', widgetConfig],
   ],

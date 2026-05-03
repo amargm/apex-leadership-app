@@ -4,6 +4,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
 import type { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import type { LessonStatus } from '../types/lesson';
 import { MOCK_LESSONS } from '../data/mockLessons';
@@ -523,24 +524,45 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   /** Sign in with Google → upgrade to free/restore cloud state */
   const handleGoogleSignIn = useCallback(async (): Promise<boolean> => {
-    const user = await signInWithGoogle();
-    if (!user) return false;
-    // Auth listener handles cloud data load & setFirebaseUser
-    setState((prev) => ({
-      ...prev,
-      userName: user.displayName || prev.userName,
-      userTier: prev.userTier === 'guest' ? 'free' : prev.userTier,
-      hasCompletedOnboarding: true,
-    }));
-    return true;
+    try {
+      const user = await signInWithGoogle();
+      if (!user) return false;
+      // Auth listener handles cloud data load & setFirebaseUser
+      setState((prev) => ({
+        ...prev,
+        userName: user.displayName || prev.userName,
+        userTier: prev.userTier === 'guest' ? 'free' : prev.userTier,
+        hasCompletedOnboarding: true,
+      }));
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
-  /** Sign out → revert to guest */
+  /** Sign out → save to cloud first, then clear local */
   const handleSignOut = useCallback(async (): Promise<void> => {
+    try {
+      // Save current state to cloud before signing out
+      const user = auth().currentUser;
+      if (user) {
+        await saveUserData(user.uid, {
+          lessons: state.lessons,
+          stats: state.stats,
+          savedLessonIds: state.savedLessonIds,
+          notes: state.notes,
+          userName: state.userName,
+          largeFontOn: state.largeFontOn,
+          userTier: state.userTier,
+        });
+      }
+    } catch {
+      // Continue sign-out even if final save fails
+    }
     await authSignOut();
     await AsyncStorage.removeItem(STORAGE_KEY);
     setState(getFreshState());
-  }, []);
+  }, [state]);
 
   return (
     <AppContext.Provider
