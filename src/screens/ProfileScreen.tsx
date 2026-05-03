@@ -216,7 +216,20 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             style={styles.settingsRow}
             activeOpacity={0.7}
-            onPress={() => Alert.alert('APEX v1.0.0', 'Built for growth.\n\nLearn to lead from those who did.')}
+            onPress={() => Alert.alert(
+              'APEX — Leadership Case Studies',
+              'Version 1.0.0\n\n' +
+              'APEX is a curated library of real-world leadership case studies designed to help professionals grow through the experiences of others.\n\n' +
+              'Each case study distills pivotal moments from companies and leaders — culture shifts, crisis decisions, turnarounds, and innovation under pressure — into focused, actionable lessons.\n\n' +
+              'Features:\n' +
+              '• 26+ original case studies across 8 modules\n' +
+              '• Personal notes and progress tracking\n' +
+              '• Offline reading\n' +
+              '• Dark-themed, distraction-free interface\n\n' +
+              'Developer: Amar Mugali\n' +
+              'Contact: apex.leadership.app@gmail.com\n\n' +
+              '© 2026 APEX Leadership App. All rights reserved.'
+            )}
           >
             <Text style={styles.settingsLabel}>About APEX</Text>
             <View style={styles.settingsRight}>
