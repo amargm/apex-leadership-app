@@ -42,6 +42,13 @@ export const GUEST_LESSON_IDS = ['L001', 'L002'];
 /** Lessons available to free (signed-up) users — includes guest lessons */
 export const FREE_LESSON_IDS = ['L001', 'L002', 'L009', 'L007'];
 
+/** Max notes allowed per tier (null = unlimited) */
+const MAX_NOTES: Record<UserTier, number | null> = {
+  guest: 0,
+  free: 5,
+  pro: null,
+};
+
 /** Returns accessible lesson IDs for a given tier */
 export function getAccessibleLessonIds(tier: UserTier): string[] | null {
   switch (tier) {
@@ -441,6 +448,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addNote = useCallback((content: string, lessonId?: string, heading?: string): string => {
+    // Enforce tier-based note limits
+    const limit = MAX_NOTES[state.userTier];
+    if (limit !== null && state.notes.length >= limit) {
+      return ''; // At limit — cannot add
+    }
     const now = new Date().toISOString();
     const noteId = `note_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const note: Note = {
@@ -456,7 +468,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       notes: [note, ...prev.notes],
     }));
     return noteId;
-  }, []);
+  }, [state.userTier, state.notes.length]);
 
   const updateNote = useCallback((noteId: string, content: string, heading?: string, lessonId?: string) => {
     setState((prev) => ({
@@ -532,20 +544,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   /** Sign in with Google → upgrade to free/restore cloud state */
   const handleGoogleSignIn = useCallback(async (): Promise<boolean> => {
-    try {
-      const user = await signInWithGoogle();
-      if (!user) return false;
-      // Auth listener handles cloud data load & setFirebaseUser
-      setState((prev) => ({
-        ...prev,
-        userName: user.displayName || prev.userName,
-        userTier: prev.userTier === 'guest' ? 'free' : prev.userTier,
-        hasCompletedOnboarding: true,
-      }));
-      return true;
-    } catch {
-      return false;
-    }
+    const user = await signInWithGoogle();
+    if (!user) return false; // User cancelled
+    // Auth listener handles cloud data load & setFirebaseUser
+    setState((prev) => ({
+      ...prev,
+      userName: user.displayName || prev.userName,
+      userTier: prev.userTier === 'guest' ? 'free' : prev.userTier,
+      hasCompletedOnboarding: true,
+    }));
+    return true;
   }, []);
 
   /** Sign out → save to cloud first, then clear local */

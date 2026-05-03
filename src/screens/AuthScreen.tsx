@@ -1,5 +1,5 @@
 // ─── APEX — Auth / Welcome Screen ───────────────────────────────────────────
-// Two-path entry: Guest (2 case studies, no persistence) or Free (4 case studies, progress saved).
+// Two-path entry: Guest (2 case studies, no progress) or Google (free tier, progress saved).
 
 import React, { useState } from 'react';
 import {
@@ -7,7 +7,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,14 +14,12 @@ import { Colors, FontFamily, Spacing } from '../theme';
 
 interface Props {
   onGuestEntry: () => void;
-  onFreeSignup: (name: string) => void;
   onGoogleSignIn: () => Promise<boolean>;
 }
 
-export default function AuthScreen({ onGuestEntry, onFreeSignup, onGoogleSignIn }: Props) {
-  const [showNameInput, setShowNameInput] = useState(false);
-  const [name, setName] = useState('');
+export default function AuthScreen({ onGuestEntry, onGoogleSignIn }: Props) {
   const [signingIn, setSigningIn] = useState(false);
+  const [error, setError] = useState('');
 
   return (
     <View style={styles.container}>
@@ -56,99 +53,54 @@ export default function AuthScreen({ onGuestEntry, onFreeSignup, onGoogleSignIn 
 
       {/* ── Bottom actions ─────────────────────────────────────────────────── */}
       <View style={styles.bottomSection}>
-        {showNameInput ? (
-          <>
-            <Text style={styles.nameLabel}>YOUR NAME</Text>
-            <TextInput
-              style={styles.nameInput}
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter your name..."
-              placeholderTextColor={Colors.textDarker}
-              autoFocus
-              returnKeyType="done"
-              onSubmitEditing={() => name.trim() && onFreeSignup(name.trim())}
-            />
-            <Pressable
-              style={({ pressed }) => [
-                styles.primaryButton,
-                (!name.trim()) && styles.primaryButtonDisabled,
-                pressed && name.trim() ? styles.primaryButtonPressed : undefined,
-              ]}
-              onPress={() => name.trim() && onFreeSignup(name.trim())}
-              disabled={!name.trim()}
-            >
-              <Text style={[styles.primaryButtonText, !name.trim() && styles.primaryButtonTextDisabled]}>
-                START LEARNING
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => setShowNameInput(false)} style={{ marginTop: 12 }}>
-              <Text style={styles.backLink}>← Back</Text>
-            </Pressable>
-          </>
-        ) : (
-          <>
-            {/* Primary — Google Sign-In */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.primaryButton,
-                pressed && styles.primaryButtonPressed,
-                signingIn && styles.primaryButtonDisabled,
-              ]}
-              onPress={async () => {
-                setSigningIn(true);
-                await onGoogleSignIn();
-                setSigningIn(false);
-              }}
-              disabled={signingIn}
-            >
-              {signingIn ? (
-                <ActivityIndicator size="small" color={Colors.bgPrimary} />
-              ) : (
-                <Text style={styles.primaryButtonText}>CONTINUE WITH GOOGLE</Text>
-              )}
-            </Pressable>
-            <Text style={styles.primaryHint}>Sync progress · All your data backed up</Text>
+        {/* Primary — Google Sign-In */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.primaryButton,
+            pressed && styles.primaryButtonPressed,
+            signingIn && styles.primaryButtonDisabled,
+          ]}
+          onPress={async () => {
+            setSigningIn(true);
+            setError('');
+            try {
+              await onGoogleSignIn();
+            } catch (e: any) {
+              setError(e?.message || 'Sign-in failed. Please try again.');
+            } finally {
+              setSigningIn(false);
+            }
+          }}
+          disabled={signingIn}
+        >
+          {signingIn ? (
+            <ActivityIndicator size="small" color={Colors.bgPrimary} />
+          ) : (
+            <Text style={styles.primaryButtonText}>CONTINUE WITH GOOGLE</Text>
+          )}
+        </Pressable>
+        <Text style={styles.primaryHint}>Sync progress · Save notes · All data backed up</Text>
 
-            {/* Divider */}
-            <View style={styles.orDivider}>
-              <View style={styles.orLine} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.orLine} />
-            </View>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-            {/* Secondary — Free without Google */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.guestButton,
-                pressed && styles.guestButtonPressed,
-              ]}
-              onPress={() => setShowNameInput(true)}
-            >
-              <Text style={styles.guestButtonText}>GET STARTED FREE</Text>
-            </Pressable>
-            <Text style={styles.guestHint}>4 case studies · Local progress only</Text>
+        {/* Divider */}
+        <View style={styles.orDivider}>
+          <View style={styles.orLine} />
+          <Text style={styles.orText}>OR</Text>
+          <View style={styles.orLine} />
+        </View>
 
-            {/* Divider */}
-            <View style={styles.orDivider}>
-              <View style={styles.orLine} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.orLine} />
-            </View>
-
-            {/* Tertiary — Guest */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.guestButton,
-                pressed && styles.guestButtonPressed,
-              ]}
-              onPress={onGuestEntry}
-            >
-              <Text style={styles.guestButtonText}>EXPLORE AS GUEST</Text>
-            </Pressable>
-            <Text style={styles.guestHint}>2 case studies · No progress saved</Text>
-          </>
-        )}
+        {/* Guest */}
+        <Pressable
+          style={({ pressed }) => [
+            styles.guestButton,
+            pressed && styles.guestButtonPressed,
+          ]}
+          onPress={onGuestEntry}
+        >
+          <Text style={styles.guestButtonText}>EXPLORE AS GUEST</Text>
+        </Pressable>
+        <Text style={styles.guestHint}>2 case studies · No progress saved</Text>
 
         {/* Version */}
         <Text style={styles.version}>V 1.0</Text>
@@ -238,15 +190,20 @@ const styles = StyleSheet.create({
     color: Colors.bgPrimary,
     textTransform: 'uppercase',
   },
-  primaryButtonTextDisabled: {
-    color: Colors.textDark,
-  },
   primaryHint: {
     fontFamily: FontFamily.dmMonoLight,
     fontSize: 9,
     letterSpacing: 9 * 0.08,
     color: Colors.textMuted,
     marginTop: 10,
+  },
+  errorText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 10,
+    color: '#FF6B6B',
+    marginTop: 12,
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
   orDivider: {
     flexDirection: 'row',
@@ -290,39 +247,6 @@ const styles = StyleSheet.create({
     letterSpacing: 9 * 0.08,
     color: Colors.textDark,
     marginTop: 10,
-  },
-  nameLabel: {
-    fontFamily: FontFamily.dmMonoMedium,
-    fontSize: 9,
-    letterSpacing: 9 * 0.15,
-    color: Colors.textMuted,
-    alignSelf: 'flex-start',
-    marginBottom: 8,
-  },
-  nameInput: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    backgroundColor: Colors.bgSurface,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontFamily: FontFamily.loraRegular,
-    fontSize: 16,
-    color: Colors.textPrimary,
-    marginBottom: 16,
-  },
-  backLink: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 10,
-    color: Colors.textMuted,
-  },
-  authHint: {
-    fontFamily: FontFamily.dmMonoLight,
-    fontSize: 9,
-    letterSpacing: 9 * 0.08,
-    color: Colors.textDark,
-    marginTop: 16,
-    textAlign: 'center',
   },
   version: {
     fontFamily: FontFamily.dmMonoLight,

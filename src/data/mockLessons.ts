@@ -1052,4 +1052,1156 @@ export const MOCK_LESSONS: Lesson[] = [
       takeaways: { items: [] },
     },
   },
+
+  // ─── PHASE 1 NEW CASE STUDIES (L017–L026) ──────────────────────────────────────
+
+  {
+    lesson_id: 'L017',
+    title: "Patagonia's 'Don't Buy This Jacket'",
+    subtitle: 'How anti-consumerist conviction built a $3 billion brand — then gave it all away',
+    company: 'Patagonia',
+    company_abbreviation: 'PA',
+    year_range: '2011–2022',
+    module: 'culture_building',
+    category: 'Culture Building',
+    category_color_key: 'green',
+    read_time_minutes: 10,
+    difficulty: 'medium',
+    tags: ['Culture', 'Sustainability', 'Brand', 'Purpose'],
+    source_disclosure: 'Publicly disclosed via Yvon Chouinard\'s "Let My People Go Surfing," company press releases, and NYT interviews',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          'On Black Friday 2011, Patagonia ran a full-page ad in the New York Times with the headline "Don\'t Buy This Jacket." Beneath an image of their best-selling R2 fleece, the ad detailed the environmental cost of the garment — 135 litres of water and 20 pounds of carbon dioxide. The ad asked customers to think twice before purchasing. It was either the most brilliant marketing move in retail history, or the most self-destructive.',
+        body_paragraphs: [
+          'Patagonia had been building toward this moment for decades. Yvon Chouinard, a rock climber who never wanted to be a businessman, founded the company almost by accident. He started making reusable steel pitons because the disposable ones were destroying Yosemite\'s rock faces. That instinct — that the product should not damage the thing it was meant to celebrate — became the company\'s operating system. By the time the ad ran, Patagonia was already donating 1% of revenue to environmental causes and had switched to organic cotton at enormous cost.',
+          'The ad worked not because it was reverse psychology, but because it was genuine. Patagonia backed the message with Worn Wear, which repaired, resold, and recycled used garments. They built the largest garment repair facility in North America. Revenue, paradoxically, surged — growing 30% to roughly $540 million by 2012, and exceeding $1.5 billion by 2022.',
+          'What made Patagonia\'s culture unusual was the willingness to accept economic pain in service of stated values. When they discovered supply chain labour abuses in Brazil, they spent 18 months auditing every supplier and published the results. When research showed synthetic fabrics shed microplastics, they funded independent research that could have damaged their own product line.',
+          'The culmination came in September 2022, when Chouinard transferred ownership of the entire company — valued at roughly $3 billion — to a trust and nonprofit dedicated to fighting climate change. "Earth is now our only shareholder," he said. The family gave up all ownership.',
+        ],
+        pull_quote: {
+          text: 'The more you know, the less you need.',
+          attribution: 'Yvon Chouinard',
+        },
+        decisions: [
+          {
+            abbreviation: 'DB',
+            title: "Don't Buy Campaign",
+            description: 'Ran anti-consumerist ads at peak buying season. Backed it with repair and resale infrastructure.',
+          },
+          {
+            abbreviation: 'WW',
+            title: 'Worn Wear Programme',
+            description: "Built North America's largest garment repair centre. Made not-buying the easier option.",
+          },
+          {
+            abbreviation: 'SC',
+            title: 'Supply Chain Transparency',
+            description: 'Published full environmental footprint. Cut suppliers who violated standards.',
+          },
+          {
+            abbreviation: 'EO',
+            title: 'Earth Ownership',
+            description: 'Transferred $3B company to environmental trust. Eliminated family wealth extraction.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1973',
+            title: 'Company Founded',
+            description: 'Chouinard turns his climbing gear side business into Patagonia. Names it after a remote region to evoke adventure.',
+          },
+          {
+            step: 2,
+            year: '1996',
+            title: 'Organic Cotton Switch',
+            description: 'Converts entire cotton line to organic at significant cost. Reduces product line from 120 items to 66.',
+          },
+          {
+            step: 3,
+            year: '2011',
+            title: "Don't Buy This Jacket",
+            description: 'Black Friday NYT ad challenges consumerism. Revenue grows 30% in the following year.',
+          },
+          {
+            step: 4,
+            year: '2022',
+            title: 'Earth Ownership',
+            description: 'Chouinard transfers 100% ownership to Holdfast Collective and Patagonia Purpose Trust.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'When has your organisation said one thing publicly but acted differently internally? What was the cost of that gap?',
+          'Patagonia accepted short-term revenue loss for long-term brand trust. Where in your work could you trade short-term metrics for deeper credibility?',
+          'Chouinard built repair infrastructure before asking people not to buy. How do you ensure your values are backed by structural support, not just slogans?',
+          'The company published its own failures voluntarily. What would happen if your team made its biggest mistakes transparent to stakeholders?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Authenticity compounds over decades.',
+            body: 'Patagonia\'s "Don\'t Buy" campaign worked because it was preceded by 40 years of consistent values-driven decisions. Trust is not built by a single act but by a pattern.',
+          },
+          {
+            headline: 'Structure your values into operations.',
+            body: 'Worn Wear, repair centres, and supply chain audits turned abstract principles into concrete systems. Values without infrastructure are just marketing.',
+          },
+          {
+            headline: 'Voluntary transparency builds unassailable trust.',
+            body: 'Publishing your own failures before someone else discovers them creates a level of credibility that competitors cannot replicate.',
+          },
+          {
+            headline: 'Purpose can be the ultimate competitive moat.',
+            body: "When Chouinard gave away the company, it cemented Patagonia's brand in a way no marketing budget could achieve. Radical commitment attracts radical loyalty.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L018',
+    title: "Spotify's Squad Model",
+    subtitle: 'The org design that went viral — and the painful lessons hidden behind the whitepaper',
+    company: 'Spotify',
+    company_abbreviation: 'SP',
+    year_range: '2012–2020',
+    module: 'scaling_teams',
+    category: 'Scaling Teams',
+    category_color_key: 'orange',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['Organisation Design', 'Autonomy', 'Agile', 'Scaling'],
+    source_disclosure: "Publicly disclosed via Henrik Kniberg's whitepapers and talks, Spotify Engineering Blog, and multiple post-mortems by former employees",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          'By 2012, Spotify had grown from a Swedish startup to a global music streaming platform with hundreds of engineers spread across Stockholm, New York, and London. The company faced the universal scaling problem: how do you move fast when you have 300 engineers instead of 30? Traditional hierarchies were too slow. Pure flat structures were chaotic. Spotify needed a third option.',
+        body_paragraphs: [
+          'The core unit was the Squad: a small, cross-functional team of 6–12 people — designers, developers, testers, and a product owner — who operated like a mini-startup. Each squad owned a specific feature end-to-end. They chose their own tools, processes, and ways of working. There was no mandated methodology. The only requirement was outcomes: ship working software that users love.',
+          'Squads were grouped into Tribes (capped at ~100 people — the Dunbar number). Across tribes, Chapters connected people with the same skill set for knowledge sharing. Guilds were informal communities of interest. The model was deliberately organic — it looked messy on paper, but it optimised for speed of autonomous decision-making at the edges.',
+          "The model's greatest strength was also its greatest vulnerability. When it worked, squads moved with startup-like speed inside a large organisation. But the model depended on cultural norms that were never formally codified. As Spotify grew beyond 2,000 engineers, some squads became silos. Lack of standardisation created integration headaches. New hires struggled with a system that lived in tribal knowledge.",
+          'By 2020, Spotify had quietly moved away from the pure Squad Model. Former engineers published candid retrospectives acknowledging the gap between the idealised whitepaper and messy reality. But its core insight — that small, autonomous, cross-functional teams outperform hierarchical command structures — permanently changed how the industry builds software.',
+        ],
+        pull_quote: {
+          text: 'Alignment enables autonomy. The stronger the alignment, the more autonomy you can afford to grant.',
+          attribution: 'Henrik Kniberg, Spotify Agile Coach',
+        },
+        decisions: [
+          {
+            abbreviation: 'SQ',
+            title: 'Squad Autonomy',
+            description: 'Small cross-functional teams with full ownership. No mandated methodology.',
+          },
+          {
+            abbreviation: 'TR',
+            title: 'Tribe Structure',
+            description: 'Capped at ~100 people (Dunbar number). Maintained human-scale communities.',
+          },
+          {
+            abbreviation: 'CH',
+            title: 'Chapters & Guilds',
+            description: 'Cross-cutting skill groups for knowledge sharing without adding hierarchy.',
+          },
+          {
+            abbreviation: 'IA',
+            title: 'Internal Accountability',
+            description: 'Squads measured on outcomes, not process. Trusted teams to find their own way.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2012',
+            title: 'Squad Model Formalised',
+            description: 'Henrik Kniberg publishes the Spotify engineering culture whitepaper. Model goes viral in the agile community.',
+          },
+          {
+            step: 2,
+            year: '2014',
+            title: 'Scaling to 300+ Engineers',
+            description: 'Model expanded across Stockholm, New York, and London offices. Tribes form around product areas.',
+          },
+          {
+            step: 3,
+            year: '2018',
+            title: 'Growing Pains',
+            description: 'Internal friction emerges. Squads become silos. Integration costs rise as team count exceeds 200.',
+          },
+          {
+            step: 4,
+            year: '2020',
+            title: 'Post-Mortem',
+            description: 'Former engineers publish retrospectives. Spotify quietly evolves past the pure model. Lesson: culture cannot be copy-pasted.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Where in your organisation do teams have autonomy in name but not in practice? What would genuine autonomy require?',
+          "Spotify's model broke down when cultural norms weren't codified. What unwritten rules does your team depend on that would confuse a new hire?",
+          'The Dunbar number (~100) capped tribe size. At what point does your team lose the ability to coordinate informally? What happens then?',
+          'The Squad Model was more aspirational than real. Where is your organisation confusing its idealised description with its actual operation?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Autonomy requires alignment as a prerequisite.',
+            body: 'Without shared goals and clear boundaries, autonomous teams diverge into silos. Alignment is not the opposite of autonomy — it is its foundation.',
+          },
+          {
+            headline: 'Org models are not transferable products.',
+            body: "The Spotify Model failed when other companies copied the structure without the culture. Organisational design is context-dependent, not plug-and-play.",
+          },
+          {
+            headline: 'Scaling breaks informal coordination.',
+            body: 'What works at 50 people breaks at 500. The signals, norms, and trust networks that enable small-team speed must be deliberately replaced with lightweight formal structures at scale.',
+          },
+          {
+            headline: 'Honest post-mortems are more valuable than success stories.',
+            body: "Spotify's retrospectives were more instructive than its original whitepaper. The willingness to publicly document failure is a sign of organisational maturity.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L019',
+    title: 'Gene Kranz and Apollo 13',
+    subtitle: 'How Mission Control invented survival 200,000 miles from Earth — in 87 hours',
+    company: 'NASA',
+    company_abbreviation: 'NA',
+    year_range: '1970',
+    module: 'crisis_leadership',
+    category: 'Crisis Leadership',
+    category_color_key: 'blue',
+    read_time_minutes: 12,
+    difficulty: 'complex',
+    tags: ['Crisis', 'Decision Making', 'Teamwork', 'Pressure'],
+    source_disclosure: 'Publicly disclosed via Gene Kranz\'s autobiography "Failure Is Not an Option," NASA transcripts, and congressional testimony',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          'On April 13, 1970, an oxygen tank exploded aboard Apollo 13, 200,000 miles from Earth. The spacecraft was venting oxygen into space. Power was failing. Three astronauts were in a crippled vessel with a dwindling supply of oxygen, water, power, and heat. Mission Control had no contingency plan for this scenario. Flight Director Gene Kranz had to invent the solution in real time.',
+        body_paragraphs: [
+          "Kranz's first decision set the tone for everything that followed. Within minutes of the explosion, someone said the word \"abort.\" Kranz shut it down immediately. Not because he had a solution — but because panic is contagious, and the first job of a crisis leader is to control the emotional temperature of the room. \"Let's everybody keep cool. Let's solve the problem, but let's not make it any worse by guessing.\"",
+          'The technical challenges were staggering. The Lunar Module — designed for two men for 45 hours — had to become a lifeboat for three men for four days. Power was rationed to one-fifth of normal. The spacecraft became colder than a refrigerator. Carbon dioxide built up because the Command Module\'s square canisters didn\'t fit the Lunar Module\'s round receptacles. Engineers on the ground built an adapter using cardboard, plastic bags, and duct tape. The astronauts built it from verbal instructions. It worked.',
+          "Kranz organised Mission Control into rotating tiger teams, each focused on a specific problem. He insisted on one rule: every recommendation had to account for downstream consequences. No one could solve their problem by creating someone else's problem. This forced systems thinking under extreme pressure.",
+          'When engineers proposed a faster return trajectory, Kranz rejected it because it required firing the main engine on a damaged spacecraft. He chose the slower, safer free-return trajectory around the moon. It was an agonising extra day, but it eliminated a catastrophic variable. The re-entry blackout lasted ninety seconds longer than normal — the longest silence in NASA history. Then the crew radioed in. They were alive.',
+        ],
+        pull_quote: {
+          text: 'Failure is not an option.',
+          attribution: 'Gene Kranz (the sentiment embodied by Mission Control culture)',
+        },
+        decisions: [
+          {
+            abbreviation: 'EC',
+            title: 'Emotional Control',
+            description: "Shut down panic immediately. Controlled the room's temperature before the problem.",
+          },
+          {
+            abbreviation: 'FR',
+            title: 'Free-Return Trajectory',
+            description: 'Chose the slower, safer path. Rejected the faster option that relied on an unverifiable engine.',
+          },
+          {
+            abbreviation: 'TT',
+            title: 'Tiger Teams',
+            description: 'Rotated specialists through focused problem sets. Mandated systems thinking: no siloed solutions.',
+          },
+          {
+            abbreviation: 'IA',
+            title: 'Improvised Adapter',
+            description: 'Square-peg-round-hole CO2 fix using cardboard, plastic bags, and tape. Solved constraints with available materials.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Apr 13, 1970',
+            title: 'Oxygen Tank Explodes',
+            description: '"Houston, we\'ve had a problem." Spacecraft losing oxygen and power 200,000 miles from Earth.',
+          },
+          {
+            step: 2,
+            year: 'Apr 14, 1970',
+            title: 'Lifeboat Activated',
+            description: 'Crew powers down Command Module, transfers to Lunar Module. Power rationed to one-fifth of normal.',
+          },
+          {
+            step: 3,
+            year: 'Apr 15, 1970',
+            title: 'CO2 Crisis Solved',
+            description: 'Ground team invents adapter from spacecraft materials. Crew builds it from verbal instructions.',
+          },
+          {
+            step: 4,
+            year: 'Apr 17, 1970',
+            title: 'Splashdown',
+            description: 'After 87 hours in a freezing spacecraft, all three astronauts land safely in the South Pacific.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Kranz's first act was to shut down panic, not solve the problem. When facing a crisis, do you control the emotional temperature first — or do you jump straight to solutions?",
+          'The "no siloed solutions" rule forced every team to think about consequences for others. Where do your teams solve their own problems by creating problems elsewhere?',
+          'Kranz rejected the faster trajectory because it relied on an unverifiable assumption. When have you chosen speed over certainty — and what was the cost?',
+          'The CO2 adapter was built from cardboard, plastic bags, and tape. What constraints in your environment could be solved with available materials rather than ideal ones?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Control the room before controlling the problem.',
+            body: 'Panic spreads faster than solutions. The first job of a crisis leader is to set the emotional tone — calm, focused, methodical — before any technical decision is made.',
+          },
+          {
+            headline: 'Reject speed when it depends on unverifiable assumptions.',
+            body: "The faster trajectory required trusting a potentially damaged engine. Kranz chose certainty over speed. In a crisis, the cost of being wrong exceeds the cost of being slow.",
+          },
+          {
+            headline: 'Systems thinking prevents cascading failures.',
+            body: "Requiring every solution to account for downstream consequences prevents the common crisis pattern where fixing one problem creates two new ones.",
+          },
+          {
+            headline: 'Constraints breed creativity when panic is removed.',
+            body: 'The CO2 adapter was pure invention under pressure. But it only happened because the team was calm enough to think creatively within severe material constraints.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L020',
+    title: "Amazon's AWS — The Accidental Empire",
+    subtitle: 'How internal infrastructure became the foundation of the modern internet',
+    company: 'Amazon',
+    company_abbreviation: 'AZ',
+    year_range: '2003–2015',
+    module: 'innovation',
+    category: 'Innovation Under Pressure',
+    category_color_key: 'green',
+    read_time_minutes: 11,
+    difficulty: 'complex',
+    tags: ['Innovation', 'Platform Thinking', 'Internal Tools', 'Disruption'],
+    source_disclosure: 'Publicly disclosed via Brad Stone\'s "The Everything Store," AWS re:Invent keynotes, and Jeff Bezos shareholder letters',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 2003, Amazon was a bookstore expanding into general retail. Its technology infrastructure was a mess — a monolithic architecture where teams waited months for provisioning. During a strategy retreat, a junior engineer proposed that Amazon's internal infrastructure could be offered as a service to external developers. The idea seemed absurd. Amazon was a retailer. Why would anyone buy computing power from a bookstore?",
+        body_paragraphs: [
+          "The insight was deceptively simple: Amazon had already solved the hardest infrastructure problems at scale for its own retail business. Elastic compute, distributed storage, global networking — all existed internally. The idea was to productise what already existed and let anyone use it on-demand, paying only for what they consumed. Bezos saw what competitors missed: infrastructure itself was a product, and the market was essentially infinite.",
+          "Bezos made two separating decisions. First, AWS must run as a genuinely independent business, charging market rates — not subsidised internal rates. Amazon's own retail teams would be customers, not privileged insiders. This forced AWS to be genuinely excellent. Second, the \"two-pizza team\" rule: every service owned by a team small enough to feed with two pizzas, preventing bureaucratic bloat.",
+          "Critics called it a distraction from retail. Wall Street questioned hundreds of millions invested in thin-margin infrastructure. But Bezos understood infrastructure businesses have enormous economies of scale, and switching costs compound over time. Once a company builds on AWS, the cost of migrating away grows every month.",
+          "By 2015, AWS generated $7.8 billion in revenue and $1.86 billion in operating income — more profit than Amazon's entire retail operation. Netflix, Airbnb, the CIA, and thousands of startups ran on AWS. Amazon had accidentally created the foundation of the modern internet.",
+        ],
+        pull_quote: {
+          text: "We've had three big ideas at Amazon that we've stuck with for 18 years, and they're the reason we're successful: Put the customer first. Invent. And be patient.",
+          attribution: 'Jeff Bezos',
+        },
+        decisions: [
+          {
+            abbreviation: 'IP',
+            title: 'Infrastructure as Product',
+            description: 'Recognised internal tools could be external products. Productised what already existed.',
+          },
+          {
+            abbreviation: 'IN',
+            title: 'Independent Business',
+            description: "AWS charged market rates. Amazon's own teams were customers, not insiders. Forced genuine competitiveness.",
+          },
+          {
+            abbreviation: 'TP',
+            title: 'Two-Pizza Teams',
+            description: 'Small autonomous teams owned each service end-to-end. Prevented bureaucratic overhead.',
+          },
+          {
+            abbreviation: 'PL',
+            title: 'Patient Capital',
+            description: 'Invested billions despite Wall Street pressure. Understood infrastructure economics compound over time.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2003',
+            title: 'The Paper',
+            description: "Benjamin Black and Chris Pinkham propose selling Amazon's infrastructure as a service. Bezos approves.",
+          },
+          {
+            step: 2,
+            year: '2006',
+            title: 'S3 & EC2 Launch',
+            description: 'Simple Storage Service launches March. Elastic Compute Cloud follows August. First customers are startups.',
+          },
+          {
+            step: 3,
+            year: '2013',
+            title: 'CIA Contract',
+            description: 'AWS wins $600M CIA cloud contract over IBM. Legitimacy with enterprise and government established.',
+          },
+          {
+            step: 4,
+            year: '2015',
+            title: 'Profit Revelation',
+            description: 'AWS reported separately for first time: $7.8B revenue, $1.86B profit. More profitable than all of Amazon retail.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'What internal tools or capabilities does your organisation have that external customers might pay for? What would it take to productise them?',
+          "Bezos forced AWS to charge market rates to internal teams. Where does your organisation give insiders preferential treatment that masks poor quality?",
+          "The two-pizza team rule prevented bureaucratic bloat. What is the maximum team size at which your organisation still moves fast? What happens beyond that threshold?",
+          'AWS was called a distraction for years before proving its value. What initiative in your organisation is being dismissed as a distraction but might be the future?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Your internal infrastructure might be your most valuable product.',
+            body: "Amazon's greatest innovation wasn't a consumer product — it was recognising that the boring, invisible infrastructure powering its own business was more valuable as an external offering.",
+          },
+          {
+            headline: 'Treat internal teams as real customers.',
+            body: 'Charging market rates and refusing to subsidise forces internal products to be genuinely competitive. Privilege breeds mediocrity.',
+          },
+          {
+            headline: 'Patient capital beats quarterly thinking.',
+            body: 'AWS required billions in investment for years before proving its economics. Infrastructure businesses compound — but only if you survive the critics long enough.',
+          },
+          {
+            headline: 'Small teams with full ownership outperform large teams with shared responsibility.',
+            body: 'The two-pizza rule ensured that every service had clear ownership, fast decision-making, and no diffusion of responsibility.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L021',
+    title: "Howard Schultz's Starbucks Comeback",
+    subtitle: 'How closing 7,100 stores for an afternoon saved a brand that had lost its soul',
+    company: 'Starbucks',
+    company_abbreviation: 'SB',
+    year_range: '2008–2012',
+    module: 'turnarounds',
+    category: 'Turnarounds',
+    category_color_key: 'orange',
+    read_time_minutes: 10,
+    difficulty: 'medium',
+    tags: ['Turnaround', 'Brand', 'Customer Experience', 'Focus'],
+    source_disclosure: 'Publicly disclosed via Howard Schultz\'s "Onward," earnings calls, NYT and WSJ coverage, and Harvard Business Review case studies',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "By 2007, Starbucks had become exactly the thing Howard Schultz feared most: a commodity. Growth from 1,000 to 15,000 stores in a decade had hollowed out the experience. Stores smelled like burnt cheese instead of fresh coffee. The stock had dropped 50%. Same-store sales were declining for the first time. In January 2008, Schultz returned as CEO to fix what he helped break.",
+        body_paragraphs: [
+          "Schultz's first act was symbolic and expensive. On February 26, 2008, he closed all 7,100 US stores for three and a half hours during peak business to retrain every barista on espresso. The estimated cost: $6 million in lost revenue. Wall Street called it theatrical. But Starbucks's problem wasn't operational efficiency — it was soul. You can't fix soul with a memo. You need a ritual.",
+          'He moved aggressively to strip away everything that diluted the brand. Killed breakfast sandwiches that overpowered coffee aroma. Removed automatic espresso machines that eliminated barista craft. Shut 600 underperforming stores. Halted new openings. For a company addicted to growth, this felt like amputation. But the logic was clear: you cannot grow your way out of a quality problem.',
+          "The hardest part was cultural. 170,000 employees had been trained in a growth mindset where more stores meant more opportunity. At a leadership conference in New Orleans — deliberately chosen as a city rebuilding after Katrina — 10,000 managers heard Schultz admit his own role: \"I came back because I felt a deep responsibility. I helped create the problem.\"",
+          'By 2012, the turnaround was complete. Revenue grew from $10.4B to $13.3B. Stock exceeded its previous peak. The deeper lesson: a company can grow too fast for its own culture to keep up, and the cure is the courage to go backwards before going forward.',
+        ],
+        pull_quote: {
+          text: 'Growth and success can cover up a lot of mistakes. When growth slows, the mistakes become visible.',
+          attribution: 'Howard Schultz',
+        },
+        decisions: [
+          {
+            abbreviation: 'RT',
+            title: 'Retraining Ritual',
+            description: 'Closed 7,100 stores for espresso retraining. Lost $6M. Sent the message that quality matters more than sales.',
+          },
+          {
+            abbreviation: 'SB',
+            title: 'Strip the Brand',
+            description: 'Removed automatic machines, cut sandwiches, killed drive-through expansion. Restored sensory experience.',
+          },
+          {
+            abbreviation: 'CS',
+            title: 'Close 600 Stores',
+            description: 'Shut underperforming locations. Accepted short-term pain for long-term brand health.',
+          },
+          {
+            abbreviation: 'NO',
+            title: 'New Orleans Conference',
+            description: "10,000 managers volunteered and heard Schultz admit his mistakes. Rebuilt trust through vulnerability.",
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Jan 2008',
+            title: 'Schultz Returns as CEO',
+            description: 'Stock down 50%. Same-store sales declining. Returns to fix what he helped break.',
+          },
+          {
+            step: 2,
+            year: 'Feb 2008',
+            title: '7,100 Stores Closed for Retraining',
+            description: 'Three-and-a-half-hour espresso retraining. $6M in lost revenue. Wall Street panics.',
+          },
+          {
+            step: 3,
+            year: '2008–2009',
+            title: '600 Stores Closed',
+            description: 'Underperforming locations shut. New openings halted. Company resets around quality over quantity.',
+          },
+          {
+            step: 4,
+            year: '2012',
+            title: 'Full Recovery',
+            description: 'Revenue reaches $13.3B. Stock exceeds pre-crisis highs. China expansion accelerates.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Where is your organisation growing faster than its culture can support? What signals tell you the quality is slipping?',
+          "Schultz closed 7,100 stores as a ritual, not just a training session. When have you needed a dramatic gesture to signal that something has fundamentally changed?",
+          "He admitted publicly that he helped create the problem. When is the last time a leader in your organisation took genuine ownership of a systemic failure they contributed to?",
+          "The cure was going backwards before going forwards. What would it look like to deliberately shrink or simplify before the next growth push?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Growth can destroy the thing it was meant to scale.',
+            body: "Starbucks grew the store count but diluted the experience. Scale without quality control is not growth — it's erosion.",
+          },
+          {
+            headline: 'Rituals communicate more than memos.',
+            body: 'Closing 7,100 stores sent a message that no internal email could achieve. Symbolic actions reach people that rational arguments miss.',
+          },
+          {
+            headline: 'Leaders must own their contribution to the problem.',
+            body: "Schultz's admission that he helped create the drift gave him credibility to demand change. People follow leaders who share blame, not just credit.",
+          },
+          {
+            headline: 'Sometimes the bravest strategy is subtraction.',
+            body: "Closing stores, cutting products, and halting expansion required more courage than any growth plan. Knowing what to stop is as important as knowing what to start.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L022',
+    title: "Bob Chapman's Everybody Matters",
+    subtitle: 'How treating a $3 billion manufacturer like a family — without layoffs — outperformed Wall Street',
+    company: 'Barry-Wehmiller',
+    company_abbreviation: 'BW',
+    year_range: '1997–2015',
+    module: 'servant_leadership',
+    category: 'Servant Leadership',
+    category_color_key: 'blue',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['People-First', 'Manufacturing', 'Trust', 'Empathy'],
+    source_disclosure: 'Publicly disclosed via Bob Chapman\'s "Everybody Matters" (co-authored with Raj Sisodia), TED talks, and media interviews',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "Barry-Wehmiller is a $3 billion manufacturing company in St. Louis — not the kind that typically produces leadership philosophy. It makes paper-converting machinery and packaging equipment. When Bob Chapman became CEO in 1997, the company was a struggling conglomerate. What transformed it was Chapman's radical premise: a company's primary purpose is to send every employee home each day feeling fulfilled and valued.",
+        body_paragraphs: [
+          "Chapman's awakening came during a wedding. Watching the ceremony, he realised that every morning, employees' families entrust their most precious people to his company's care. \"Do we treat them with that same reverence?\" The answer was no. Most companies treat employees as functions — human resources to be optimised. Chapman decided to treat them as people first.",
+          'The first test came during the 2008 crisis. Revenue dropped 30%. The standard playbook: lay off 20%. Chapman rejected it. Instead, every employee — from CEO to factory floor — took four weeks of unpaid leave spread across the year. "We\'re going to share the pain so that no one has to bear it alone." Employees voluntarily traded furlough weeks with colleagues who couldn\'t afford them. Trust, it turned out, is reciprocal.',
+          'Barry-Wehmiller survived the recession without a single layoff and emerged with a more loyal, engaged, and productive workforce. Chapman codified his philosophy as "Truly Human Leadership." Performance reviews were replaced with personal growth conversations. Every leader takes a course called "Listen Like a Leader."',
+          "The company's acquisition strategy includes cultural transformation: when acquiring a new company (over 100 completed), the first change is management culture, not the product line. Employee engagement exceeds 90%, voluntary turnover is a fraction of industry average, and revenue grew from $200M to $3B under Chapman's leadership.",
+        ],
+        pull_quote: {
+          text: 'We measure success by the way we touch the lives of people.',
+          attribution: 'Bob Chapman',
+        },
+        decisions: [
+          {
+            abbreviation: 'FM',
+            title: 'Furlough Over Layoffs',
+            description: 'Shared pain equally during the 2008 crisis. Every employee took 4 weeks unpaid. Zero layoffs.',
+          },
+          {
+            abbreviation: 'LL',
+            title: 'Listen Like a Leader',
+            description: 'Replaced performance reviews with personal growth conversations. Trained every leader in active listening.',
+          },
+          {
+            abbreviation: 'AC',
+            title: 'Acquisition Culture',
+            description: 'Over 100 acquisitions where culture transformation precedes operational changes.',
+          },
+          {
+            abbreviation: 'TP',
+            title: 'Trust is Primary',
+            description: "Treated employee wellbeing as the primary metric. Made 'sending people home fulfilled' the company mission.",
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1997',
+            title: 'Chapman Becomes CEO',
+            description: 'Barry-Wehmiller is a struggling $200M industrial conglomerate. Chapman begins culture transformation.',
+          },
+          {
+            step: 2,
+            year: '2008',
+            title: 'Furlough Decision',
+            description: 'Revenue drops 30%. Rejects layoffs. Implements shared furlough. Zero employees terminated.',
+          },
+          {
+            step: 3,
+            year: '2012',
+            title: 'TEDx Talk Goes Viral',
+            description: "Chapman's Truly Human Leadership talk reaches millions. Becomes a case study in people-first management.",
+          },
+          {
+            step: 4,
+            year: '2015',
+            title: '"Everybody Matters" Published',
+            description: 'Revenue exceeds $2.5B. 100+ acquisitions completed using culture-first integration model.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Chapman asks: \"Would you treat your employees the way you'd want your children's employer to treat them?\" How does your organisation measure up?",
+          'The furlough decision shared pain equally across all levels. When your organisation faces cost pressure, who bears the burden — and who is protected?',
+          "Chapman replaced performance reviews with growth conversations. What would happen if you stopped rating people and started developing them instead?",
+          "Trust was reciprocal: when Chapman showed care, employees showed care for each other. Where could demonstrating vulnerability as a leader unlock generosity in your team?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Shared sacrifice builds deeper loyalty than shared success.',
+            body: "The furlough decision cost everyone equally — and created a bond that years of bonuses never could. People remember who stood with them in hard times.",
+          },
+          {
+            headline: 'Listening is the most underrated leadership skill.',
+            body: "Chapman trained every leader to listen before acting. In a culture of constant communication, the leaders who pause to genuinely hear create the deepest trust.",
+          },
+          {
+            headline: 'Culture transformation must precede operational change.',
+            body: "In 100+ acquisitions, Chapman proved that changing how people feel about their work changes how they perform it. Culture first, operations second.",
+          },
+          {
+            headline: 'People-first management is not soft — it is profitable.',
+            body: '$200M to $3B in revenue. 90%+ engagement. Fraction of industry turnover. Treating people as people is not charity — it is a superior operating model.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L023',
+    title: "Andy Grove's Paranoid Survival",
+    subtitle: "How Intel's CEO killed his own founding product — and saved the company from irrelevance",
+    company: 'Intel',
+    company_abbreviation: 'IN',
+    year_range: '1985–1998',
+    module: 'decision_making',
+    category: 'Decision Making',
+    category_color_key: 'green',
+    read_time_minutes: 11,
+    difficulty: 'complex',
+    tags: ['Strategy', 'Pivots', 'Mental Models', 'Decisive Action'],
+    source_disclosure: 'Publicly disclosed via Andy Grove\'s "Only the Paranoid Survive," Intel annual reports, and HBS case studies',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 1985, Intel was a memory chip company — it had invented DRAM, and memory was its identity. But Japanese manufacturers were undercutting prices by 10% with higher quality. Intel was losing $173 million per year. The board was paralysed. Everyone knew the memory business was dying, but no one could say it, because memory was Intel. Andy Grove posed the question that changed the company's history.",
+        body_paragraphs: [
+          'Grove walked into Gordon Moore\'s office. "If we got kicked out and the board brought in a new CEO, what do you think he would do?" Moore answered: "He would get us out of memories." Grove said: "Why shouldn\'t you and I walk out the door, come back in, and do it ourselves?" That "revolving door" mental model became Grove\'s signature decision-making tool: strip away emotional attachment and sunk costs, and ask what a rational outsider would do.',
+          "The decision to exit memory and go all-in on microprocessors was not popular. Engineers who built careers in memory felt abandoned. Middle managers resisted. But Grove was ruthless: shut down plants, redirect R&D, lay off thousands. When questioned, he was direct: \"Memory is not our future. Microprocessors are. We need to mourn this and move on.\" Organisational clarity in crisis matters more than comfort.",
+          'Grove\'s framework centred on "strategic inflection points" — moments where fundamentals change so profoundly that old rules stop working. He argued these are nearly invisible from inside because those closest to the old business have the strongest attachment. The signal comes from "Cassandras" — junior employees and field salespeople who see the shift first but are ignored by leadership.',
+          'The microprocessor bet paid off spectacularly. The Pentium processor, launched in 1993, became the most recognised chip brand. "Intel Inside" turned a commodity component into a consumer brand. By 1998, revenue exceeded $25 billion. Grove was named TIME Person of the Year in 1997.',
+        ],
+        pull_quote: {
+          text: 'There is at least one point in the history of any company when you have to change dramatically to rise to the next level of performance. Miss that moment, and you start to decline.',
+          attribution: 'Andy Grove',
+        },
+        decisions: [
+          {
+            abbreviation: 'RD',
+            title: 'Revolving Door Test',
+            description: '"If a new CEO walked in, what would he do?" Stripped emotional attachment from strategy.',
+          },
+          {
+            abbreviation: 'EM',
+            title: 'Exit Memory',
+            description: 'Shut down founding product line. Redirected all resources to microprocessors. Accepted organisational grief.',
+          },
+          {
+            abbreviation: 'SI',
+            title: 'Strategic Inflection Points',
+            description: 'Codified framework for recognising fundamental shifts. Listened to "Cassandras" at the edges.',
+          },
+          {
+            abbreviation: 'IB',
+            title: 'Intel Inside',
+            description: 'Turned commodity hardware into a consumer brand. Marketing at the component level — unprecedented.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1985',
+            title: 'The Revolving Door Conversation',
+            description: "Grove and Moore agree to exit memory. Intel's founding product abandoned.",
+          },
+          {
+            step: 2,
+            year: '1986–1988',
+            title: 'Painful Transition',
+            description: 'Memory plants closed. Thousands laid off. R&D reallocated to 386 and 486 processors.',
+          },
+          {
+            step: 3,
+            year: '1993',
+            title: 'Pentium Launch',
+            description: "Intel's microprocessor becomes the most recognised chip brand. 'Intel Inside' campaign begins.",
+          },
+          {
+            step: 4,
+            year: '1998',
+            title: 'Paranoid Survival',
+            description: 'Revenue exceeds $25B. Grove publishes "Only the Paranoid Survive." Named TIME Person of the Year.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Apply the revolving door test to your current situation: if a new leader walked in tomorrow, what would they obviously do that you\'re avoiding?',
+          "Grove's \"Cassandras\" are junior people who see shifts first. Who in your organisation is raising uncomfortable signals that leadership is ignoring?",
+          "Intel's identity was tied to memory chips. What is your team's identity tied to — and could that identity be preventing you from seeing a necessary pivot?",
+          'Grove said organisational clarity matters more than comfort. Where are you prioritising comfort over clarity in a situation that demands directness?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'The revolving door test strips emotional bias from strategy.',
+            body: 'Asking "what would a new CEO do?" removes sunk costs, identity attachment, and political baggage. It reveals what everyone already knows but no one will say.',
+          },
+          {
+            headline: 'Strategic inflection points are invisible from inside.',
+            body: 'The people closest to the threatened business are the least likely to see the shift. Listen to edge signals — junior employees, field staff, and customers — before the data confirms what they already feel.',
+          },
+          {
+            headline: 'Identity can be a strategic liability.',
+            body: "\"We are a memory company\" nearly killed Intel. When your identity prevents you from seeing reality, that identity has become a constraint, not a strength.",
+          },
+          {
+            headline: 'Clarity is kindness in a crisis.',
+            body: "Grove's directness — \"memory is not our future\" — was painful but allowed people to mourn and move on. Ambiguity prolongs suffering.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L024',
+    title: "Jacinda Ardern's Christchurch Response",
+    subtitle: 'How empathy-first leadership changed gun laws in 26 days and redefined crisis communication',
+    company: 'New Zealand Government',
+    company_abbreviation: 'NZ',
+    year_range: '2019',
+    module: 'emotional_intelligence',
+    category: 'Emotional Intelligence',
+    category_color_key: 'orange',
+    read_time_minutes: 10,
+    difficulty: 'medium',
+    tags: ['Empathy', 'Crisis Communication', 'Grief', 'Moral Authority'],
+    source_disclosure: "Publicly disclosed via press conferences, parliamentary records, and media coverage (BBC, NYT, The Guardian)",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "On March 15, 2019, a gunman attacked two mosques in Christchurch, New Zealand, killing 51 people and injuring 49 others. It was the deadliest mass shooting in New Zealand's history. Within hours, Prime Minister Jacinda Ardern faced a test that would define her leadership: how do you lead a grieving nation through its worst day while simultaneously making policy decisions that will shape the country for decades?",
+        body_paragraphs: [
+          'Ardern\'s first public statement set a tone no modern political leader had struck in similar circumstances. She began with grief, not policy: "They have chosen to make New Zealand their home, and it is their home. They are us." The phrase "they are us" became the defining message. It was not a slogan crafted by a communications team — it was an instinctive expression that empathy must precede policy.',
+          "What distinguished Ardern was the consistency between words and physical actions. She flew to Christchurch immediately, visited survivors, met families of the deceased, wore a hijab when visiting the Muslim community as a gesture of respect, and wept openly. In a political culture that equates composure with strength, she demonstrated that vulnerability could be a form of leadership.",
+          "The strategic decisions were equally remarkable. Within 72 hours, she announced gun law changes. Within 26 days, Parliament passed the Arms Amendment Act 119 to 1, banning most semi-automatic weapons. The speed was extraordinary — comparable legislation had stalled for decades elsewhere. She achieved it through moral authority built by her emotional response.",
+          'She also refused to say the perpetrator\'s name. "He sought notoriety, and that is why you will never hear me mention his name." This reframed the narrative from perpetrator to victims. It was a masterclass in controlling the emotional architecture of a crisis: who we centre, who we name, who we remember.',
+        ],
+        pull_quote: {
+          text: 'They are us.',
+          attribution: 'Jacinda Ardern, March 15, 2019',
+        },
+        decisions: [
+          {
+            abbreviation: 'EU',
+            title: 'Empathy First',
+            description: 'Led with grief, not policy. "They are us." Established emotional connection before strategic action.',
+          },
+          {
+            abbreviation: 'PP',
+            title: 'Physical Presence',
+            description: 'Visited every affected community personally. Wept openly. Collapsed the distance between leader and people.',
+          },
+          {
+            abbreviation: 'GL',
+            title: 'Gun Law Reform',
+            description: 'Banned semi-automatic weapons within 26 days. Fastest firearms legislation reform in modern history.',
+          },
+          {
+            abbreviation: 'NR',
+            title: 'Deny the Narrative',
+            description: 'Refused to name the attacker. Recentred attention on victims. Changed media coverage patterns.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Mar 15, 2019',
+            title: 'Attack Begins',
+            description: 'Gunman opens fire at Al Noor Mosque and Linwood Islamic Centre. 51 killed, 49 injured.',
+          },
+          {
+            step: 2,
+            year: 'Mar 15, 2019',
+            title: '"They Are Us"',
+            description: 'Ardern delivers first public statement. Establishes empathy-first framework for national response.',
+          },
+          {
+            step: 3,
+            year: 'Mar 21, 2019',
+            title: 'Gun Reform Announced',
+            description: 'Six days after attack, Ardern announces ban on semi-automatic weapons and assault rifles.',
+          },
+          {
+            step: 4,
+            year: 'Apr 10, 2019',
+            title: 'Arms Amendment Act Passed',
+            description: 'Parliament votes 119–1. Buyback programme launched. 56,000 weapons surrendered.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Ardern led with empathy before policy. When facing a crisis, do you allow space for grief before jumping to solutions — or do you skip the human step?',
+          'She demonstrated vulnerability as a form of strength. When has showing emotion made you a more effective leader? When has suppressing it cost you credibility?',
+          'The refusal to name the attacker controlled the narrative architecture. In your communications, who are you centring — the problem or the people affected?',
+          'Ardern built moral authority through emotional presence, then spent it on decisive policy. What is the relationship between empathy and authority in your leadership?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Empathy is not the opposite of decisiveness — it enables it.',
+            body: "Ardern's emotional response built the moral authority and political capital that made 26-day gun reform possible. Empathy first, then action.",
+          },
+          {
+            headline: 'Physical presence communicates what words cannot.',
+            body: "Being there — visibly grieving, holding people, wearing symbols of respect — collapses the distance between leader and community in ways that press conferences never can.",
+          },
+          {
+            headline: 'Control who gets centred in the narrative.',
+            body: 'By refusing to name the attacker, Ardern denied him the notoriety he sought and redirected attention to victims and community resilience. Narrative architecture is a leadership choice.',
+          },
+          {
+            headline: 'Vulnerability in leadership is a signal of strength, not weakness.',
+            body: 'Weeping openly did not diminish Ardern\'s authority — it amplified it. People trust leaders who demonstrate genuine human emotion in moments of genuine tragedy.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L025',
+    title: "Indra Nooyi's PepsiCo Transformation",
+    subtitle: 'How a 12-year battle to make junk food healthy grew revenue from $35B to $63.5B',
+    company: 'PepsiCo',
+    company_abbreviation: 'PC',
+    year_range: '2006–2018',
+    module: 'scaling_teams',
+    category: 'Scaling Teams',
+    category_color_key: 'orange',
+    read_time_minutes: 10,
+    difficulty: 'medium',
+    tags: ['Strategy', 'Health', 'Transformation', 'Stakeholder Management'],
+    source_disclosure: 'Publicly disclosed via Indra Nooyi\'s "My Life in Full," PepsiCo annual reports, and Fortune/Forbes interviews',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "When Indra Nooyi became CEO of PepsiCo in 2006, the world was turning against its core products. Sugary sodas and salty chips were being linked to obesity and diabetes. Regulators were circling. Consumer preferences were shifting. Nooyi faced the choice every legacy company dreads: transform the portfolio at the risk of alienating the core business, or defend the existing portfolio and hope the health trend was a fad.",
+        body_paragraphs: [
+          'Nooyi introduced "Performance with Purpose," reorganising PepsiCo\'s entire portfolio into three categories: "Fun for You" (Doritos, Pepsi), "Better for You" (reduced-fat/sugar versions), and "Good for You" (Quaker Oats, Tropicana, Naked Juice). The strategy was not to abandon indulgent products but to ensure the fastest-growing tier was the healthier one.',
+          "Resistance was fierce. Frito-Lay and Beverages divisions argued reformulation would alienate customers. Marketing worried health messaging would undermine the brand's fun positioning. Activist investor Nelson Peltz publicly pressured Nooyi to split the company. Wall Street wanted short-term returns; Nooyi was playing a decade-long game.",
+          "Nooyi held firm but wasn't rigid. She protected R&D for healthier products while maintaining core brand marketing. She reformulated incrementally — reducing sodium in Lay's by 25% over years without announcement. She acquired health brands (Naked Juice, Sabra) to accelerate the shift. And she invested in the food scientists tasked with making healthier products that actually tasted good.",
+          "By 2018, 'Good for You' and 'Better for You' products represented over 50% of revenue — up from ~38%. Net revenue grew from $35B to $63.5B. PepsiCo survived the health-conscious shift that devastated other legacy food companies. The lesson: move fast enough to stay ahead of the market, but slow enough that you don't destroy the organisation's ability to execute.",
+        ],
+        pull_quote: {
+          text: 'If all you want me to do is cut the sugar and add the salt, I can do that. But you hired me to build a company that thrives for the next 100 years.',
+          attribution: 'Indra Nooyi',
+        },
+        decisions: [
+          {
+            abbreviation: 'PP',
+            title: 'Performance with Purpose',
+            description: 'Reframed company strategy around long-term health. Three product tiers: Fun/Better/Good for You.',
+          },
+          {
+            abbreviation: 'IR',
+            title: 'Incremental Reformulation',
+            description: 'Reduced sodium and sugar gradually. Consumers adjusted without backlash. Stealth transformation.',
+          },
+          {
+            abbreviation: 'AR',
+            title: 'Activist Resistance',
+            description: "Withstood Nelson Peltz's public pressure to split the company. Maintained long-term vision against short-term demands.",
+          },
+          {
+            abbreviation: 'PA',
+            title: 'Portfolio Acquisition',
+            description: 'Acquired Naked Juice, Sabra, and other health brands. Accelerated shift through M&A alongside organic R&D.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2006',
+            title: 'Nooyi Becomes CEO',
+            description: 'First woman and person of color to lead PepsiCo. Introduces "Performance with Purpose."',
+          },
+          {
+            step: 2,
+            year: '2010',
+            title: 'Portfolio Rebalanced',
+            description: '"Good for You" products growing at 2x rate of indulgent products. R&D investment accelerates.',
+          },
+          {
+            step: 3,
+            year: '2013',
+            title: 'Peltz Pressure',
+            description: 'Activist investor demands company split. Nooyi publicly defends integrated strategy. Board backs her.',
+          },
+          {
+            step: 4,
+            year: '2018',
+            title: 'Transformation Complete',
+            description: 'Healthy products exceed 50% of revenue. Revenue grown from $35B to $63.5B. Nooyi steps down.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Nooyi faced pressure to optimise for short-term returns versus long-term transformation. Where are you being pressured to prioritise the urgent over the important?',
+          "She reformulated products incrementally so consumers didn't notice. Where could gradual change achieve what abrupt change would make fail?",
+          "Peltz wanted to split the company for short-term value. How do you respond when powerful stakeholders push for decisions you believe are strategically wrong?",
+          "Nooyi protected R&D budgets during pressure to cut costs. What investments in your organisation are being threatened that you know will pay off in 5–10 years?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Transformation tempo matters as much as direction.',
+            body: "Moving too fast destroys execution capability. Moving too slow lets the market pass you. Nooyi found the tempo that transformed PepsiCo without breaking it.",
+          },
+          {
+            headline: 'Stealth reformulation avoids backlash.',
+            body: 'Reducing sodium by 25% over several years without announcing it let consumers adjust naturally. Not every change needs to be a headline.',
+          },
+          {
+            headline: 'Resist activist pressure with long-term evidence.',
+            body: "Nooyi didn't argue philosophy with Peltz — she argued numbers. Performance with Purpose delivered growth. Results silence critics.",
+          },
+          {
+            headline: 'Portfolio diversification is risk management.',
+            body: "Companies dependent on a single product category are fragile. Nooyi's three-tier structure ensured PepsiCo could survive any single-category decline.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L026',
+    title: "Dyson's 5,127 Prototypes",
+    subtitle: 'How 15 years of failure, debt, and rejection built a $30 billion empire',
+    company: 'Dyson',
+    company_abbreviation: 'DY',
+    year_range: '1979–1993',
+    module: 'innovation',
+    category: 'Innovation Under Pressure',
+    category_color_key: 'green',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['Persistence', 'Invention', 'Iteration', 'Conviction'],
+    source_disclosure: 'Publicly disclosed via James Dyson\'s autobiography "Against the Odds," BBC interviews, and Dyson company records',
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 1978, James Dyson noticed his bag-type vacuum lost suction as the bag filled. He had an idea: use cyclonic separation — the same principle used in industrial sawmills — to create a vacuum that never lost suction. What followed was 5,127 prototypes over 15 years, built by hand, funded by personal savings and mounting debt, rejected by every major manufacturer in the world.",
+        body_paragraphs: [
+          'The first prototype was cardboard and duct tape attached to an old Hoover. The principle was sound: spin air at high speed inside a cone, and centrifugal force separates dust from air without any bag. The problem was engineering. Every variable — cone angle, air speed, entry point, exit diameter — affected performance. Dyson adjusted one variable at a time, tested, measured, and recorded. Prototype 1 to prototype 5,127.',
+          "The rejection phase was more painful than the engineering. Every major manufacturer rejected him: Hoover, Electrolux, Miele, Black & Decker. The reason was devastating: the vacuum bag market was worth $500 million annually. A bagless vacuum would destroy that revenue. Hoover's VP told him: \"If this idea were any good, we would have already thought of it.\" The industry rejected it because it worked too well.",
+          'By the late 1980s, Dyson was deeply in debt. His wife\'s salary covered the mortgage. But Dyson had a conviction: iteration itself was the product. Each failed prototype wasn\'t failure — it was data. "I made 5,126 prototypes that didn\'t work. I learnt from each one. If I can be bothered to try 5,127 times, I\'ll probably find a way."',
+          'The breakthrough came from Japan — a company licensed the technology and launched the G-Force at $2,000 per unit. It became a status symbol. The revenue funded Dyson\'s own manufacturing. In 1993, the DC01 launched in the UK and became the best-selling vacuum within 22 months. By 2005, Dyson held 30% of the US market. James Dyson became Britain\'s wealthiest person.',
+        ],
+        pull_quote: {
+          text: 'Enjoy failure and learn from it. You can never learn from success.',
+          attribution: 'James Dyson',
+        },
+        decisions: [
+          {
+            abbreviation: 'SI',
+            title: 'Single-Variable Iteration',
+            description: 'Changed one variable per prototype. 5,127 iterations, each producing measurable data.',
+          },
+          {
+            abbreviation: 'SM',
+            title: 'Self-Manufacturing',
+            description: 'After universal rejection, manufactured under his own brand. Controlled the product end-to-end.',
+          },
+          {
+            abbreviation: 'JL',
+            title: 'Japan License',
+            description: 'Licensed technology to Japanese market first. Used revenue to fund own manufacturing.',
+          },
+          {
+            abbreviation: 'CR',
+            title: 'Customer Over Revenue',
+            description: 'Built a product that eliminated $500M in bag sales. Solved the customer problem that incumbents protected.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1979',
+            title: 'First Prototype',
+            description: 'Cardboard and duct tape cyclone attached to a Hoover. Proof of concept works.',
+          },
+          {
+            step: 2,
+            year: '1979–1984',
+            title: '5,127 Prototypes',
+            description: "Five years of daily iteration in a coach house. One variable changed per test. Funded by wife's salary.",
+          },
+          {
+            step: 3,
+            year: '1986',
+            title: 'Japan Launch',
+            description: 'G-Force licensed to Japanese company. Sells at $2,000 as a status symbol. Generates manufacturing capital.',
+          },
+          {
+            step: 4,
+            year: '1993',
+            title: 'DC01 Launches in UK',
+            description: 'Becomes best-selling vacuum in Britain within 22 months. Proves every rejecting manufacturer wrong.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Dyson changed one variable per prototype and tracked the results. How disciplined is your iteration process — do you change one thing at a time, or multiple things and hope?',
+          'Every major manufacturer rejected him because a better product would destroy their existing revenue. Where is your industry protecting an inferior solution because it generates recurring revenue?',
+          'Dyson was in debt, rejected by everyone, and sustained only by conviction. What is the difference between persistence and delusion — and how do you know which one you are in?',
+          'The breakthrough came from an unexpected market (Japan, at $2,000). Where might your idea succeed first that you haven\'t considered?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Single-variable iteration produces compounding knowledge.',
+            body: "Changing one thing at a time is slower per cycle but produces clear signal. After 5,127 iterations, Dyson knew more about cyclonic separation than anyone alive.",
+          },
+          {
+            headline: "Incumbents reject innovations that threaten their revenue model.",
+            body: 'Hoover and Electrolux rejected a better product because it eliminated bag sales. When incumbents say "if it were good, we\'d have thought of it," they mean "it threatens our business model."',
+          },
+          {
+            headline: 'Conviction must outlast rejection.',
+            body: 'Every manufacturer said no. Most inventors would quit. The difference between Dyson and thousands of forgotten inventors was not talent — it was the willingness to continue when all evidence suggested stopping.',
+          },
+          {
+            headline: 'Find your Japan — the market that values the innovation the mainstream rejects.',
+            body: "When your home market won't accept your product, find the market that will — even if it's geographically or demographically unexpected. Revenue from early adopters funds the assault on the mainstream.",
+          },
+        ],
+      },
+    },
+  },
 ];

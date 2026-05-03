@@ -13,20 +13,21 @@ export function configureGoogleSignIn() {
   GoogleSignin.configure({ webClientId: WEB_CLIENT_ID });
 }
 
-/** Sign in with Google → returns Firebase user or null */
+/** Sign in with Google → returns Firebase user or throws with message */
 export async function signInWithGoogle(): Promise<FirebaseAuthTypes.User | null> {
-  try {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    const response = await GoogleSignin.signIn();
-    const idToken = response.data?.idToken;
-    if (!idToken) return null;
+  await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  const response = await GoogleSignin.signIn();
 
-    const credential = auth.GoogleAuthProvider.credential(idToken);
-    const userCredential = await auth().signInWithCredential(credential);
-    return userCredential.user;
-  } catch {
-    return null;
+  if (response.type === 'cancelled') return null;
+
+  const idToken = response.data?.idToken;
+  if (!idToken) {
+    throw new Error('Google Sign-In failed: no ID token returned. Check webClientId and SHA fingerprints in Firebase Console.');
   }
+
+  const credential = auth.GoogleAuthProvider.credential(idToken);
+  const userCredential = await auth().signInWithCredential(credential);
+  return userCredential.user;
 }
 
 /** Sign out from both Firebase and Google */
