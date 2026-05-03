@@ -4,8 +4,11 @@
 #   keystore_credentials        (for signed release builds)
 #     CM_KEYSTORE               base64-encoded .keystore file
 #     CM_KEYSTORE_PASSWORD      keystore password
-#     CM_KEY_ALIAS              key alias
+#     CM_KEY_ALIAS              key alias  (apex)
 #     CM_KEY_PASSWORD           key password
+#
+#   firebase_credentials        (for google-services.json)
+#     GOOGLE_SERVICES_JSON      base64-encoded google-services.json
 # ─────────────────────────────────────────────────────────────────────────────
 
 workflows:
@@ -18,24 +21,22 @@ workflows:
     environment:
       node: 20
       java: 17
+      groups:
+        - firebase_credentials
       vars:
         PACKAGE_NAME: "com.apex.leadership"
     scripts:
       - name: Install dependencies
         script: npm ci --legacy-peer-deps
 
+      - name: Decode google-services.json
+        script: echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
-      - name: Bundle JavaScript into APK
-        script: |
-          mkdir -p android/app/src/main/assets
-          npx expo export:embed \
-            --platform android \
-            --dev false \
-            --entry-file index.js \
-            --bundle-output android/app/src/main/assets/index.android.bundle \
-            --assets-dest android/app/src/main/res
+      - name: Restore gradle.properties
+        script: cp android/gradle.properties.ci android/gradle.properties
 
       - name: Build debug APK
         script: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
@@ -51,40 +52,46 @@ workflows:
           success: true
           failure: true
 
-  # ── 2. Android Release APK (Signed) ────────────────────────────────────────
+  # ── 2. Android Release AAB (Signed — Play Store) ───────────────────────────
   android-release:
-    name: Android Release APK (Signed)
-    max_build_duration: 60
+    name: Android Release AAB (Signed)
+    max_build_duration: 90
     instance_type: mac_mini_m2
     environment:
       node: 20
       java: 17
       groups:
         - keystore_credentials
+        - firebase_credentials
       vars:
         PACKAGE_NAME: "com.apex.leadership"
-        KEYSTORE_PATH: "android/app/apex-release.keystore"
 
     scripts:
       - name: Install dependencies
         script: npm ci --legacy-peer-deps
 
+      - name: Decode google-services.json
+        script: echo $GOOGLE_SERVICES_JSON | base64 --decode > google-services.json
+
       - name: Set Android SDK path
         script: echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
 
-      - name: Decode keystore
-        script: echo $CM_KEYSTORE | base64 --decode > $KEYSTORE_PATH
+      - name: Restore gradle.properties
+        script: cp android/gradle.properties.ci android/gradle.properties
 
-      - name: Build signed release APK
+      - name: Decode keystore for signing
+        script: echo $CM_KEYSTORE | base64 --decode > android/app/apex-release.keystore
+
+      - name: Build signed release AAB
         script: |
-          cd android && chmod +x gradlew && ./gradlew assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$CM_BUILD_DIR/$KEYSTORE_PATH \
+          cd android && chmod +x gradlew && ./gradlew bundleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file=$CM_BUILD_DIR/android/app/apex-release.keystore \
             -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
 
     artifacts:
-      - android/app/build/outputs/apk/release/*.apk
+      - android/app/build/outputs/bundle/release/*.aab
 
     publishing:
       email:

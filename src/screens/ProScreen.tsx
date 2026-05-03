@@ -22,28 +22,28 @@ type Props = NativeStackScreenProps<LearnStackParamList, 'Pro'>;
 const BENEFITS = [
   {
     icon: BookOpen,
-    title: 'ALL CASE STUDIES',
-    description: 'Unlock every leadership case study — 40+ and growing. Yours forever.',
+    title: 'ALL 50 CASE STUDIES',
+    description: 'Unlock every leadership case study — 50 real-world cases across 8 modules. Yours forever.',
   },
   {
     icon: Zap,
     title: 'LIFETIME ACCESS',
-    description: 'One-time purchase. No subscriptions. Every future case study included.',
+    description: 'One-time purchase. No subscriptions. No recurring fees. Ever.',
   },
   {
     icon: Sparkles,
     title: 'DEEP-DIVE EXTRAS',
-    description: 'Extended analysis, behind-the-scenes context, and expert commentary.',
+    description: 'Extended timelines, reflection prompts, decision breakdowns, and actionable takeaways for every case.',
   },
   {
     icon: Download,
-    title: 'FULL OFFLINE LIBRARY',
-    description: 'All cases available offline — read anywhere, anytime.',
+    title: 'FULLY OFFLINE',
+    description: 'All 50 cases ship inside the app — no downloads, no internet needed. Read anywhere.',
   },
   {
     icon: Bell,
-    title: 'FUTURE UPDATES',
-    description: 'New case studies added regularly. All included in your purchase.',
+    title: 'FREE FUTURE UPDATES',
+    description: 'New case studies added via app updates. All included in your one-time purchase.',
   },
 ];
 
@@ -84,8 +84,8 @@ export default function ProScreen({ navigation }: Props) {
           <Text style={styles.heroTitle}>{isPro ? 'YOU\'RE PRO' : 'UPGRADE TO PRO'}</Text>
           <Text style={styles.heroSubtitle}>
             {isPro
-              ? 'All case studies unlocked. Every future addition included.'
-              : 'Unlock the full APEX experience.\nOne-time purchase. Yours forever.'}
+              ? 'All 50 case studies unlocked. Every future addition included.'
+              : 'Unlock all 50 leadership case studies.\nOne-time purchase. Yours forever.'}
           </Text>
         </View>
 
@@ -124,7 +124,7 @@ export default function ProScreen({ navigation }: Props) {
         <View style={styles.ctaContainer}>
           <TouchableOpacity style={styles.ctaButton} onPress={handleUpgrade} activeOpacity={0.85}>
             <Crown size={16} color={Colors.bgPrimary} strokeWidth={2} />
-            <Text style={styles.ctaText}>UNLOCK ALL CASE STUDIES</Text>
+            <Text style={styles.ctaText}>UNLOCK ALL 50 CASE STUDIES</Text>
           </TouchableOpacity>
           <Text style={styles.ctaHint}>One-time payment · No subscription</Text>
         </View>

@@ -52,7 +52,7 @@ const config: ExpoConfig = {
     'expo-font',
     '@react-native-firebase/app',
     '@react-native-firebase/auth',
-    '@react-native-firebase/firestore',
+    '@react-native-firebase/crashlytics',
     '@react-native-google-signin/google-signin',
     ['react-native-android-widget', widgetConfig],
   ],

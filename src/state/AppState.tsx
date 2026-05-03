@@ -6,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import type { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import crashlytics from '@react-native-firebase/crashlytics';
 import type { LessonStatus } from '../types/lesson';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import { configureGoogleSignIn, signInWithGoogle, signOut as authSignOut, onAuthStateChanged } from '../services/authService';
@@ -172,6 +173,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(async (user) => {
       setFirebaseUser(user);
+      // Set Crashlytics user context
+      if (user) {
+        crashlytics().setUserId(user.uid);
+        crashlytics().setAttributes({ tier: 'free', email: user.email || '' });
+      } else {
+        crashlytics().setUserId('');
+      }
       if (user) {
         // Load cloud data on sign-in
         try {

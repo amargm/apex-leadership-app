@@ -124,6 +124,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('../../apex-upload.keystore')
+            storePassword findProperty('APEX_STORE_PASSWORD') ?: 'android'
+            keyAlias 'apex'
+            keyPassword findProperty('APEX_KEY_PASSWORD') ?: 'android'
+        }
     }
     buildTypes {
         debug {
@@ -132,7 +138,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -201,3 +207,4 @@ if (rnVersion < versionToNumber(0, 75, 0)) {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'

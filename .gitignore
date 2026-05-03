@@ -13,6 +13,11 @@ web-build/
 google-services.json
 GoogleService-Info.plist
 
+# Signing
+*.keystore
+*.jks
+android/gradle.properties
+
 # TypeScript
 *.tsbuildinfo
 
