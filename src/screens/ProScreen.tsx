@@ -1,8 +1,7 @@
 // ─── APEX PRO — Upgrade Screen ────────────────────────────────────────────────
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Crown, BookOpen, Zap, Download, Bell, Sparkles } from 'lucide-react-native';
 import { Colors, FontFamily, Spacing } from '../theme';
 import { useAppState } from '../state/AppState';
+import AppModal from '../components/AppModal';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { LearnStackParamList } from '../navigation/types';
 
@@ -22,41 +22,44 @@ type Props = NativeStackScreenProps<LearnStackParamList, 'Pro'>;
 const BENEFITS = [
   {
     icon: BookOpen,
-    title: 'ALL 50 CASE STUDIES',
-    description: 'Unlock every leadership case study — 50 real-world cases across 8 modules. Yours forever.',
+    title: 'ALL 26 CASE STUDIES — UNLOCKED',
+    description: 'Every module, every case. Culture, crisis, turnarounds, innovation, servant leadership — the complete library. Not a preview.',
   },
   {
     icon: Zap,
-    title: 'LIFETIME ACCESS',
-    description: 'One-time purchase. No subscriptions. No recurring fees. Ever.',
+    title: 'ONE PURCHASE. YOURS FOREVER.',
+    description: 'No subscription. No monthly fee. No renewal prompts. Pay once and every case study you unlock today stays unlocked — including every new one added later.',
   },
   {
     icon: Sparkles,
-    title: 'DEEP-DIVE EXTRAS',
-    description: 'Extended timelines, reflection prompts, decision breakdowns, and actionable takeaways for every case.',
+    title: 'DEEP TABS ON EVERY CASE',
+    description: 'Four layers per case: the full Overview, a step-by-step Timeline, Reflection prompts to make it personal, and distilled Takeaways you can act on.',
   },
   {
     icon: Download,
-    title: 'FULLY OFFLINE',
-    description: 'All 50 cases ship inside the app — no downloads, no internet needed. Read anywhere.',
+    title: 'WORKS WITHOUT INTERNET',
+    description: 'Every case study ships inside the app. No streaming, no loading, no dead zones. Read on a flight, in the subway, wherever you think.',
   },
   {
     icon: Bell,
-    title: 'FREE FUTURE UPDATES',
-    description: 'New case studies added via app updates. All included in your one-time purchase.',
+    title: 'EVERY FUTURE CASE INCLUDED',
+    description: 'As new case studies are published via app updates, they land directly in your library — no additional charge.',
   },
+];
+
+const SOCIAL_PROOF = [
+  { stat: '26', label: 'Real-world cases' },
+  { stat: '8', label: 'Leadership modules' },
+  { stat: '∞', label: 'Re-reads, zero cost' },
 ];
 
 export default function ProScreen({ navigation }: Props) {
   const { state, setUserTier } = useAppState();
   const isPro = state.userTier === 'pro';
+  const [comingSoonVisible, setComingSoonVisible] = useState(false);
 
   const handleUpgrade = () => {
-    // TODO: Replace with real Google Play one-time IAP
-    Alert.alert(
-      'Coming Soon',
-      'One-time Pro purchase will be available in a future update.\n\nPrice: One-time payment — no subscription.',
-    );
+    setComingSoonVisible(true);
   };
 
   return (
@@ -81,13 +84,28 @@ export default function ProScreen({ navigation }: Props) {
           <View style={styles.crownRow}>
             <Crown size={28} color={Colors.accent} strokeWidth={1.5} />
           </View>
-          <Text style={styles.heroTitle}>{isPro ? 'YOU\'RE PRO' : 'UPGRADE TO PRO'}</Text>
+          <Text style={styles.heroTitle}>{isPro ? 'YOU\'RE PRO' : 'BECOME THE LEADER\nWHO\'S READ IT ALL'}</Text>
           <Text style={styles.heroSubtitle}>
             {isPro
-              ? 'All 50 case studies unlocked. Every future addition included.'
-              : 'Unlock all 50 leadership case studies.\nOne-time purchase. Yours forever.'}
+              ? 'All case studies unlocked. Every future case included. No further action needed.'
+              : 'The leaders who make better decisions have one thing in common: they studied the ones who came before. Unlock the complete APEX library.'}
           </Text>
         </View>
+
+        {/* Stats bar */}
+        {!isPro && (
+          <View style={styles.statsBar}>
+            {SOCIAL_PROOF.map((item, i) => (
+              <React.Fragment key={item.label}>
+                {i > 0 && <View style={styles.statsDivider} />}
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{item.stat}</Text>
+                  <Text style={styles.statLabel}>{item.label}</Text>
+                </View>
+              </React.Fragment>
+            ))}
+          </View>
+        )}
 
         {/* Benefits */}
         <View style={styles.benefitsSection}>
@@ -124,11 +142,20 @@ export default function ProScreen({ navigation }: Props) {
         <View style={styles.ctaContainer}>
           <TouchableOpacity style={styles.ctaButton} onPress={handleUpgrade} activeOpacity={0.85}>
             <Crown size={16} color={Colors.bgPrimary} strokeWidth={2} />
-            <Text style={styles.ctaText}>UNLOCK ALL 50 CASE STUDIES</Text>
+            <Text style={styles.ctaText}>UNLOCK THE FULL LIBRARY</Text>
           </TouchableOpacity>
-          <Text style={styles.ctaHint}>One-time payment · No subscription</Text>
+          <Text style={styles.ctaHint}>Pay once · Never again · All future cases included</Text>
         </View>
       )}
+
+      <AppModal
+        visible={comingSoonVisible}
+        title="COMING SOON"
+        body={"In-app purchase will be available in a future update.\n\nSit tight — one-time payment, no subscription, ever."}
+        accentColor={Colors.accent}
+        onDismiss={() => setComingSoonVisible(false)}
+        actions={[{ label: 'GOT IT', variant: 'primary', onPress: () => setComingSoonVisible(false) }]}
+      />
     </SafeAreaView>
   );
 }
@@ -185,6 +212,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     letterSpacing: 2,
     marginBottom: 10,
+    textAlign: 'center',
   },
   heroSubtitle: {
     fontFamily: FontFamily.dmSansRegular,
@@ -192,6 +220,36 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 14 * 1.6,
+  },
+
+  // Stats bar
+  statsBar: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderDefault,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 20,
+    gap: 4,
+  },
+  statsDivider: {
+    width: 1,
+    backgroundColor: Colors.borderDefault,
+  },
+  statValue: {
+    fontFamily: FontFamily.bebasNeue,
+    fontSize: 28,
+    color: Colors.accent,
+    letterSpacing: 1,
+  },
+  statLabel: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: Colors.textMuted,
+    letterSpacing: 9 * 0.1,
+    textTransform: 'uppercase',
   },
 
   // Benefits

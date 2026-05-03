@@ -34,7 +34,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
   const existingNote = noteId ? state.notes.find((n) => n.id === noteId) : undefined;
 
   const [content, setContent] = useState(existingNote?.content ?? '');
-  const [lessonId, setLessonId] = useState<string | undefined>(existingNote?.lessonId ?? initialLessonId);
+  const [lessonId, setLessonId] = useState<string | null | undefined>(existingNote?.lessonId ?? initialLessonId);
   const [heading, setHeading] = useState(existingNote?.heading ?? initialHeading ?? '');
   const [saved, setSaved] = useState(!!existingNote);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -225,7 +225,7 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
               <ChevronRight size={12} color={Colors.textDark} strokeWidth={1.5} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => { setLessonId(undefined); setSaved(false); }}
+              onPress={() => { setLessonId(null); setSaved(false); }}
               hitSlop={8}
               style={styles.lessonBarUnlink}
             >

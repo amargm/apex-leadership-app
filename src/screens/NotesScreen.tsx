@@ -1,9 +1,8 @@
 // ─── Notes Screen — List View ──────────────────────────────────────────────
 // Shows all notes as tappable cards. Tap to open full editor.
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, BookOpen, Trash2 } from 'lucide-react-native';
 
 import { Colors, FontFamily, Spacing } from '../theme';
+import AppModal from '../components/AppModal';
 import { useAppState } from '../state/AppState';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -24,16 +24,14 @@ type Props = NativeStackScreenProps<NotesStackParamList, 'NotesList'>;
 export default function NotesScreen({ navigation }: Props) {
   const { state, deleteNote } = useAppState();
   const isGuest = state.userTier === 'guest';
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const openEditor = (noteId?: string) => {
     navigation.navigate('NoteEditor', noteId ? { noteId } : {});
   };
 
   const handleDelete = (noteId: string) => {
-    Alert.alert('Delete Note', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => deleteNote(noteId) },
-    ]);
+    setDeleteTargetId(noteId);
   };
 
   const getLessonTitle = (lessonId?: string) => {
@@ -62,9 +60,11 @@ export default function NotesScreen({ navigation }: Props) {
           <Text style={styles.title}>NOTES</Text>
           <Text style={styles.subtitle}>{state.notes.length} {state.notes.length === 1 ? 'entry' : 'entries'}</Text>
         </View>
-        <TouchableOpacity style={[styles.addBtn, isGuest && { opacity: 0 }]} onPress={() => !isGuest && openEditor()} activeOpacity={0.7} disabled={isGuest}>
-          <Plus size={18} color={Colors.accent} strokeWidth={2} />
-        </TouchableOpacity>
+        {!isGuest && (
+          <TouchableOpacity style={styles.addBtn} onPress={openEditor} activeOpacity={0.7}>
+            <Plus size={18} color={Colors.accent} strokeWidth={2} />
+          </TouchableOpacity>
+        )}
       </View>
 
       {isGuest ? (
@@ -149,6 +149,25 @@ export default function NotesScreen({ navigation }: Props) {
           })}
         </ScrollView>
       )}
+
+      <AppModal
+        visible={deleteTargetId !== null}
+        title="DELETE NOTE"
+        body="This note will be permanently removed. This cannot be undone."
+        accentColor="#E05252"
+        onDismiss={() => setDeleteTargetId(null)}
+        actions={[
+          { label: 'CANCEL', onPress: () => setDeleteTargetId(null) },
+          {
+            label: 'DELETE',
+            variant: 'destructive',
+            onPress: () => {
+              if (deleteTargetId) deleteNote(deleteTargetId);
+              setDeleteTargetId(null);
+            },
+          },
+        ]}
+      />
     </SafeAreaView>
   );
 }

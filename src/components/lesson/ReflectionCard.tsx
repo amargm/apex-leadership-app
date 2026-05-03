@@ -18,7 +18,7 @@ export default function ReflectionCard({ number, prompt, onAddNote }: Props) {
     <View style={styles.card}>
       <View style={styles.accentRail} />
       <View style={styles.header}>
-        <Text style={styles.number}>0{number}</Text>
+        <Text style={styles.number}>{String(number).padStart(2, '0')}</Text>
         {onAddNote && (
           <TouchableOpacity
             style={styles.noteBtn}

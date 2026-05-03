@@ -3,8 +3,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Animated,
+  PanResponder,
   ScrollView,
   StyleSheet,
   Text,
@@ -33,12 +33,15 @@ import ReflectionCard from '../components/lesson/ReflectionCard';
 import TakeawayItem from '../components/lesson/TakeawayItem';
 import ShareCard from '../components/lesson/ShareCard';
 import CTAButton from '../components/CTAButton';
+import AppModal from '../components/AppModal';
 
 const TABS = ['OVERVIEW', 'TIMELINE', 'REFLECT', 'TAKEAWAYS'] as const;
 type TabKey = (typeof TABS)[number];
 
 export default function LessonDetailScreen({ navigation, route }: LessonDetailScreenProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('OVERVIEW');
+  const [shareError, setShareError] = useState(false);
+  const activeTabRef = useRef<TabKey>('OVERVIEW');
   const contentOpacity = useRef(new Animated.Value(1)).current;
   const { lessonId } = route.params;
   const scrollRef = useRef<ScrollView>(null);
@@ -46,10 +49,11 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const sessionStart = useRef<number>(Date.now());
   const hasRecorded = useRef(false);
   const isFocused = useIsFocused();
-  const { startLesson, markTabViewed, completeLesson, getLessonProgress, addReadingTime, state: appState } = useAppState();
+  const { startLesson, markTabViewed, completeLesson, toggleSaveLesson, getLessonProgress, addReadingTime, isLessonUnlocked, state: appState } = useAppState();
 
   const lesson: Lesson | undefined = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
   const lessonState = getLessonProgress(lessonId);
+  const isSaved = appState.savedLessonIds.includes(lessonId);
 
   // Block access if lesson is not available for user's tier
   useEffect(() => {
@@ -66,15 +70,14 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: `Share: ${lesson.title}` });
       }
     } catch {
-      Alert.alert('Error', 'Could not generate share image.');
+      setShareError(true);
     }
   };
 
-  // Start lesson on first open and mark OVERVIEW as viewed
+  // Start lesson on first open — startLesson already records OVERVIEW as viewed
   useEffect(() => {
-    if (lesson && !lesson.is_locked) {
+    if (lesson && isLessonUnlocked(lessonId)) {
       startLesson(lessonId);
-      markTabViewed(lessonId, 'OVERVIEW');
     }
   }, [lessonId]);
 
@@ -100,11 +103,34 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   const switchTab = (tab: TabKey) => {
     Animated.timing(contentOpacity, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
       setActiveTab(tab);
+      activeTabRef.current = tab;
       markTabViewed(lessonId, tab);
       scrollRef.current?.scrollTo({ y: 0, animated: false });
       Animated.timing(contentOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start();
     });
   };
+
+  // Horizontal swipe to navigate between tabs
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gs) => {
+        // Only capture clearly horizontal swipes (horizontal distance > vertical, and > 12px)
+        return Math.abs(gs.dx) > 12 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.4;
+      },
+      onPanResponderRelease: (_, gs) => {
+        const SWIPE_THRESHOLD = 50;
+        const current = activeTabRef.current;
+        const currentIndex = TABS.indexOf(current);
+        if (gs.dx < -SWIPE_THRESHOLD && currentIndex < TABS.length - 1) {
+          // Swipe left → next tab
+          switchTab(TABS[currentIndex + 1]);
+        } else if (gs.dx > SWIPE_THRESHOLD && currentIndex > 0) {
+          // Swipe right → previous tab
+          switchTab(TABS[currentIndex - 1]);
+        }
+      },
+    }),
+  ).current;
 
   if (!lesson) {
     return (
@@ -139,6 +165,16 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
 
         <View style={styles.topBarRight}>
           <TouchableOpacity
+            onPress={() => toggleSaveLesson(lessonId)}
+            style={styles.bookmarkButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.bookmarkLabel, isSaved && styles.bookmarkLabelActive]}>
+              {isSaved ? '\u2665' : '\u2661'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={handleShare}
             style={styles.shareButton}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -166,13 +202,14 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
         ))}
       </View>
 
-      {/* ── Scrollable Content (hero + tab content) ──────────────── */}
-      <Animated.ScrollView
-        ref={scrollRef}
-        style={[styles.scroll, { opacity: contentOpacity }]}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      {/* ── Scrollable Content with swipe-to-navigate ─────────── */}
+      <View style={styles.swipeContainer} {...panResponder.panHandlers}>
+        <Animated.ScrollView
+          ref={scrollRef}
+          style={[styles.scroll, { opacity: contentOpacity }]}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
         {/* ── Hero Section (only in OVERVIEW) ─────────────────────── */}
         {activeTab === 'OVERVIEW' && (
         <View style={styles.hero}>
@@ -180,10 +217,10 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
 
           {/* Status pill */}
           <View style={styles.statusRow}>
-            <View style={[styles.statusPill, lesson.status === 'in_progress' && styles.statusPillActive]}>
-              <View style={[styles.statusDot, lesson.status === 'in_progress' && styles.statusDotActive]} />
-              <Text style={[styles.statusText, lesson.status === 'in_progress' && styles.statusTextActive]}>
-                {lesson.status === 'in_progress' ? 'IN PROGRESS' : lesson.status === 'completed' ? 'COMPLETED' : 'NEW'}
+            <View style={[styles.statusPill, lessonState.status === 'in_progress' && styles.statusPillActive]}>
+              <View style={[styles.statusDot, lessonState.status === 'in_progress' && styles.statusDotActive]} />
+              <Text style={[styles.statusText, lessonState.status === 'in_progress' && styles.statusTextActive]}>
+                {lessonState.status === 'in_progress' ? 'IN PROGRESS' : lessonState.status === 'completed' ? 'COMPLETED' : 'NEW'}
               </Text>
             </View>
           </View>
@@ -231,7 +268,15 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
           {activeTab === 'OVERVIEW' && <OverviewTab lesson={lesson} />}
           {activeTab === 'TIMELINE' && <TimelineTab lesson={lesson} />}
           {activeTab === 'REFLECT' && <ReflectTab lesson={lesson} />}
-          {activeTab === 'TAKEAWAYS' && <TakeawaysTab lesson={lesson} lessonId={lessonId} onBack={() => navigation.goBack()} />}
+          {activeTab === 'TAKEAWAYS' && (
+            <TakeawaysTab
+              lesson={lesson}
+              lessonId={lessonId}
+              isSaved={isSaved}
+              onSave={() => toggleSaveLesson(lessonId)}
+              onBack={() => navigation.goBack()}
+            />
+          )}
         </View>
 
         {/* ── Continue Button ── */}
@@ -251,7 +296,8 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
             </Text>
           </TouchableOpacity>
         )}
-      </Animated.ScrollView>
+        </Animated.ScrollView>
+      </View>
 
       {/* Hidden off-screen — for share image capture */}
       <ViewShot
@@ -261,6 +307,15 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
       >
         <ShareCard lesson={lesson} />
       </ViewShot>
+
+      <AppModal
+        visible={shareError}
+        title="SHARE FAILED"
+        body="Could not generate the share image. Please try again."
+        accentColor="#E05252"
+        onDismiss={() => setShareError(false)}
+        actions={[{ label: 'OK', variant: 'primary', onPress: () => setShareError(false) }]}
+      />
     </SafeAreaView>
   );
 }
@@ -330,17 +385,18 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
   );
 }
 
-function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: string; onBack: () => void }) {
-  const { completeLesson, toggleSaveLesson, state } = useAppState();
-  const isSaved = state.savedLessonIds.includes(lessonId);
+function TakeawaysTab({ lesson, lessonId, isSaved, onSave, onBack }: {
+  lesson: Lesson;
+  lessonId: string;
+  isSaved: boolean;
+  onSave: () => void;
+  onBack: () => void;
+}) {
+  const { completeLesson } = useAppState();
 
   const handleComplete = () => {
     completeLesson(lessonId);
     onBack();
-  };
-
-  const handleSave = () => {
-    toggleSaveLesson(lessonId);
   };
 
   return (
@@ -361,7 +417,7 @@ function TakeawaysTab({ lesson, lessonId, onBack }: { lesson: Lesson; lessonId: 
       ))}
       <View style={{ marginTop: 24 }}>
         <CTAButton label="Mark as Complete" onPress={handleComplete} />
-        <CTAButton label={isSaved ? "✓ Saved" : "Save for Later"} variant="secondary" onPress={handleSave} style={{ marginTop: 12 }} />
+        <CTAButton label={isSaved ? '✓ Saved' : 'Save for Later'} variant="secondary" onPress={onSave} style={{ marginTop: 12 }} />
       </View>
     </View>
   );
@@ -442,6 +498,21 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: Colors.accent,
     letterSpacing: 2,
+  },
+  bookmarkButton: {
+    width: 30,
+    height: 30,
+    borderWidth: 1,
+    borderColor: '#333333',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bookmarkLabel: {
+    fontSize: 15,
+    color: '#555555',
+  },
+  bookmarkLabelActive: {
+    color: Colors.accent,
   },
   caseIndex: {
     fontFamily: FontFamily.dmMonoLight,
@@ -642,6 +713,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
   },
   scroll: { flex: 1 },
+  swipeContainer: { flex: 1 },
   scrollContent: { paddingBottom: 48 },
   tabContent: { padding: Spacing.screenPaddingH, paddingTop: 24 },
 

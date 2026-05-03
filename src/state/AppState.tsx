@@ -93,7 +93,7 @@ interface AppContextValue {
   getLessonProgress: (lessonId: string) => LessonProgress;
   isLessonUnlocked: (lessonId: string) => boolean;
   addNote: (content: string, lessonId?: string, heading?: string) => string;
-  updateNote: (noteId: string, content: string, heading?: string, lessonId?: string) => void;
+  updateNote: (noteId: string, content: string, heading?: string, lessonId?: string | null) => void;
   deleteNote: (noteId: string) => void;
   addReadingTime: (minutes: number) => void;
   setUserName: (name: string) => void;
@@ -172,6 +172,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseAuthTypes.User | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cloudSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stateRef = useRef<AppState>(state);
+  useEffect(() => { stateRef.current = state; }, [state]);
 
   // Configure Google Sign-In once
   useEffect(() => { configureGoogleSignIn(); }, []);
@@ -313,7 +315,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const startLesson = useCallback((lessonId: string) => {
     setState((prev) => {
       const existing = prev.lessons[lessonId];
-      if (!existing || existing.status === 'completed') return prev;
+      // Don't start locked or already-completed lessons
+      if (!existing || existing.status === 'completed' || existing.status === 'locked') return prev;
 
       return {
         ...prev,
@@ -336,7 +339,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const markTabViewed = useCallback((lessonId: string, tab: string) => {
     setState((prev) => {
       const existing = prev.lessons[lessonId];
-      if (!existing || existing.status === 'completed') return prev;
+      // Don't record progress on locked or completed lessons
+      if (!existing || existing.status === 'completed' || existing.status === 'locked') return prev;
 
       const tabsViewed = existing.tabsViewed.includes(tab)
         ? existing.tabsViewed
@@ -470,7 +474,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     return noteId;
   }, [state.userTier, state.notes.length]);
 
-  const updateNote = useCallback((noteId: string, content: string, heading?: string, lessonId?: string) => {
+  const updateNote = useCallback((noteId: string, content: string, heading?: string, lessonId?: string | null) => {
     setState((prev) => ({
       ...prev,
       notes: prev.notes.map((n) =>
@@ -480,7 +484,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
               content,
               updatedAt: new Date().toISOString(),
               ...(heading !== undefined ? { heading } : {}),
-              ...(lessonId !== undefined ? { lessonId } : {}),
+              ...(lessonId !== undefined ? { lessonId: lessonId ?? undefined } : {}),
             }
           : n,
       ),
@@ -561,15 +565,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     try {
       // Save current state to cloud before signing out
       const user = auth().currentUser;
+      const latest = stateRef.current;
       if (user) {
         await saveUserData(user.uid, {
-          lessons: state.lessons,
-          stats: state.stats,
-          savedLessonIds: state.savedLessonIds,
-          notes: state.notes,
-          userName: state.userName,
-          largeFontOn: state.largeFontOn,
-          userTier: state.userTier,
+          lessons: latest.lessons,
+          stats: latest.stats,
+          savedLessonIds: latest.savedLessonIds,
+          notes: latest.notes,
+          userName: latest.userName,
+          largeFontOn: latest.largeFontOn,
+          userTier: latest.userTier,
         });
       }
     } catch {
@@ -578,7 +583,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     await authSignOut();
     await AsyncStorage.removeItem(STORAGE_KEY);
     setState(getFreshState());
-  }, [state]);
+  }, []);
 
   return (
     <AppContext.Provider

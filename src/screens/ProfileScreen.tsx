@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from 'react';
 import {
-  Alert,
   Animated,
   Linking,
   Modal,
@@ -20,10 +19,16 @@ import { ChevronRight, Crown, RotateCcw, LogOut } from 'lucide-react-native';
 import { Colors, FontFamily, Spacing, Radius } from '../theme';
 import type { ProfileScreenProps } from '../navigation/types';
 import { useAppState } from '../state/AppState';
+import AppModal from '../components/AppModal';
 
 // ─── Custom Toggle ────────────────────────────────────────────────────────────
 function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
   const thumbAnim = useRef(new Animated.Value(value ? 1 : 0)).current;
+
+  // Sync animation when value changes externally (e.g. loaded from storage)
+  React.useEffect(() => {
+    thumbAnim.setValue(value ? 1 : 0);
+  }, [value]);
 
   const handleToggle = () => {
     Animated.timing(thumbAnim, {
@@ -54,6 +59,10 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   const { state, resetAllProgress, setLargeFont, setUserName, setUserTier, completeOnboarding, firebaseUser, handleGoogleSignIn, handleSignOut } = useAppState();
   const [resetModalVisible, setResetModalVisible] = useState(false);
   const [aboutModalVisible, setAboutModalVisible] = useState(false);
+  const [signOutModalVisible, setSignOutModalVisible] = useState(false);
+  const [signInModal, setSignInModal] = useState<{ visible: boolean; success: boolean; message: string }>(
+    { visible: false, success: true, message: '' }
+  );
   const tier = state.userTier;
   const isSignedIn = !!firebaseUser;
 
@@ -128,8 +137,12 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             style={styles.proBanner}
             activeOpacity={0.85}
             onPress={async () => {
-              const ok = await handleGoogleSignIn();
-              if (ok) Alert.alert('Welcome!', 'Your progress will now be saved and synced.');
+              try {
+                const ok = await handleGoogleSignIn();
+                if (ok) setSignInModal({ visible: true, success: true, message: 'Your progress will now be saved and synced to the cloud.' });
+              } catch (e: any) {
+                setSignInModal({ visible: true, success: false, message: e.message || 'Something went wrong. Please try again.' });
+              }
             }}
           >
             <View style={styles.proBannerAccent} />
@@ -271,12 +284,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
               <TouchableOpacity
                 style={styles.settingsRow}
                 activeOpacity={0.7}
-                onPress={() => {
-                  Alert.alert('Sign Out', 'This will sign you out and reset local data.', [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Sign Out', style: 'destructive', onPress: () => handleSignOut() },
-                  ]);
-                }}
+                onPress={() => setSignOutModalVisible(true)}
               >
                 <LogOut size={14} color="#E05252" strokeWidth={1.5} />
                 <Text style={[styles.settingsLabel, { color: '#E05252', marginLeft: 10 }]}>
@@ -293,8 +301,12 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
                 style={styles.settingsRow}
                 activeOpacity={0.7}
                 onPress={async () => {
-                  const ok = await handleGoogleSignIn();
-                  if (ok) Alert.alert('Signed In', 'Your progress is now synced to the cloud.');
+                  try {
+                    const ok = await handleGoogleSignIn();
+                    if (ok) setSignInModal({ visible: true, success: true, message: 'Your progress is now synced to the cloud.' });
+                  } catch (e: any) {
+                    setSignInModal({ visible: true, success: false, message: e.message || 'Something went wrong.' });
+                  }
                 }}
               >
                 <Text style={[styles.settingsLabel, { color: Colors.accent }]}>
@@ -397,6 +409,39 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* ── Sign Out Confirmation Modal ── */}
+      <AppModal
+        visible={signOutModalVisible}
+        title="SIGN OUT"
+        body="You will be signed out and your local data cleared. Your cloud data remains safe."
+        accentColor="#E05252"
+        onDismiss={() => setSignOutModalVisible(false)}
+        actions={[
+          { label: 'CANCEL', onPress: () => setSignOutModalVisible(false) },
+          {
+            label: 'SIGN OUT',
+            variant: 'destructive',
+            onPress: () => { setSignOutModalVisible(false); handleSignOut(); },
+          },
+        ]}
+      />
+
+      {/* ── Sign-In Result Modal ── */}
+      <AppModal
+        visible={signInModal.visible}
+        title={signInModal.success ? 'SIGNED IN' : 'SIGN-IN FAILED'}
+        body={signInModal.message}
+        accentColor={signInModal.success ? Colors.accent : '#E05252'}
+        onDismiss={() => setSignInModal((s) => ({ ...s, visible: false }))}
+        actions={[
+          {
+            label: 'OK',
+            variant: 'primary',
+            onPress: () => setSignInModal((s) => ({ ...s, visible: false })),
+          },
+        ]}
+      />
     </SafeAreaView>
   );
 }

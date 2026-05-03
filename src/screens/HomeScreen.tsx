@@ -51,25 +51,31 @@ const DRIFT_LINES = [
 
 function DriftLines() {
   const anims = useRef(DRIFT_LINES.map(() => new Animated.Value(0))).current;
+  const isFirstPass = useRef(DRIFT_LINES.map(() => true));
 
   useEffect(() => {
+    const running = { current: true };
     DRIFT_LINES.forEach((line, i) => {
       const loop = () => {
+        if (!running.current) return;
         anims[i].setValue(0);
         Animated.timing(anims[i], {
           toValue: 1,
           duration: line.duration,
           easing: Easing.linear,
           useNativeDriver: true,
-          delay: line.delay,
-        }).start(() => {
-          // Reset delay to 0 after first pass so loop is seamless
-          DRIFT_LINES[i].delay = 0;
-          loop();
+          delay: isFirstPass.current[i] ? line.delay : 0,
+        }).start(({ finished }) => {
+          isFirstPass.current[i] = false;
+          if (finished) loop();
         });
       };
       loop();
     });
+    return () => {
+      running.current = false;
+      anims.forEach((a) => a.stopAnimation());
+    };
   }, []);
 
   return (
@@ -120,9 +126,16 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const tier = state.userTier;
   const dailyQuote = getDailyQuote();
 
-  const featuredLessons = MOCK_LESSONS.filter(
-    (l) => isLessonUnlocked(l.lesson_id) && isLessonAccessible(l.lesson_id, tier),
-  );
+  const featuredLessons = MOCK_LESSONS
+    .filter((l) => isLessonUnlocked(l.lesson_id) && isLessonAccessible(l.lesson_id, tier))
+    // Prioritise: new/in-progress before completed, then cap the rail
+    .sort((a, b) => {
+      const sa = getLessonProgress(a.lesson_id).status;
+      const sb = getLessonProgress(b.lesson_id).status;
+      const rank = (s: string) => (s === 'in_progress' ? 0 : s === 'new' ? 1 : 2);
+      return rank(sa) - rank(sb);
+    })
+    .slice(0, 8);
   const activeCase = MOCK_LESSONS.find((l) => {
     const lp = getLessonProgress(l.lesson_id);
     return lp.status === 'in_progress' && isLessonAccessible(l.lesson_id, tier);
@@ -272,22 +285,24 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           </View>
         </Animated.View>
 
-        {/* ── Pro Upgrade Banner ────────────────────────────────────── */}
-        <Animated.View style={fadeStyles[5]}>
-          <TouchableOpacity
-            style={styles.proBanner}
-            activeOpacity={0.85}
-            onPress={() => navigation.navigate('Pro' as any)}
-          >
-            <View style={styles.proBannerAccent} />
-            <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
-            <View style={styles.proBannerText}>
-              <Text style={styles.proBannerTitle}>UPGRADE TO PRO</Text>
-              <Text style={styles.proBannerSub}>Unlock all cases & deep-dive extras</Text>
-            </View>
-            <Text style={styles.proBannerArrow}>→</Text>
-          </TouchableOpacity>
-        </Animated.View>
+        {/* ── Pro Upgrade Banner — hidden for pro users ────────────── */}
+        {tier !== 'pro' && (
+          <Animated.View style={fadeStyles[5]}>
+            <TouchableOpacity
+              style={styles.proBanner}
+              activeOpacity={0.85}
+              onPress={() => navigation.navigate('Pro' as any)}
+            >
+              <View style={styles.proBannerAccent} />
+              <Crown size={16} color={Colors.accent} strokeWidth={1.5} />
+              <View style={styles.proBannerText}>
+                <Text style={styles.proBannerTitle}>{tier === 'guest' ? 'CREATE A FREE ACCOUNT' : 'UPGRADE TO PRO'}</Text>
+                <Text style={styles.proBannerSub}>{tier === 'guest' ? 'Save progress · Sync across devices' : 'Unlock all cases & deep-dive extras'}</Text>
+              </View>
+              <Text style={styles.proBannerArrow}>→</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

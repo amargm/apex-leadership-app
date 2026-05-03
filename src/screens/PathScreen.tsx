@@ -2,7 +2,7 @@
 // Vertical node map with ruled borders and square nodes, grouped by module.
 // Collapsible categories + client-side search.
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   LayoutAnimation,
@@ -51,6 +51,15 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   const [collapsedModules, setCollapsedModules] = useState<Record<string, boolean>>({});
   const { state, getLessonProgress, isLessonUnlocked } = useAppState();
   const tier = state.userTier;
+  const lockMsgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => { if (lockMsgTimer.current) clearTimeout(lockMsgTimer.current); }, []);
+
+  const showLockedMessage = (id: string, msg: string) => {
+    if (lockMsgTimer.current) clearTimeout(lockMsgTimer.current);
+    setLockedMessage({ id, msg });
+    lockMsgTimer.current = setTimeout(() => setLockedMessage(null), 2500);
+  };
 
   const toggleModule = (key: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -61,17 +70,15 @@ export default function PathScreen({ navigation }: PathScreenProps) {
     // Tier gating — check if lesson is accessible for user's tier
     if (!isLessonAccessible(lesson.lesson_id, tier)) {
       const label = tier === 'guest' ? 'Create a free account' : 'Upgrade to Pro';
-      setLockedMessage({ id: lesson.lesson_id, msg: label });
-      setTimeout(() => setLockedMessage(null), 2500);
+      showLockedMessage(lesson.lesson_id, label);
       return;
     }
     if (!isLessonUnlocked(lesson.lesson_id)) {
       const remaining = lesson.unlock_after_count - state.stats.casesCompleted;
-      setLockedMessage({
-        id: lesson.lesson_id,
-        msg: `${remaining} lesson${remaining !== 1 ? 's' : ''} away`,
-      });
-      setTimeout(() => setLockedMessage(null), 2500);
+      showLockedMessage(
+        lesson.lesson_id,
+        `${remaining} lesson${remaining !== 1 ? 's' : ''} away`,
+      );
     } else {
       navigation.navigate('Learn', {
         screen: 'LessonDetail',
