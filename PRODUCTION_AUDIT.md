@@ -1,551 +1,275 @@
-# APEX — Production Audit & Backend Requirements
+# APEX — Production Audit & Monetisation Reality Check
 
-> **Generated:** May 2026 · **Last Updated:** May 2026 (post client-logic completion)  
-> Covers: static/preview artefacts, client-side logic gaps, Google backend requirements
-
----
-
-## SECTION 1 — STATIC / PREVIEW / MOCK DATA (Must Fix Before Publish)
-
-Everything below exists **only for demo/development purposes** and will break the real user experience if shipped as-is.
-
-### 1.1 Fake Default Stats
-
-| Item | Value | Location |
-|------|-------|----------|
-| `dayStreak` | **7** (should be 0) | `AppState.tsx → getDefaultState()` |
-| `timeThisWeekMinutes` | **83** (should be 0) | `AppState.tsx → getDefaultState()` |
-| `casesCompleted` | Count of mock "completed" lessons | `AppState.tsx → getDefaultState()` |
-
-**Impact:** A brand-new user opens the app and sees "7 day streak · 83 min this week" before doing anything.
-
-**Fix:** Change `getDefaultState()` to mirror `getFreshState()` — all stats start at 0. Remove or guard the fallback so fresh installs get clean zeros.
+> **Generated:** May 2026 · **Last Updated:** 3 May 2026  
+> Covers: implementation status, remaining gaps, new considerations, and a brutally honest revenue assessment.
 
 ---
 
-### 1.2 Hardcoded User Identity
+## SECTION 1 — WHAT'S BUILT (Current Implementation Inventory)
 
-| Item | Current Value | Location |
-|------|---------------|----------|
-| Greeting | "Good morning, **Leader**" | `HomeScreen.tsx` line ~114 |
-| Profile name | "**Leader**" | `ProfileScreen.tsx` |
-| Profile role | "Team Lead · APEX Member" | `ProfileScreen.tsx` |
-| Avatar initial | "L" | `ProfileScreen.tsx` |
+### 1.1 Screens (10 total)
 
-**Impact:** Every user sees the same generic name everywhere.
+| Screen | Purpose | Status |
+|--------|---------|--------|
+| `SplashScreen` | Animated splash with APEX branding | ✅ Complete |
+| `AuthScreen` | Welcome gate — "Explore as Guest" bypass, no real auth | ✅ Complete (guest-only) |
+| `HomeScreen` | Greeting, streak, time, daily quote, active case resume, drift-lines animation | ✅ Complete |
+| `PathScreen` | Module browser — collapsed groups, search, filters | ✅ Complete |
+| `LessonDetailScreen` | Case study reader — 4 tabs, reading time tracking, reflection → notes | ✅ Complete |
+| `SavedScreen` | Bookmarked lessons — client-side search | ✅ Complete |
+| `NotesScreen` | Note cards — heading, preview, linked lesson, word count | ✅ Complete |
+| `NoteEditorScreen` | Full-screen editor — editable heading (25 char), lesson linking, delete modal | ✅ Complete |
+| `ProfileScreen` | Editable name, font toggle, saved lessons, about, privacy/terms links, reset modal | ✅ Complete |
+| `ProScreen` | Upgrade pitch — 5 benefits, CTA shows "coming soon" alert | ✅ Shell only — no payment |
 
-**Fix:** Add `userName` and `userRole` to `AppState`, persist them, and source them in Home + Profile. (Can default to "Leader" until onboarding is built.)
+### 1.2 Features Delivered This Session
 
----
+| Feature | Commit |
+|---------|--------|
+| Custom reset confirmation modal | `8a95ae1` |
+| Client-side search on Saved screen | `b7058fd` |
+| Ambient drift-lines animation on Home | `dc3fe8a` |
+| Path categories collapsed by default | `048dca5` |
+| Pro upgrade screen + CTAs | `3536083` |
+| Notes UX overhaul + profile time fix | `2446654` |
+| Android home screen widget (Daily Thought) | `72b1825` |
+| App icon (brutalist "A" design) | `488fb3b` |
+| Note-created confirmation modal | `d8cc2e0` |
+| Note editor: reduced line spacing, editable heading, case study linking | `b09f6ab` |
 
-### 1.3 Hardcoded Daily Quote
+### 1.3 Content Inventory
 
-```
-"The task of leadership is not to put greatness into people,
- but to elicit it, for the greatness is there already."
- — John Buchan
-```
+| Metric | Value |
+|--------|-------|
+| Total lessons | 16 |
+| Lessons with full content | **13** |
+| Lessons with placeholder content | **3** (L004 Intel, L015 Stripe, L016 Eisenhower) |
+| Total reading time (full lessons) | ~107 minutes |
+| Modules | 7 (culture_building, scaling_teams, crisis_leadership, innovation, turnarounds, servant_leadership, decision_making) |
+| Daily quotes | 31 (day-of-year rotation) |
 
-**Location:** `HomeScreen.tsx` lines ~172–177
+### 1.4 State & Persistence
 
-**Impact:** Same quote every single day, forever.
+| Data | Stored In | Persisted? |
+|------|-----------|------------|
+| Lesson progress, completion, saves | AppState → AsyncStorage | ✅ Yes (500ms debounce) |
+| Streak, reading time | AppState → AsyncStorage | ✅ Yes (weekly reset logic) |
+| Notes (content, heading, lessonId) | AppState → AsyncStorage | ✅ Yes |
+| User name | AppState → AsyncStorage | ✅ Yes |
+| Font size preference | AppState → AsyncStorage | ✅ Yes |
+| Onboarding flag | AppState → AsyncStorage | ✅ Yes |
+| Loaded flag (prevents race condition) | AppState | ✅ Yes |
 
-**Fix (client-only option):** Create a `dailyQuotes.ts` array of 30–50 quotes. Pick one based on day-of-year (`new Date().getDate() % quotes.length`). No backend needed.
+### 1.5 App Configuration
 
-**Fix (backend option):** Fetch from Firestore `quotes` collection, rotate server-side.
-
----
-
-### 1.4 Fake Push Notification
-
-```ts
-export const MOCK_NOTIFICATION: PushNotification = {
-  id: 'n001',
-  title: 'New Case Study Available',
-  body: 'The Toyota Production System — a masterclass in servant leadership.',
-  sent_at: new Date().toISOString(), // always "just now"
-};
-```
-
-**Location:** `mockLessons.ts`, shown on every HomeScreen mount.
-
-**Impact:** User sees a fake notification banner every time they open the app.
-
-**Fix:** Remove `MOCK_NOTIFICATION` entirely. Replace with real push notification system (see Section 3) or remove the notification panel until push is wired.
-
----
-
-### 1.5 Active Case Corner Index
-
-```tsx
-<Text style={styles.activeCaseCornerIndex}>L002</Text>
-```
-
-**Location:** `HomeScreen.tsx` — inside the active case resume block.
-
-**Impact:** Always shows "L002" regardless of which lesson is actually in progress.
-
-**Fix:** Compute dynamically: `L${String(MOCK_LESSONS.indexOf(activeCase) + 1).padStart(3, '0')}`
-
----
-
-### 1.6 Locked Lessons with Placeholder Content
-
-| Lesson | Content |
-|--------|---------|
-| L004 — Intel Strategic Inflection | `situation: 'Placeholder — unlock after completing 3 lessons.'`, all tab arrays empty |
-| L015 — Stripe Writing Culture | `situation: 'Unlock after completing 5 case studies.'`, all tab arrays empty |
-| L016 — Eisenhower D-Day | `situation: 'Unlock after completing 8 case studies.'`, all tab arrays empty |
-
-**Location:** `mockLessons.ts`
-
-**Impact:** If a user unlocks these lessons, they see a completely blank case study.
-
-**Fix:** Write full case study content for all three, or keep them locked and hide the unlock mechanism until content is ready.
+| Field | Value | Status |
+|-------|-------|--------|
+| Package name | `com.apex.leadership` | ✅ Set |
+| Icon | `./assets/icon/icon.png` | ✅ Set |
+| Adaptive icon | `./assets/icon/adaptive-foreground.png` | ✅ Set |
+| Splash background | `#050505` | ✅ Set |
+| Version | `1.0.0` / versionCode `1` | ✅ Set |
+| EAS Project ID | `''` (empty) | ❌ **Missing — run `eas init`** |
+| Widget | DailyThought (react-native-android-widget) | ✅ Set |
 
 ---
 
-### 1.7 Mock Data Export (Dead Code)
+## SECTION 2 — WHAT'S STILL BROKEN OR MISSING
 
-```ts
-export const MOCK_USER_STATS: UserStats = { ... }
-```
+### 2.1 SHIP-BLOCKERS (Must fix before any public release)
 
-**Location:** `mockLessons.ts`
+| # | Issue | Severity | Detail |
+|---|-------|----------|--------|
+| 1 | **3 placeholder lessons** | CRITICAL | L004, L015, L016 have no real content. User opens them → blank page. Either write them or **remove from the list entirely**. |
+| 2 | **EAS Project ID empty** | CRITICAL | Can't build a production APK/AAB without it. Run `eas init`. |
+| 3 | **No privacy policy / terms hosted** | CRITICAL | Profile links point to `https://apex-leadership.web.app/privacy-policy` and `terms-of-use` — these pages don't exist. Google Play will reject without them. |
+| 4 | **ProScreen shows "coming soon" alert** | HIGH | The UPGRADE button shows a system `Alert.alert('Coming Soon')`. If users find a Pro screen that says "no charge — subscriptions coming soon" with a button that does nothing, it looks broken. Either (a) hide the Pro screen entirely for v1, or (b) accept it as a teaser. |
+| 5 | **No `isPro` state or paywall gate** | HIGH | There is no `isPro` field in AppState. No content is gated. The Pro screen is purely cosmetic. The free/Pro split doesn't exist in code. |
+| 6 | **Play Store listing assets missing** | HIGH | Feature graphic (1024×500), screenshots (phone + tablet), short/long description, content rating, data safety form — all required by Google. |
+| 7 | **`MOCK_USER_STATS` dead export** | LOW | Still in `mockLessons.ts`. WinsScreen is deleted but this export remains. Dead code in bundle. |
 
-**Impact:** Only consumed by `WinsScreen` which is unreachable. Dead code in the bundle.
+### 2.2 POST-LAUNCH QUALITY ISSUES
 
-**Fix:** Delete `MOCK_USER_STATS` export and the `UserStats` type if not used elsewhere.
+| # | Issue | Impact |
+|---|-------|--------|
+| 1 | **No analytics** | You have zero visibility into what users do. No retention data, no funnel, no idea if people even open lesson 2. |
+| 2 | **No crash reporting** | If the app crashes in production, you won't know. Install Sentry or Firebase Crashlytics. |
+| 3 | **No remote content updates** | All 70KB of lesson data is bundled in the APK. Adding a new case study = new app store submission + review. |
+| 4 | **No user accounts** | Progress is device-local only. Phone reset = all data gone. No cross-device sync. |
+| 5 | **No push notifications** | Zero re-engagement mechanism. Once a user closes the app, you have no way to bring them back. |
+| 6 | **Widget quote rotation is client-side** | The widget cycles through hardcoded quotes. Works, but can't be updated remotely. |
+| 7 | **`getModule()` can return `undefined`** | Callers may not handle this. Low risk since modules are static. |
 
----
+### 2.3 NEW CONSIDERATIONS FROM RECENT FEATURES
 
-### 1.8 Historical Data Error
-
-**L001 (Netflix) timeline:** "Netflix lays off 130 of 120 staff" — mathematically impossible.
-
-**Fix:** Correct to "Netflix lays off ~100 of 400 staff" or whatever the accurate figure is.
-
----
-
-## SECTION 2 — CLIENT-SIDE LOGIC GAPS (Fix Before or At Launch)
-
-### 2.1 CRITICAL — Profile Toggles Not Persisted
-
-All four toggles in ProfileScreen are **local `useState`** — they reset to defaults every time the screen mounts.
-
-| Toggle | Default | Functional? | Persisted? |
-|--------|---------|-------------|------------|
-| Notifications | `true` | ❌ No | ❌ No |
-| Daily Reminder | `true` | ❌ No | ❌ No |
-| Larger Reading Font | `false` | ❌ No | ❌ No |
-| Dark Mode | `true` | ❌ No (always dark) | ❌ No |
-
-**Fix options:**
-
-| Option | Effort | Recommendation |
-|--------|--------|----------------|
-| **Remove non-functional toggles** (Notifications, Daily Reminder, Dark Mode) | Low | ✅ Best for v1. Ship only what works. |
-| **Wire "Larger Reading Font"** — add `fontScale` to AppState, multiply `fontSize` in reading components | Medium | Nice to have for v1 |
-| **Persist all toggles** in AppState even if UI effect isn't built yet | Low | Minimum if you keep them visible |
+| Feature | New Risk |
+|---------|----------|
+| **Editable note heading** | No validation beyond 25-char max. Emoji, RTL text, special chars could render oddly. Low risk. |
+| **Lesson linking in notes** | If lesson data changes (IDs shift, lessons removed), orphaned links will show "Unknown lesson". Need a fallback label. |
+| **Android widget** | `react-native-android-widget@0.14.0` pinned due to Expo 51 compat. Won't get security/bug fixes until Expo upgrade. |
+| **Home screen drift animation** | Three animated lines running in a loop. On low-end devices this could cause jank. No `useReducedMotion` check. |
+| **Note editor auto-save on back** | `beforeRemove` listener calls `saveNote()`. If content is empty but heading has text, it still won't save (trimmed content check). Heading-only notes get lost. |
 
 ---
 
-### 2.2 CRITICAL — `timeThisWeekMinutes` Never Tracked
+## SECTION 3 — BACKEND REQUIREMENTS (Unchanged — Included for Reference)
 
-The "THIS WEEK" readout on HomeScreen shows a number that never changes (defaults to 83, or 0 after reset). No timer or session tracking code exists anywhere.
+> Full backend plan from the original audit remains valid. Summary:
 
-**Fix:** Add reading session tracking to `LessonDetailScreen`:
-- Record `sessionStartTime` on screen focus
-- On blur/unmount, compute `elapsed = Date.now() - sessionStartTime`
-- Call `addReadingTime(elapsed)` in AppState
-- AppState accumulates into `timeThisWeekMinutes` and resets weekly (check if `lastActiveDate` is in a different ISO week)
+| Product | Purpose | Free Tier |
+|---------|---------|-----------|
+| Firebase Auth | User identity | 10K MAU |
+| Cloud Firestore | Data sync, content delivery | 1GB / 50K reads/day |
+| Cloud Functions | Server logic, notifications | 2M invocations/month |
+| FCM | Push notifications | Unlimited |
+| Firebase Analytics | User behavior | Unlimited |
+| Remote Config | Feature flags, A/B tests | Unlimited |
+| Firebase Hosting | Privacy policy, terms pages | 10GB transfer/month |
 
----
-
-### 2.3 CRITICAL — `timeThisWeekMinutes` Never Resets Weekly
-
-Even if you start tracking time, there's no logic to reset the counter when a new week starts.
-
-**Fix:** In the streak `useEffect`, also check if the current ISO week differs from the stored week. If so, reset `timeThisWeekMinutes` to 0.
+**Estimated cost at <1000 MAU: $0/month.**
 
 ---
 
-### 2.4 HIGH — Missing Font: `DMSans_600SemiBold`
+## SECTION 4 — LAUNCH READINESS CHECKLIST
 
-`FontFamily.dmSansSemiBold` is defined in `typography.ts` and used by `TakeawayItem` (headline) and `HomeScreen` (resumeLabel), but the font is **never loaded** in `App.tsx`.
+### Minimum Viable Launch (Play Store listing goes live)
 
-**Impact:** Those text elements silently fall back to system font, breaking the design.
+| # | Task | Status | Effort |
+|---|------|--------|--------|
+| 1 | Fill or remove placeholder lessons (L004, L015, L016) | ❌ | Medium (writing content) |
+| 2 | Run `eas init` → set project ID | ❌ | 5 min |
+| 3 | Host privacy policy + terms of use pages | ❌ | 1 hour |
+| 4 | Create Play Store listing assets (feature graphic, screenshots) | ❌ | 2-3 hours |
+| 5 | Fill Play Store forms (content rating, data safety, audience) | ❌ | 30 min |
+| 6 | Build production AAB via `eas build --platform android` | ❌ | — |
+| 7 | Delete `MOCK_USER_STATS` dead code | ❌ | 2 min |
+| 8 | Decide: hide ProScreen CTA or keep as teaser | ❌ | Decision |
 
-**Fix:** Add to `useFonts()` in `App.tsx`:
-```ts
-import { DMSans_600SemiBold } from '@expo-google-fonts/dm-sans';
-// ...
-useFonts({ ..., DMSans_600SemiBold });
-```
+### Strongly Recommended Before Launch
 
----
+| # | Task | Why |
+|---|------|-----|
+| 1 | Add Firebase Analytics | Without data, you're flying blind |
+| 2 | Add Crashlytics / Sentry | Know when and why the app crashes |
+| 3 | Remove or gate "Larger Reading Font" if it's not visibly affecting lesson text yet | Confused users |
 
-### 2.5 HIGH — WinsScreen is Dead Code
+### Post-Launch (Phase 2)
 
-`WinsScreen.tsx` exists but is not in any navigator. It also uses `MOCK_USER_STATS` instead of `useAppState()`.
-
-**Fix:** Either:
-- Wire it into ProfileScreen ("Reading History" → WinsScreen) and refactor to use `useAppState()`, OR
-- Delete it entirely for v1
-
----
-
-### 2.6 HIGH — Profile Navigation Rows Go Nowhere
-
-| Row | Expected Destination | Current State |
-|-----|---------------------|---------------|
-| Reading History | WinsScreen or history list | `onPress` missing |
-| Saved Lessons | SavedScreen | `onPress` missing |
-| About APEX | Info modal/screen | `onPress` missing |
-| Privacy Policy | WebView or external URL | `onPress` missing |
-| Terms of Use | WebView or external URL | `onPress` missing |
-
-**Fix for v1:**
-- "Saved Lessons" → navigate to existing `SavedScreen`
-- "Reading History" → wire to WinsScreen or a simple list
-- "About APEX" → show an `Alert` with version/credits
-- "Privacy Policy" / "Terms of Use" → `Linking.openURL()` to hosted pages (you'll need these for Play Store)
+| # | Task |
+|---|------|
+| 1 | Firebase Auth (real accounts) |
+| 2 | Firestore for content + progress sync |
+| 3 | Push notifications (FCM) |
+| 4 | In-app purchases / subscriptions (actual Pro tier) |
+| 5 | New case study content (target 30+ lessons) |
+| 6 | Spaced repetition / review system |
+| 7 | Social features (share progress, discussion) |
 
 ---
 
-### 2.7 MEDIUM — `emotional_intelligence` Module Has Zero Lessons
+## SECTION 5 — BRUTAL HONESTY: WILL THIS APP MAKE MONEY?
 
-The module is defined in `modules.ts` but no lesson in `mockLessons.ts` uses `module: 'emotional_intelligence'`.
+### The Product
 
-**Fix:** Write at least 1 lesson for this module, or remove it from `MODULES` array for v1.
+APEX is a **niche micro-learning app** that teaches leadership through real-world case studies (Netflix, Spotify, Toyota, etc.). Dark brutalist UI. ~107 minutes of reading content across 13 complete lessons. Notes. Streaks. A widget.
 
----
+### The Good
 
-### 2.8 MEDIUM — `LessonListItem` Reads Stale Status
+- **Clear niche.** Leadership case studies in bite-size format is a real gap. Most leadership apps are either generic quote-of-the-day or expensive enterprise tools.
+- **Content quality matters here.** If the case studies are genuinely well-written, researched, and insightful, that's a real moat. AI-generated fluff won't compete.
+- **UI is distinctive.** The dark brutalist aesthetic stands out in a sea of pastel productivity apps. It signals seriousness.
+- **Offline-first.** All content bundled. No server dependency. This actually works in the user's favor.
+- **Low operational cost.** No backend = no infrastructure cost. Firebase free tier covers everything you'd need for the first 10K users.
 
-`LessonListItem` reads `lesson.status` and `lesson.progress` from the **static Lesson object** in `mockLessons.ts`, not from `AppState`. If a user progresses through a lesson, the list item won't reflect the updated status.
+### The Hard Truth
 
-**Fix:** Pass `progress` and `status` as props from the parent (which reads from `useAppState()`), or read AppState inside the component.
+**Probability of generating meaningful revenue (>$500/month): ~5-10%.**
 
----
+Here's why:
 
-### 2.9 MEDIUM — Streak Logic Race Condition
+#### 1. Content Volume Is Too Thin
+- **~107 minutes of content.** A motivated user burns through everything in 2-3 days.
+- After that, there's nothing new. No reason to return. No reason to pay.
+- Competitors like Blinkist have 5,000+ titles. You have 13.
+- **The app is a weekend, not a habit.** Retention will cliff after week 1.
 
-The streak `useEffect` runs on mount with `[]` deps but reads `state.stats.lastActiveDate`. If AsyncStorage hasn't loaded yet, it may read the default value and incorrectly reset the streak.
+#### 2. No Monetisation Mechanism Exists
+- The Pro screen is a shell. No payment integration.
+- No `isPro` flag. No content gating. Nothing is locked behind a paywall.
+- Google Play In-App Purchases / Subscriptions require significant integration work (expo-iap or RevenueCat).
+- **You can't make money from an app that has no way to accept money.**
 
-**Fix:** Add a `loaded` flag to AppState. Only run streak logic after `loaded === true`.
+#### 3. There's No Retention Loop
+- Streaks work only if users have a reason to open the app daily.
+- 13 case studies = 13 possible daily sessions, then it's over.
+- No push notifications to re-engage lapsed users.
+- No new content pipeline (every new lesson requires an app update).
+- The widget is nice but it's a passive quote — it doesn't drive app opens.
 
----
+#### 4. Discovery Is Nearly Impossible
+- The Android Play Store has millions of apps. "Leadership learning" is a crowded keyword.
+- With no marketing budget, organic discovery is near zero.
+- ASO (App Store Optimization) helps, but you're competing with Headspace, Blinkist, LinkedIn Learning, MasterClass — who spend millions on acquisition.
+- **You will likely get <100 organic installs in the first month.** That's not pessimism, that's the median for indie apps.
 
-### 2.10 MEDIUM — No Error Boundary
+#### 5. The Target Audience Is Small and Skeptical
+- People who want to learn leadership AND prefer reading case studies AND will pay for a mobile app AND find it in the Play Store — that's a very narrow funnel.
+- Leadership development is typically paid for by employers, not individuals.
+- The people who DO pay for self-improvement tend to go to books, podcasts, or established platforms.
 
-If any screen throws, the entire app crashes to a white screen.
+#### 6. No Social Proof or Credibility Signal
+- No reviews, no testimonials, no author credentials on the content.
+- Users see "APEX" — a brand they've never heard of — and have no reason to trust it.
+- Who wrote these case studies? What qualifies them? This matters enormously in the leadership/education space.
 
-**Fix:** Wrap `<AppNavigator />` in a React error boundary component with a "Something went wrong" fallback + restart button.
+### What Would Need to Be True for Revenue
 
----
+For this app to generate consistent revenue, ALL of the following would need to happen:
 
-### 2.11 LOW — AsyncStorage Writes Not Debounced
+| Requirement | Current State |
+|-------------|---------------|
+| 50+ high-quality case studies | 13 complete |
+| New content every 1-2 weeks | Requires app update (no remote content) |
+| Working payment integration | Not started |
+| 10,000+ installs | 0 |
+| 5%+ conversion to paid | Industry avg is 2-3% |
+| Marketing/distribution channel | None |
+| Push notifications for re-engagement | Not built |
+| User accounts for cross-device | Not built |
+| Credibility (author bio, endorsements) | None |
 
-Every `setState` triggers an `AsyncStorage.setItem()` in the `useEffect`. Rapid actions (e.g., switching tabs quickly) cause excessive writes.
+### Most Realistic Outcomes
 
-**Fix:** Debounce the `useEffect` that persists state (300-500ms delay).
+| Scenario | Probability | Revenue |
+|----------|-------------|---------|
+| App sits in Play Store, gets <500 lifetime downloads, makes nothing | **60%** | $0 |
+| Gets 1-5K downloads through some marketing effort, a few pro conversions | **25%** | $10-50/month |
+| Finds an audience through content marketing / social, builds content library, grows | **10%** | $100-500/month |
+| Becomes a meaningful business | **5%** | $500+/month |
 
----
+### What Would Actually Move the Needle
 
-### 2.12 LOW — `getModule()` Non-Null Assertion
+1. **Content is the product.** The app is just a container. You need 50+ case studies minimum. Write 2 per week for 6 months.
+2. **Distribute the content, not the app.** Post case study summaries on LinkedIn, Twitter, Medium. Build an audience FIRST. Then point them to the app.
+3. **Email list > app downloads.** A newsletter with 1,000 subscribers is more valuable than 1,000 app installs.
+4. **Consider a web version.** Most professionals learn on desktop during work hours, not on their phone. A web app (Next.js) would 10x your addressable market.
+5. **B2B > B2C.** Sell to team leads and L&D departments ($10/seat/month) instead of individuals ($3/month). One corporate deal = 100 individual users.
+6. **Don't build backend until you have users.** The current offline-first architecture is actually fine for the first 1,000 users. Don't spend weeks on Firebase when you have zero users.
 
-```ts
-return MODULES.find(m => m.key === key)!;
-```
+### The Bottom Line
 
-Crashes at runtime if called with an invalid key.
+**As a portfolio piece or personal project:** Excellent. The code is clean, the design is distinctive, the feature set is complete. It demonstrates real product thinking.
 
-**Fix:** Return `undefined` or throw a descriptive error.
+**As a business:** It won't make money in its current state. Not because the code is bad — it's actually solid — but because:
+- There isn't enough content to justify a subscription
+- There's no payment mechanism
+- There's no distribution strategy
+- There's no retention mechanism after the content runs out
 
----
+The hard part isn't building the app. The hard part is writing 50+ genuinely insightful case studies, building an audience that cares, and giving them a reason to pay.
 
-### 2.13 LOW — `app.config.ts` Issues
-
-| Issue | Current | Should Be |
-|-------|---------|-----------|
-| `backgroundColor` | `#0A0A0A` | `#050505` (matches theme) |
-| `extra.eas.projectId` | `''` (empty) | Your actual EAS project ID |
-| No `ios` block | missing | Add `bundleIdentifier` if ever targeting iOS |
-| No `icon` / `adaptiveIcon` | missing | Required for Play Store |
-| No `splash` config | missing | Need splash screen asset |
-
----
-
-## SECTION 3 — BACKEND REQUIREMENTS (Google Products)
-
-Below is everything the app needs from a backend, mapped to the recommended Google product for each.
-
----
-
-### 3.1 Firebase Authentication
-
-**Why:** User identity for profile, cross-device sync, and any social features.
-
-| Need | Google Product | Details |
-|------|---------------|---------|
-| User sign-up/login | **Firebase Auth** | Google Sign-In + email/password |
-| User profile (name, role) | Firebase Auth custom claims or Firestore | Store `displayName`, `role`, avatar URL |
-| Anonymous → authenticated upgrade | Firebase Auth anonymous auth | Let users start without signup, convert later |
-
-**Client changes:**
-- Install `@react-native-firebase/auth` or `expo-auth-session` (for Expo managed)
-- Add AuthContext wrapper
-- Replace hardcoded "Leader" with `auth.currentUser.displayName`
-- Gate certain features (sharing, notes sync) behind auth
-
----
-
-### 3.2 Cloud Firestore
-
-**Why:** Store and sync user data, deliver content without app updates.
-
-| Collection | Purpose | Read/Write |
-|------------|---------|------------|
-| `users/{uid}` | Profile, settings, preferences (toggle states) | Read + Write |
-| `users/{uid}/progress` | Lesson progress, stats, streaks | Read + Write |
-| `users/{uid}/notes` | User notes (synced across devices) | Read + Write |
-| `lessons` | Case study content (all 16+ lessons) | Read-only from client |
-| `modules` | Module definitions | Read-only from client |
-| `quotes` | Daily quote rotation pool | Read-only from client |
-
-**Key benefits:**
-- **Content updates without app store review** — add/edit case studies in Firestore, app fetches latest
-- **Cross-device sync** — user signs in on new phone, all progress/notes are there
-- **Offline support** — Firestore has built-in offline persistence
-
-**Client changes:**
-- Install `@react-native-firebase/firestore`
-- Replace `MOCK_LESSONS` array with Firestore reads (with offline cache)
-- Replace `AsyncStorage` persistence with Firestore writes
-- Keep AsyncStorage as local cache / fallback
-
-**Firestore Security Rules (starter):**
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users can only read/write their own data
-    match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
-    // Lessons and modules are read-only for authenticated users
-    match /lessons/{lessonId} {
-      allow read: if request.auth != null;
-    }
-    match /modules/{moduleId} {
-      allow read: if request.auth != null;
-    }
-    match /quotes/{quoteId} {
-      allow read: if request.auth != null;
-    }
-  }
-}
-```
+**If you're serious about revenue:** Stop building features. Start writing content and publishing it publicly. Build an audience. The app becomes valuable only when the content library and the audience both exist.
 
 ---
 
-### 3.3 Firebase Cloud Messaging (FCM)
-
-**Why:** Push notifications — new case studies, daily reminders, streak nudges.
-
-| Notification Type | Trigger | Backend Logic |
-|-------------------|---------|---------------|
-| New case study available | Admin publishes to Firestore | Cloud Function watches `lessons` collection |
-| Daily reminder | User's preferred time | Cloud Scheduler + Cloud Function |
-| Streak at risk | No activity for 24h+ | Cloud Function checks `lastActiveDate` |
-| Weekly summary | Every Sunday | Cloud Scheduler + Cloud Function |
-
-**Client changes:**
-- Install `@react-native-firebase/messaging`
-- Request notification permission on onboarding
-- Store FCM token in `users/{uid}/fcmTokens`
-- Remove `MOCK_NOTIFICATION` — replace with real incoming push
-- Wire the "Notifications" and "Daily Reminder" toggles to write preferences to Firestore
-
----
-
-### 3.4 Cloud Functions for Firebase
-
-**Why:** Server-side logic that can't live on the client.
-
-| Function | Trigger | Purpose |
-|----------|---------|---------|
-| `onNewLesson` | Firestore `onCreate` on `lessons/` | Send push notification to all users |
-| `dailyReminder` | Cloud Scheduler (cron) | Send reminder to users who opted in |
-| `streakCheck` | Cloud Scheduler (daily 1am) | Detect broken streaks, send nudge |
-| `weeklySummary` | Cloud Scheduler (Sunday) | Compile and send weekly digest |
-| `computeStats` | Firestore `onWrite` on `users/{uid}/progress` | Recalculate streak, completion count server-side (source of truth) |
-
-**Setup:** `firebase init functions` → TypeScript Cloud Functions v2
-
----
-
-### 3.5 Firebase Analytics + Google Analytics
-
-**Why:** Understand user behavior, measure engagement, required data for app store optimization.
-
-| Event | When | Parameters |
-|-------|------|------------|
-| `lesson_started` | User opens a case study | `lesson_id`, `module` |
-| `lesson_completed` | User finishes all tabs | `lesson_id`, `module`, `time_spent` |
-| `tab_viewed` | User switches to a tab | `lesson_id`, `tab_name` |
-| `note_created` | User creates a note | `lesson_id` (if linked) |
-| `share_image` | User shares a case study | `lesson_id` |
-| `app_opened` | App comes to foreground | `day_streak` |
-
-**Client changes:**
-- Install `@react-native-firebase/analytics`
-- Add `analytics().logEvent(...)` calls at key interaction points
-- Set user properties: `role`, `cases_completed`, `streak`
-
----
-
-### 3.6 Firebase Remote Config
-
-**Why:** Feature flags, A/B testing, content control without app updates.
-
-| Flag | Purpose |
-|------|---------|
-| `max_free_lessons` | Control freemium gate (e.g., 5 free) |
-| `show_onboarding` | Toggle onboarding flow |
-| `daily_quote_id` | Override daily quote from server |
-| `feature_spaced_repetition` | Gate unreleased features |
-| `maintenance_mode` | Show maintenance screen |
-
----
-
-### 3.7 Cloud Storage for Firebase
-
-**Why:** Store and serve media assets.
-
-| Asset | Purpose |
-|-------|---------|
-| Case study header images | If you add per-case illustrations |
-| User-generated share images | Optional: store shared PNGs for link sharing |
-| Audio narrations | Future: commute-friendly audio versions |
-
----
-
-### 3.8 Google Play Console Requirements
-
-Before publishing, these items are required by Google:
-
-| Requirement | Status | Action |
-|-------------|--------|--------|
-| App icon (512×512 PNG) | ❌ Missing | Design and add to `app.config.ts` |
-| Feature graphic (1024×500) | ❌ Missing | Design for Play Store listing |
-| Screenshots (phone + tablet) | ❌ Missing | Capture from working app |
-| Privacy Policy URL | ❌ Missing | Host on Firebase Hosting or Google Sites |
-| Terms of Use URL | ❌ Missing | Host alongside privacy policy |
-| Content rating questionnaire | ❌ Not done | Fill out in Play Console |
-| Target audience declaration | ❌ Not done | "Not designed for children" |
-| Data safety form | ❌ Not done | Declare what data you collect |
-| EAS Project ID | ❌ Empty in `app.config.ts` | Run `eas init` to generate |
-| Signing key | ❌ Not set up | EAS handles this, or upload your own |
-| `versionCode` | Set to `1` ✅ | Increment for each release |
-
----
-
-### 3.9 Firebase Hosting
-
-**Why:** Host static pages required for publishing.
-
-| Page | Purpose |
-|------|---------|
-| `privacy-policy.html` | Required by Play Store |
-| `terms-of-use.html` | Required by Play Store |
-| `about.html` | Optional: "About APEX" content |
-| `support.html` | Play Store requires a support URL |
-
-**Setup:** `firebase init hosting` → deploy static HTML pages.
-
----
-
-## SECTION 4 — RECOMMENDED LAUNCH ORDER
-
-### Phase 1: Fix What's Broken (Ship-blocking)
-
-| # | Task | Status |
-|---|------|--------|
-| 1 | Fix `getDefaultState()` — all stats start at 0 | ✅ Done |
-| 2 | Fix hardcoded "L002" in active case block | ✅ Done |
-| 3 | Fix `DMSans_600SemiBold` font reference (mapped to 700Bold) | ✅ Done |
-| 4 | Fix L001 timeline data error | ✅ Done |
-| 5 | Write full content for L004, L015, L016 (or hide them) | ❌ Still locked with placeholder content |
-| 6 | Remove `MOCK_NOTIFICATION` panel | ✅ Done (panel + component deleted) |
-| 7 | Remove non-functional toggles (Dark Mode, Notifications, Daily Reminder) | ✅ Done |
-| 8 | Fix `LessonListItem` to read from AppState | ✅ Done |
-| 9 | Fix `app.config.ts` backgroundColor | ✅ Done (#050505) |
-| 10 | Handle `emotional_intelligence` module (no lessons) | ✅ Done (removed from MODULES) |
-
-### Phase 2: Client Logic Completion
-
-| # | Task | Status |
-|---|------|--------|
-| 1 | Add reading time tracking | ✅ Done (useIsFocused in LessonDetail) |
-| 2 | Add weekly time reset logic | ✅ Done (ISO week detection in AppState) |
-| 3 | Wire "Saved Lessons" profile row → SavedScreen | ✅ Done |
-| 4 | Wire "Larger Reading Font" toggle with persistence | ✅ Done (persisted in AppState) |
-| 5 | Add user name to AppState + display in Home/Profile | ✅ Done (editable in Profile, shown in Home) |
-| 6 | Add daily quote rotation (local array) | ✅ Done (31 quotes, day-of-year rotation) |
-| 7 | Fix streak race condition (add `loaded` flag) | ✅ Done |
-| 8 | Add error boundary | ✅ Done (ErrorBoundary in App.tsx) |
-| 9 | Debounce AsyncStorage writes | ✅ Done (500ms debounce) |
-| 10 | Delete WinsScreen (dead code) | ✅ Done |
-
-### Remaining Client-Side Items
-
-| # | Task | Priority |
-|---|------|----------|
-| 1 | Write full case study content for L004 (Intel), L015 (Stripe), L016 (Eisenhower) | HIGH |
-| 2 | Wire "Larger Reading Font" toggle to actually scale font sizes in reading views | MEDIUM |
-| 3 | App icon (512×512 PNG) + adaptive icon for `app.config.ts` | HIGH (Play Store) |
-| 4 | Splash screen asset | MEDIUM |
-| 5 | EAS Project ID (run `eas init`) | HIGH (before build) |
-
-### Phase 3: Google Backend Setup
-
-| # | Task | Google Product |
-|---|------|---------------|
-| 1 | Create Firebase project | Firebase Console |
-| 2 | Add Android app to Firebase (`com.apex.leadership`) | Firebase Console |
-| 3 | Download `google-services.json` → `android/app/` | Firebase Console |
-| 4 | Set up Firebase Auth (Google Sign-In + email) | Firebase Auth |
-| 5 | Create Firestore collections (users, lessons, modules, quotes) | Cloud Firestore |
-| 6 | Migrate `mockLessons.ts` content into Firestore `lessons` collection | Script / manual |
-| 7 | Write Firestore security rules | Firestore Rules |
-| 8 | Set up FCM for push notifications | Cloud Messaging |
-| 9 | Write Cloud Functions (daily reminder, streak check) | Cloud Functions |
-| 10 | Set up Firebase Analytics | Firebase Analytics |
-| 11 | Set up Remote Config with feature flags | Remote Config |
-| 12 | Host privacy policy + terms on Firebase Hosting | Firebase Hosting |
-| 13 | Run `eas init` and configure EAS project ID | EAS CLI |
-| 14 | Build production APK/AAB via `eas build` | EAS Build |
-| 15 | Submit to Google Play Console | Play Console |
-
----
-
-## SECTION 5 — GOOGLE PRODUCTS SUMMARY
-
-| Product | Free Tier | What You Use It For |
-|---------|-----------|---------------------|
-| **Firebase Auth** | 10K MAU free | User login, identity |
-| **Cloud Firestore** | 1GB storage, 50K reads/day, 20K writes/day | All data storage & sync |
-| **Cloud Functions** | 2M invocations/month | Server logic, notifications |
-| **Cloud Messaging (FCM)** | Unlimited | Push notifications |
-| **Firebase Analytics** | Unlimited | User behavior tracking |
-| **Remote Config** | Unlimited | Feature flags |
-| **Cloud Storage** | 5GB | Media assets |
-| **Firebase Hosting** | 10GB transfer/month | Privacy policy, terms pages |
-
-**Estimated cost at <1000 MAU: $0/month** (all within free tier).
-
----
-
-*This document should be updated as items are resolved. Check off completed items and re-audit before each release.*
+*Last validated: 3 May 2026 · Commit b09f6ab*
