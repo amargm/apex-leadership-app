@@ -49,6 +49,9 @@ const config: ExpoConfig = {
   },
   plugins: [
     'expo-font',
+    '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    '@react-native-google-signin/google-signin',
     ['react-native-android-widget', widgetConfig],
   ],
   extra: {

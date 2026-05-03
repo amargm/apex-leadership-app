@@ -16,7 +16,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Crown, RotateCcw } from 'lucide-react-native';
+import { ChevronRight, Crown, RotateCcw, LogOut } from 'lucide-react-native';
 import { Colors, FontFamily, Spacing, Radius } from '../theme';
 import type { ProfileScreenProps } from '../navigation/types';
 import { useAppState } from '../state/AppState';
@@ -51,9 +51,10 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function ProfileScreen({ navigation }: ProfileScreenProps) {
-  const { state, resetAllProgress, setLargeFont, setUserName, setUserTier, completeOnboarding } = useAppState();
+  const { state, resetAllProgress, setLargeFont, setUserName, setUserTier, completeOnboarding, firebaseUser, handleGoogleSignIn, handleSignOut } = useAppState();
   const [resetModalVisible, setResetModalVisible] = useState(false);
   const tier = state.userTier;
+  const isSignedIn = !!firebaseUser;
 
   const handleResetProgress = () => {
     setResetModalVisible(true);
@@ -262,6 +263,45 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
               Reset All Progress
             </Text>
           </TouchableOpacity>
+
+          {isSignedIn && (
+            <>
+              <View style={styles.rowDivider} />
+              <TouchableOpacity
+                style={styles.settingsRow}
+                activeOpacity={0.7}
+                onPress={() => {
+                  Alert.alert('Sign Out', 'This will sign you out and reset local data.', [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Sign Out', style: 'destructive', onPress: () => handleSignOut() },
+                  ]);
+                }}
+              >
+                <LogOut size={14} color="#E05252" strokeWidth={1.5} />
+                <Text style={[styles.settingsLabel, { color: '#E05252', marginLeft: 10 }]}>
+                  Sign Out
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+          {!isSignedIn && tier !== 'guest' && (
+            <>
+              <View style={styles.rowDivider} />
+              <TouchableOpacity
+                style={styles.settingsRow}
+                activeOpacity={0.7}
+                onPress={async () => {
+                  const ok = await handleGoogleSignIn();
+                  if (ok) Alert.alert('Signed In', 'Your progress is now synced to the cloud.');
+                }}
+              >
+                <Text style={[styles.settingsLabel, { color: Colors.accent }]}>
+                  Sign in with Google to sync
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {/* Footer */}

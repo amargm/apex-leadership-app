@@ -170,7 +170,7 @@ function BottomTabs() {
 
 // ─── Root Navigator ───────────────────────────────────────────────────────────
 export default function AppNavigator() {
-  const { state, loaded, completeOnboarding, setUserTier, setUserName } = useAppState();
+  const { state, loaded, completeOnboarding, setUserTier, setUserName, handleGoogleSignIn } = useAppState();
   const [splashDone, setSplashDone] = useState(false);
 
   // Phase: splash → auth (if first time) → main
@@ -195,6 +195,7 @@ export default function AppNavigator() {
           setUserName(name);
           completeOnboarding();
         }}
+        onGoogleSignIn={handleGoogleSignIn}
       />
     );
   }

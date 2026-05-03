@@ -4,8 +4,11 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import type { LessonStatus } from '../types/lesson';
 import { MOCK_LESSONS } from '../data/mockLessons';
+import { configureGoogleSignIn, signInWithGoogle, signOut as authSignOut, onAuthStateChanged } from '../services/authService';
+import { saveUserData, loadUserData } from '../services/firestoreService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -73,6 +76,7 @@ interface AppState {
 interface AppContextValue {
   state: AppState;
   loaded: boolean;
+  firebaseUser: FirebaseAuthTypes.User | null;
   startLesson: (lessonId: string) => void;
   markTabViewed: (lessonId: string, tab: string) => void;
   completeLesson: (lessonId: string) => void;
@@ -88,6 +92,8 @@ interface AppContextValue {
   setUserTier: (tier: UserTier) => void;
   completeOnboarding: () => void;
   resetAllProgress: () => void;
+  handleGoogleSignIn: () => Promise<boolean>;
+  handleSignOut: () => Promise<void>;
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
@@ -154,7 +160,41 @@ const AppContext = createContext<AppContextValue | null>(null);
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AppState>(getDefaultState);
   const [loaded, setLoaded] = useState(false);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseAuthTypes.User | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cloudSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Configure Google Sign-In once
+  useEffect(() => { configureGoogleSignIn(); }, []);
+
+  // Listen to Firebase auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(async (user) => {
+      setFirebaseUser(user);
+      if (user) {
+        // Load cloud data on sign-in
+        try {
+          const cloudData = await loadUserData(user.uid);
+          if (cloudData) {
+            const defaults = getDefaultState();
+            setState((prev) => ({
+              lessons: cloudData.lessons ?? prev.lessons,
+              stats: { ...defaults.stats, ...cloudData.stats },
+              savedLessonIds: cloudData.savedLessonIds ?? prev.savedLessonIds,
+              notes: cloudData.notes ?? prev.notes,
+              userName: cloudData.userName ?? user.displayName ?? prev.userName,
+              largeFontOn: cloudData.largeFontOn ?? prev.largeFontOn,
+              hasCompletedOnboarding: true,
+              userTier: (cloudData.userTier as UserTier) ?? 'free',
+            }));
+          }
+        } catch {
+          // Use local state if cloud load fails
+        }
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   // Load persisted state on mount
   useEffect(() => {
@@ -184,14 +224,36 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   // Debounced persist on state change — skip for guest (no progress saved)
   useEffect(() => {
-    if (!loaded) return; // don't persist until initial load is done
-    if (state.userTier === 'guest') return; // guests don't persist
+    if (!loaded) return;
+    if (state.userTier === 'guest') return;
+
+    // Local persistence
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
     }, DEBOUNCE_MS);
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [state, loaded]);
+
+    // Cloud sync (if signed in) — debounced at 3s to avoid excessive writes
+    if (firebaseUser) {
+      if (cloudSyncRef.current) clearTimeout(cloudSyncRef.current);
+      cloudSyncRef.current = setTimeout(() => {
+        saveUserData(firebaseUser.uid, {
+          lessons: state.lessons,
+          stats: state.stats,
+          savedLessonIds: state.savedLessonIds,
+          notes: state.notes,
+          userName: state.userName,
+          largeFontOn: state.largeFontOn,
+          userTier: state.userTier,
+        }).catch(() => {});
+      }, 3000);
+    }
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (cloudSyncRef.current) clearTimeout(cloudSyncRef.current);
+    };
+  }, [state, loaded, firebaseUser]);
 
   // Update streak + weekly time reset — only after storage has loaded
   useEffect(() => {
@@ -459,11 +521,33 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setState((prev) => ({ ...prev, hasCompletedOnboarding: true }));
   }, []);
 
+  /** Sign in with Google → upgrade to free/restore cloud state */
+  const handleGoogleSignIn = useCallback(async (): Promise<boolean> => {
+    const user = await signInWithGoogle();
+    if (!user) return false;
+    // Auth listener handles cloud data load & setFirebaseUser
+    setState((prev) => ({
+      ...prev,
+      userName: user.displayName || prev.userName,
+      userTier: prev.userTier === 'guest' ? 'free' : prev.userTier,
+      hasCompletedOnboarding: true,
+    }));
+    return true;
+  }, []);
+
+  /** Sign out → revert to guest */
+  const handleSignOut = useCallback(async (): Promise<void> => {
+    await authSignOut();
+    await AsyncStorage.removeItem(STORAGE_KEY);
+    setState(getFreshState());
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
         state,
         loaded,
+        firebaseUser,
         startLesson,
         markTabViewed,
         completeLesson,
@@ -479,6 +563,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         setUserTier,
         completeOnboarding,
         resetAllProgress,
+        handleGoogleSignIn,
+        handleSignOut,
       }}
     >
       {children}

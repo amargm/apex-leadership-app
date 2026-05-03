@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Pressable,
   StyleSheet,
   Text,
@@ -15,11 +16,13 @@ import { Colors, FontFamily, Spacing } from '../theme';
 interface Props {
   onGuestEntry: () => void;
   onFreeSignup: (name: string) => void;
+  onGoogleSignIn: () => Promise<boolean>;
 }
 
-export default function AuthScreen({ onGuestEntry, onFreeSignup }: Props) {
+export default function AuthScreen({ onGuestEntry, onFreeSignup, onGoogleSignIn }: Props) {
   const [showNameInput, setShowNameInput] = useState(false);
   const [name, setName] = useState('');
+  const [signingIn, setSigningIn] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -85,17 +88,27 @@ export default function AuthScreen({ onGuestEntry, onFreeSignup }: Props) {
           </>
         ) : (
           <>
-            {/* Primary — Free signup */}
+            {/* Primary — Google Sign-In */}
             <Pressable
               style={({ pressed }) => [
                 styles.primaryButton,
                 pressed && styles.primaryButtonPressed,
+                signingIn && styles.primaryButtonDisabled,
               ]}
-              onPress={() => setShowNameInput(true)}
+              onPress={async () => {
+                setSigningIn(true);
+                await onGoogleSignIn();
+                setSigningIn(false);
+              }}
+              disabled={signingIn}
             >
-              <Text style={styles.primaryButtonText}>GET STARTED FREE</Text>
+              {signingIn ? (
+                <ActivityIndicator size="small" color={Colors.bgPrimary} />
+              ) : (
+                <Text style={styles.primaryButtonText}>CONTINUE WITH GOOGLE</Text>
+              )}
             </Pressable>
-            <Text style={styles.primaryHint}>4 case studies · Progress saved</Text>
+            <Text style={styles.primaryHint}>Sync progress · All your data backed up</Text>
 
             {/* Divider */}
             <View style={styles.orDivider}>
@@ -104,7 +117,26 @@ export default function AuthScreen({ onGuestEntry, onFreeSignup }: Props) {
               <View style={styles.orLine} />
             </View>
 
-            {/* Secondary — Guest */}
+            {/* Secondary — Free without Google */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.guestButton,
+                pressed && styles.guestButtonPressed,
+              ]}
+              onPress={() => setShowNameInput(true)}
+            >
+              <Text style={styles.guestButtonText}>GET STARTED FREE</Text>
+            </Pressable>
+            <Text style={styles.guestHint}>4 case studies · Local progress only</Text>
+
+            {/* Divider */}
+            <View style={styles.orDivider}>
+              <View style={styles.orLine} />
+              <Text style={styles.orText}>OR</Text>
+              <View style={styles.orLine} />
+            </View>
+
+            {/* Tertiary — Guest */}
             <Pressable
               style={({ pressed }) => [
                 styles.guestButton,
