@@ -53,6 +53,7 @@ function MinimalToggle({ value, onToggle }: { value: boolean; onToggle: () => vo
 export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   const { state, resetAllProgress, setLargeFont, setUserName, setUserTier, completeOnboarding, firebaseUser, handleGoogleSignIn, handleSignOut } = useAppState();
   const [resetModalVisible, setResetModalVisible] = useState(false);
+  const [aboutModalVisible, setAboutModalVisible] = useState(false);
   const tier = state.userTier;
   const isSignedIn = !!firebaseUser;
 
@@ -216,20 +217,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <TouchableOpacity
             style={styles.settingsRow}
             activeOpacity={0.7}
-            onPress={() => Alert.alert(
-              'APEX — Leadership Case Studies',
-              'Version 1.0.0\n\n' +
-              'APEX is a curated library of real-world leadership case studies designed to help professionals grow through the experiences of others.\n\n' +
-              'Each case study distills pivotal moments from companies and leaders — culture shifts, crisis decisions, turnarounds, and innovation under pressure — into focused, actionable lessons.\n\n' +
-              'Features:\n' +
-              '• 26+ original case studies across 8 modules\n' +
-              '• Personal notes and progress tracking\n' +
-              '• Offline reading\n' +
-              '• Dark-themed, distraction-free interface\n\n' +
-              'Developer: Amar Mugali\n' +
-              'Contact: apex.leadership.app@gmail.com\n\n' +
-              '© 2026 APEX Leadership App. All rights reserved.'
-            )}
+            onPress={() => setAboutModalVisible(true)}
           >
             <Text style={styles.settingsLabel}>About APEX</Text>
             <View style={styles.settingsRight}>
@@ -322,6 +310,54 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <Text style={styles.footerText}>APEX LEADERSHIP · BUILT FOR GROWTH</Text>
         </View>
       </ScrollView>
+
+      {/* ── About APEX Modal ── */}
+      <Modal visible={aboutModalVisible} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setAboutModalVisible(false)}>
+          <Pressable style={styles.aboutBox}>
+            <View style={styles.aboutAccent} />
+
+            <ScrollView style={styles.aboutScroll} showsVerticalScrollIndicator={false}>
+              <Text style={styles.aboutVersion}>V1.0.0</Text>
+              <Text style={styles.aboutTitle}>APEX</Text>
+              <Text style={styles.aboutTagline}>LEADERSHIP CASE STUDIES</Text>
+
+              <View style={styles.aboutDivider} />
+
+              <Text style={styles.aboutBody}>
+                A curated library of real-world leadership case studies designed to help professionals grow through the experiences of others.
+              </Text>
+              <Text style={styles.aboutBody}>
+                Each case study distills pivotal moments from companies and leaders — culture shifts, crisis decisions, turnarounds, and innovation under pressure — into focused, actionable lessons.
+              </Text>
+
+              <View style={styles.aboutDivider} />
+
+              <Text style={styles.aboutSectionLabel}>FEATURES</Text>
+              <Text style={styles.aboutFeature}>→  26+ original case studies</Text>
+              <Text style={styles.aboutFeature}>→  8 leadership modules</Text>
+              <Text style={styles.aboutFeature}>→  Personal notes & progress tracking</Text>
+              <Text style={styles.aboutFeature}>→  Offline reading</Text>
+              <Text style={styles.aboutFeature}>→  Distraction-free dark interface</Text>
+
+              <View style={styles.aboutDivider} />
+
+              <Text style={styles.aboutSectionLabel}>DEVELOPER</Text>
+              <Text style={styles.aboutMeta}>Amar Mugali</Text>
+              <Text style={styles.aboutMeta}>apex.leadership.app@gmail.com</Text>
+
+              <Text style={styles.aboutCopyright}>© 2026 APEX Leadership App</Text>
+            </ScrollView>
+
+            <Pressable
+              style={({ pressed }) => [styles.aboutCloseBtn, pressed && { opacity: 0.8 }]}
+              onPress={() => setAboutModalVisible(false)}
+            >
+              <Text style={styles.aboutCloseBtnText}>CLOSE</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* ── Reset Confirmation Modal ── */}
       <Modal visible={resetModalVisible} transparent animationType="fade">
@@ -531,6 +567,97 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: Radius.toggleThumb,
     backgroundColor: Colors.bgPrimary,
+  },
+
+  // About modal
+  aboutBox: {
+    width: '100%',
+    maxWidth: 340,
+    maxHeight: '80%',
+    backgroundColor: Colors.bgSurface,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    overflow: 'hidden',
+  },
+  aboutAccent: {
+    height: 2,
+    backgroundColor: Colors.accent,
+  },
+  aboutScroll: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+  },
+  aboutVersion: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.2,
+    color: Colors.textDark,
+    marginBottom: 4,
+  },
+  aboutTitle: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 22,
+    letterSpacing: 22 * 0.15,
+    color: Colors.accent,
+    marginBottom: 2,
+  },
+  aboutTagline: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    letterSpacing: 9 * 0.2,
+    color: Colors.textSecondary,
+  },
+  aboutDivider: {
+    height: 1,
+    backgroundColor: Colors.borderDefault,
+    marginVertical: 16,
+  },
+  aboutBody: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: 12,
+    lineHeight: 12 * 1.7,
+    color: Colors.textSecondary,
+    marginBottom: 10,
+  },
+  aboutSectionLabel: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 9,
+    letterSpacing: 9 * 0.2,
+    color: Colors.textDark,
+    marginBottom: 10,
+  },
+  aboutFeature: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 11,
+    lineHeight: 11 * 1.8,
+    color: Colors.textPrimary,
+  },
+  aboutMeta: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 11,
+    lineHeight: 11 * 1.8,
+    color: Colors.textSecondary,
+  },
+  aboutCopyright: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: Colors.textDarker,
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  aboutCloseBtn: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderDefault,
+    backgroundColor: Colors.bgSurface2,
+  },
+  aboutCloseBtnText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 11,
+    letterSpacing: 11 * 0.12,
+    color: Colors.accent,
   },
 
   // Reset modal
