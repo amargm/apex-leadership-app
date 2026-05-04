@@ -179,18 +179,20 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* ── Header ──────────────────────────────────────────────── */}
         <Animated.View style={[styles.header, fadeStyles[0]]}>
           <View>
-            <Text style={styles.wordmark}>
-              APE<Text style={styles.wordmarkAccent}>X</Text>
-            </Text>
+            <View style={styles.wordmarkRow}>
+              <Text style={styles.wordmark}>
+                APE<Text style={styles.wordmarkAccent}>X</Text>
+              </Text>
+              {tier === 'pro' && (
+                <View style={styles.proBadge}>
+                  <Crown size={9} color={Colors.bgPrimary} strokeWidth={2} />
+                  <Text style={styles.proBadgeText}>PRO</Text>
+                </View>
+              )}
+            </View>
             <Text style={styles.tagline}>Learn to lead from those who did.</Text>
           </View>
           <View style={styles.headerRight}>
-            {tier === 'pro' && (
-              <View style={styles.proBadge}>
-                <Crown size={9} color={Colors.bgPrimary} strokeWidth={2} />
-                <Text style={styles.proBadgeText}>PRO</Text>
-              </View>
-            )}
             <TouchableOpacity style={styles.savedButton} activeOpacity={0.7} onPress={() => navigation.navigate('Saved' as any)}>
               <Text style={styles.savedButtonText}>SAVED</Text>
             </TouchableOpacity>
@@ -349,6 +351,11 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderDefault,
+  },
+  wordmarkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   wordmark: {
     fontFamily: FontFamily.bebasNeue,

@@ -222,6 +222,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         tierUnsubRef.current = subscribeToUserTier(user.uid, (tier) => {
           setState((prev) => {
             if (prev.userTier === (tier as UserTier)) return prev;
+            // When upgrading to PRO, unlock all currently-locked lessons
+            if (tier === 'pro') {
+              const updatedLessons = { ...prev.lessons };
+              for (const id of Object.keys(updatedLessons)) {
+                if (updatedLessons[id].status === 'locked') {
+                  updatedLessons[id] = { ...updatedLessons[id], status: 'new' };
+                }
+              }
+              return { ...prev, userTier: 'pro', lessons: updatedLessons };
+            }
             return { ...prev, userTier: tier as UserTier };
           });
           crashlytics().setAttributes({ tier }).catch(() => {});
@@ -338,8 +348,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const startLesson = useCallback((lessonId: string) => {
     setState((prev) => {
       const existing = prev.lessons[lessonId];
-      // Don't start locked or already-completed lessons
-      if (!existing || existing.status === 'completed' || existing.status === 'locked') return prev;
+      if (!existing || existing.status === 'completed') return prev;
+      // PRO users bypass sequence locks; others are blocked by locked status
+      if (existing.status === 'locked' && prev.userTier !== 'pro') return prev;
 
       return {
         ...prev,
@@ -362,8 +373,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const markTabViewed = useCallback((lessonId: string, tab: string) => {
     setState((prev) => {
       const existing = prev.lessons[lessonId];
-      // Don't record progress on locked or completed lessons
-      if (!existing || existing.status === 'completed' || existing.status === 'locked') return prev;
+      if (!existing || existing.status === 'completed') return prev;
+      // PRO users bypass sequence locks; others are blocked by locked status
+      if (existing.status === 'locked' && prev.userTier !== 'pro') return prev;
 
       const tabsViewed = existing.tabsViewed.includes(tab)
         ? existing.tabsViewed
@@ -466,12 +478,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   const isLessonUnlocked = useCallback(
     (lessonId: string): boolean => {
+      if (state.userTier === 'pro') return true;
       const lesson = MOCK_LESSONS.find((l) => l.lesson_id === lessonId);
       if (!lesson) return false;
       if (!lesson.is_locked) return true;
       return state.stats.casesCompleted >= lesson.unlock_after_count;
     },
-    [state.stats.casesCompleted],
+    [state.userTier, state.stats.casesCompleted],
   );
 
   const addNote = useCallback((content: string, lessonId?: string, heading?: string): string => {

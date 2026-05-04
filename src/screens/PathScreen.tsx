@@ -5,14 +5,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
-  LayoutAnimation,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  UIManager,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,11 +21,6 @@ import { MOCK_LESSONS } from '../data/mockLessons';
 import { MODULES } from '../data/modules';
 import type { Lesson } from '../types/lesson';
 import { useAppState, isLessonAccessible, FREE_LESSON_IDS } from '../state/AppState';
-
-// Enable LayoutAnimation on Android
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 const CATEGORY_DOT_COLORS: Record<string, string> = {
   green: '#6FC97A',
@@ -63,7 +55,6 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   };
 
   const toggleModule = (key: string) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // Individual toggle overrides the global state for this module
     setCollapsedModules((prev) => {
       const currentlyCollapsed = prev[key] ?? allCollapsed;
@@ -72,7 +63,6 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   };
 
   const toggleAllCollapsed = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const next = !allCollapsed;
     setAllCollapsed(next);
     // Reset per-module overrides so all modules follow the global state
