@@ -81,7 +81,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
     if (lesson && isLessonUnlocked(lessonId)) {
       startLesson(lessonId);
     }
-  }, [lessonId]);
+  }, [lessonId, isLessonUnlocked]);
 
   // Track reading time — record elapsed minutes when screen loses focus or unmounts
   useEffect(() => {
@@ -176,7 +176,8 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
     );
   }
 
-  const lessonIndex = MOCK_LESSONS.findIndex((l) => l.lesson_id === lessonId) + 1;
+  const rawIdx = MOCK_LESSONS.findIndex((l) => l.lesson_id === lessonId);
+  const lessonIndex = rawIdx >= 0 ? rawIdx + 1 : 0;
   const totalLessons = MOCK_LESSONS.length;
   const progressPct = lessonState.progress;
 

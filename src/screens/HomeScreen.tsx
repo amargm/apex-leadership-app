@@ -157,7 +157,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   const formatTime = (raw: number) => {
-    const minutes = Math.round(raw);
+    const minutes = Math.round(raw || 0);
     return minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`;
   };
 

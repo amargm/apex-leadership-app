@@ -76,7 +76,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   };
 
   const formatTime = (minutes: number) => {
-    const m = Math.round(minutes);
+    const m = Math.round(minutes || 0);
     return m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `${m}m`;
   };
 
@@ -90,7 +90,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
         {/* ── Profile Header ── */}
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarInitials}>{state.userName.charAt(0).toUpperCase()}</Text>
+            <Text style={styles.avatarInitials}>{(state.userName || 'L').charAt(0).toUpperCase()}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <TextInput
