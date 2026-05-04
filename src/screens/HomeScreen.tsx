@@ -407,6 +407,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     paddingHorizontal: 12,
+    paddingTop: 18,
     alignItems: 'center',
   },
   readoutDivider: {
@@ -417,7 +418,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmMonoMedium,
     fontSize: 22,
     color: Colors.textPrimary,
-    lineHeight: 22,
+    lineHeight: 28,
     marginBottom: 6,
   },
   readoutLabel: {
