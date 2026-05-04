@@ -4,6 +4,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Dimensions,
   PanResponder,
   ScrollView,
   StyleSheet,
@@ -37,12 +38,13 @@ import AppModal from '../components/AppModal';
 
 const TABS = ['OVERVIEW', 'TIMELINE', 'REFLECT', 'TAKEAWAYS'] as const;
 type TabKey = (typeof TABS)[number];
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function LessonDetailScreen({ navigation, route }: LessonDetailScreenProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('OVERVIEW');
   const [shareError, setShareError] = useState(false);
   const activeTabRef = useRef<TabKey>('OVERVIEW');
-  const contentOpacity = useRef(new Animated.Value(1)).current;
+  const slideX = useRef(new Animated.Value(0)).current;
   const { lessonId } = route.params;
   const scrollRef = useRef<ScrollView>(null);
   const shareRef = useRef<ViewShot>(null);
@@ -101,33 +103,63 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
   }, [isFocused]);
 
   const switchTab = (tab: TabKey) => {
-    Animated.timing(contentOpacity, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
+    const currentIndex = TABS.indexOf(activeTabRef.current);
+    const nextIndex = TABS.indexOf(tab);
+    if (nextIndex === currentIndex) return;
+    const outX = nextIndex > currentIndex ? -SCREEN_WIDTH : SCREEN_WIDTH;
+    const inX  = nextIndex > currentIndex ?  SCREEN_WIDTH * 0.4 : -SCREEN_WIDTH * 0.4;
+    Animated.timing(slideX, { toValue: outX, duration: 100, useNativeDriver: true }).start(() => {
       setActiveTab(tab);
       activeTabRef.current = tab;
       markTabViewed(lessonId, tab);
       scrollRef.current?.scrollTo({ y: 0, animated: false });
-      Animated.timing(contentOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+      slideX.setValue(inX);
+      Animated.spring(slideX, { toValue: 0, tension: 220, friction: 24, useNativeDriver: true }).start();
     });
   };
 
-  // Horizontal swipe to navigate between tabs
+  // Horizontal swipe to navigate between tabs — native-driven for 60fps tracking
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gs) => {
-        // Only capture clearly horizontal swipes (horizontal distance > vertical, and > 12px)
-        return Math.abs(gs.dx) > 12 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.4;
-      },
+      onMoveShouldSetPanResponder: (_, gs) =>
+        Math.abs(gs.dx) > 8 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.3,
+      // Track finger in real-time on the native thread
+      onPanResponderMove: Animated.event([null, { dx: slideX }], { useNativeDriver: false }),
       onPanResponderRelease: (_, gs) => {
-        const SWIPE_THRESHOLD = 50;
+        const DIST_THRESHOLD = 40;
+        const VEL_THRESHOLD  = 0.3;
         const current = activeTabRef.current;
         const currentIndex = TABS.indexOf(current);
-        if (gs.dx < -SWIPE_THRESHOLD && currentIndex < TABS.length - 1) {
-          // Swipe left → next tab
-          switchTab(TABS[currentIndex + 1]);
-        } else if (gs.dx > SWIPE_THRESHOLD && currentIndex > 0) {
-          // Swipe right → previous tab
-          switchTab(TABS[currentIndex - 1]);
+        const goNext =
+          (gs.dx < -DIST_THRESHOLD || gs.vx < -VEL_THRESHOLD) &&
+          currentIndex < TABS.length - 1;
+        const goPrev =
+          (gs.dx > DIST_THRESHOLD || gs.vx > VEL_THRESHOLD) &&
+          currentIndex > 0;
+
+        const snapAndSwitch = (nextTab: TabKey, outX: number, inX: number) => {
+          const duration = Math.max(50, 100 - Math.abs(gs.vx) * 60);
+          Animated.timing(slideX, { toValue: outX, duration, useNativeDriver: false }).start(() => {
+            setActiveTab(nextTab);
+            activeTabRef.current = nextTab;
+            markTabViewed(lessonId, nextTab);
+            scrollRef.current?.scrollTo({ y: 0, animated: false });
+            slideX.setValue(inX);
+            Animated.spring(slideX, { toValue: 0, tension: 220, friction: 24, useNativeDriver: false }).start();
+          });
+        };
+
+        if (goNext) {
+          snapAndSwitch(TABS[currentIndex + 1], -SCREEN_WIDTH, SCREEN_WIDTH * 0.4);
+        } else if (goPrev) {
+          snapAndSwitch(TABS[currentIndex - 1], SCREEN_WIDTH, -SCREEN_WIDTH * 0.4);
+        } else {
+          // Not enough — snap back
+          Animated.spring(slideX, { toValue: 0, tension: 200, friction: 22, useNativeDriver: false }).start();
         }
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(slideX, { toValue: 0, tension: 200, friction: 22, useNativeDriver: false }).start();
       },
     }),
   ).current;
@@ -206,7 +238,7 @@ export default function LessonDetailScreen({ navigation, route }: LessonDetailSc
       <View style={styles.swipeContainer} {...panResponder.panHandlers}>
         <Animated.ScrollView
           ref={scrollRef}
-          style={[styles.scroll, { opacity: contentOpacity }]}
+          style={[styles.scroll, { transform: [{ translateX: slideX }] }]}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
@@ -364,12 +396,23 @@ function TimelineTab({ lesson }: { lesson: Lesson }) {
 
 function ReflectTab({ lesson }: { lesson: Lesson }) {
   const nav = useNavigation<any>();
+  const [noteModalVisible, setNoteModalVisible] = useState(false);
+  const [pendingPrompt, setPendingPrompt] = useState('');
 
   const handleAddNote = (prompt: string) => {
-    // Navigate to NoteEditor with lessonId and heading — note is created only when user types content
+    setPendingPrompt(prompt);
+    setNoteModalVisible(true);
+  };
+
+  const openNoteEditor = () => {
+    setNoteModalVisible(false);
+    // Use initial:false so NotesList is always underneath NoteEditor in the stack.
+    // Back from NoteEditor pops within the Notes stack (→ NotesList), firing
+    // beforeRemove and auto-saving the note.
     nav.navigate('Notes', {
       screen: 'NoteEditor',
-      params: { lessonId: lesson.lesson_id, heading: prompt },
+      params: { lessonId: lesson.lesson_id, heading: pendingPrompt },
+      initial: false,
     });
   };
 
@@ -381,6 +424,18 @@ function ReflectTab({ lesson }: { lesson: Lesson }) {
       {lesson.tabs.reflect.prompts.map((prompt, i) => (
         <ReflectionCard key={i} number={i + 1} prompt={prompt} onAddNote={handleAddNote} />
       ))}
+
+      <AppModal
+        visible={noteModalVisible}
+        title="TAKE A NOTE"
+        body={`"${pendingPrompt.length > 80 ? pendingPrompt.slice(0, 80) + '…' : pendingPrompt}"\n\nOpen the notes editor with this prompt pre-filled as the heading?`}
+        accentColor={Colors.accent}
+        actions={[
+          { label: 'STAY HERE', onPress: () => setNoteModalVisible(false), variant: 'default' },
+          { label: 'OPEN NOTES', onPress: openNoteEditor, variant: 'primary' },
+        ]}
+        onDismiss={() => setNoteModalVisible(false)}
+      />
     </View>
   );
 }
@@ -713,7 +768,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent,
   },
   scroll: { flex: 1 },
-  swipeContainer: { flex: 1 },
+  swipeContainer: { flex: 1, overflow: 'hidden' },
   scrollContent: { paddingBottom: 48 },
   tabContent: { padding: Spacing.screenPaddingH, paddingTop: 24 },
 

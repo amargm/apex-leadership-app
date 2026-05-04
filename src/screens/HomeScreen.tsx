@@ -185,6 +185,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <Text style={styles.tagline}>Learn to lead from those who did.</Text>
           </View>
           <View style={styles.headerRight}>
+            {tier === 'pro' && (
+              <View style={styles.proBadge}>
+                <Crown size={9} color={Colors.bgPrimary} strokeWidth={2} />
+                <Text style={styles.proBadgeText}>PRO</Text>
+              </View>
+            )}
             <TouchableOpacity style={styles.savedButton} activeOpacity={0.7} onPress={() => navigation.navigate('Saved' as any)}>
               <Text style={styles.savedButtonText}>SAVED</Text>
             </TouchableOpacity>
@@ -594,6 +600,22 @@ const styles = StyleSheet.create({
     color: '#999999',
     letterSpacing: 0.10 * 9,
     textTransform: 'uppercase',
+  },
+
+  // ── Pro Badge ──
+  proBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.accent,
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+  },
+  proBadgeText: {
+    fontFamily: FontFamily.dmMonoMedium,
+    fontSize: 9,
+    color: Colors.bgPrimary,
+    letterSpacing: 0.12 * 9,
   },
 
   // ── Pro Banner ──

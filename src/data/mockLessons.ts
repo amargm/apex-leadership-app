@@ -327,14 +327,97 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'locked',
     tabs: {
       overview: {
-        situation: 'Placeholder — unlock after completing 3 lessons.',
-        body_paragraphs: [],
-        pull_quote: { text: '', attribution: '' },
-        decisions: [],
+        situation:
+          'Andy Grove navigated two separate crises that would have ended most companies. The first: in 1985, Intel\'s founding product — the memory chip it had invented — was being destroyed by Japanese manufacturers pricing it into oblivion. The second: in 1994, a mathematics professor discovered a flaw in the Pentium processor that could cause errors in floating-point calculations. Both required the same rare quality: the courage to accept brutal facts before they became unavoidable.',
+        body_paragraphs: [
+          'The memory crisis was existential at the identity level. Intel had invented DRAM. Leaving it felt like betrayal. Japanese manufacturers had mastered volume production and were pricing chips at below Intel\'s cost of goods. The company was losing $173 million per year. Grove\'s solution — captured in his famous "revolving door" conversation with Gordon Moore — was to strip away emotional attachment and ask what a rational outsider would do. The answer was obvious: exit memory, bet everything on microprocessors. The execution was brutal: thousands of layoffs, plant closures, a company-wide identity crisis. Grove did it anyway.',
+          'Nine years later, with Intel now dominant, the second crisis arrived differently. On November 22, 1994 — the day after Thanksgiving — Thomas Nicely, a mathematics professor at Lynchburg College, posted to an internet forum about a flaw in the Pentium chip that caused errors in certain division calculations. Intel\'s initial response was a catastrophic miscalculation: the company said the bug only affected "theoretical" math operations, offered replacements only to customers who could "prove" they needed full floating-point precision, and told most consumers their chips were fine. The internet didn\'t accept the framing.',
+          'IBM suspended all Pentium-based computer shipments. CNN ran the story. The flaw — which Intel\'s own engineers had quietly discovered months earlier and chosen not to disclose — became front-page news. Grove was receiving 10,000 calls per day. The engineers argued the bug would affect the average user once every 27,000 years. Users didn\'t care about statistics — they cared that they had been told to prove they deserved a replacement. By December, Grove reversed course completely: full no-questions-asked replacement for anyone who asked. The cost was $475 million.',
+          'The deeper lesson is in the contrast. In 1985, Grove responded to crisis with speed and clarity — he made the call before the board was ready, because waiting longer was more expensive than acting on imperfect information. In 1994, he initially responded with defensiveness — protecting the engineering position rather than the customer relationship. The $475M fix was more expensive than a transparent disclosure would have been. Grove later called the Pentium crisis his greatest personal failure in leadership.',
+        ],
+        pull_quote: {
+          text: 'Success breeds complacency. Complacency breeds failure. Only the paranoid survive.',
+          attribution: 'Andy Grove',
+        },
+        decisions: [
+          {
+            abbreviation: 'ME',
+            title: 'Memory Exit',
+            description: 'Shut down Intel\'s founding product line. Redirected thousands of engineers to microprocessors.',
+          },
+          {
+            abbreviation: 'RD',
+            title: 'Revolving Door Test',
+            description: 'Stripped emotional attachment from strategy. Asked what a new CEO would obviously do.',
+          },
+          {
+            abbreviation: 'PR',
+            title: 'Pentium Recall',
+            description: 'Reversed defensive position. Full no-questions-asked replacement. $475M cost accepted.',
+          },
+          {
+            abbreviation: 'PC',
+            title: 'Paranoid Culture',
+            description: 'Institutionalised early-warning thinking. "Only the paranoid survive" became company philosophy.',
+          },
+        ],
       },
-      timeline: { events: [] },
-      reflect: { prompts: [] },
-      takeaways: { items: [] },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1985',
+            title: 'Memory Exit Decision',
+            description: 'Intel abandons DRAM — the product it invented. Thousands laid off. All resources redirected to microprocessors.',
+          },
+          {
+            step: 2,
+            year: '1993',
+            title: 'Pentium Launch',
+            description: 'Intel\'s microprocessor becomes the world\'s most recognised chip brand. "Intel Inside" campaign begins.',
+          },
+          {
+            step: 3,
+            year: 'Nov 1994',
+            title: 'FDIV Bug Disclosed',
+            description: 'Professor Nicely posts about floating-point flaw. Intel\'s defensive response triggers media firestorm.',
+          },
+          {
+            step: 4,
+            year: 'Dec 1994',
+            title: '$475M Recall',
+            description: 'Grove reverses position. No-questions-asked replacement for all customers. Full cost absorbed.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Intel\'s engineers discovered the Pentium flaw months before it went public and chose not to disclose it. When your team finds a problem, is the default to disclose or to contain? What drives that instinct?',
+          'Grove\'s defensive initial response cost more than transparency would have. Think of a situation where your organisation defended a position longer than it should have. What was the real cost?',
+          'The revolving door test asks: what would a new CEO do? Apply it to your biggest current strategic challenge. What does the answer tell you?',
+          'Grove called the Pentium response his greatest leadership failure — despite it being a profitable company making a technically accurate argument. What does that tell you about the difference between being right and being trusted?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Defensiveness in crisis amplifies the crisis.',
+            body: 'Intel\'s initial "prove you need it" position turned a technical flaw into a trust crisis. The $475M replacement was the cost of days spent defending an indefensible customer experience.',
+          },
+          {
+            headline: 'The revolving door test cuts through emotional attachment.',
+            body: 'Asking "what would a new CEO do?" removes sunk costs and identity from strategy. It surfaces what everyone already knows but no one will say.',
+          },
+          {
+            headline: 'Speed in crisis is cheaper than defence.',
+            body: 'Grove\'s 1985 memory exit was fast and decisive. His 1994 Pentium response was slow and defensive. The first cost less. The lesson: accept the brutal fact early.',
+          },
+          {
+            headline: 'Customer trust is not recoverable by technical argument.',
+            body: 'Intel was statistically correct that most users would never encounter the bug. Customers didn\'t care. Trust is emotional, not actuarial. You cannot reason people back into it.',
+          },
+        ],
+      },
     },
   },
 
@@ -1010,14 +1093,97 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'locked',
     tabs: {
       overview: {
-        situation: 'Unlock after completing 5 case studies.',
-        body_paragraphs: [],
-        pull_quote: { text: '', attribution: '' },
-        decisions: [],
+        situation:
+          'By 2018, Stripe had grown from a two-brother startup in an apartment to 2,000 employees processing hundreds of billions of dollars annually. It operated across 46 countries and multiple time zones. The default scaling path — more meetings, more Slack, more management layers — was available and tempting. The Collison brothers chose a different path: institutionalise written communication as the primary medium for decisions, context, and coordination.',
+        body_paragraphs: [
+          'The philosophy is deceptively simple: if a decision is worth making, it is worth writing down. At Stripe, significant decisions — product directions, architectural choices, strategic pivots — begin with a written document, not a meeting. Not bullet points or a slide deck. Prose. The discipline of writing forces the author to confront the gaps in their own thinking that verbal communication hides. If you can\'t write it clearly, you don\'t understand it clearly.',
+          'The meeting structure follows from this. At Stripe, important meetings begin with participants reading the relevant document in silence — typically 10 to 20 minutes. The discussion begins only after everyone has the same context. This eliminates the asymmetry of traditional meetings where the person who prepared the slides controls the narrative. The room starts equal. It also makes charisma less powerful than rigour: a well-reasoned written argument outperforms confident improvisation.',
+          'The scaling effect is the real advantage. When a decision is written and stored, it compounds. A new engineer in Singapore can understand why an architectural decision was made two years earlier, without asking anyone. The institutional knowledge doesn\'t live in the heads of senior engineers who joined in 2016 — it lives in documents anyone can read. Writing is the only communication medium that scales across time. Every verbal conversation that isn\'t documented disappears.',
+          'Stripe also uses RFC (Request for Comment) documents for technical decisions. Before implementing a significant change, engineers write a proposal that defines the problem, the solution, alternatives considered, and the trade-offs. Others comment in writing. The process is slow by design: RFC forces engineers to persuade rather than simply execute, and surfaces objections before they become production incidents. It also creates a record of why things were built the way they were — invaluable when the original author is no longer available.',
+        ],
+        pull_quote: {
+          text: 'Writing is thinking. To write well is to think clearly. That\'s why it\'s so hard.',
+          attribution: 'David McCullough — a principle embedded in Stripe\'s operating culture',
+        },
+        decisions: [
+          {
+            abbreviation: 'WF',
+            title: 'Writing First',
+            description: 'Significant decisions documented in prose before meetings. Writing forces clarity of thinking.',
+          },
+          {
+            abbreviation: 'RM',
+            title: 'Read-First Meetings',
+            description: 'Meetings begin with silent reading. Equal context. Rigour over charisma.',
+          },
+          {
+            abbreviation: 'RF',
+            title: 'RFC Process',
+            description: 'Technical changes require written proposals with alternatives and trade-offs documented.',
+          },
+          {
+            abbreviation: 'IK',
+            title: 'Institutional Knowledge',
+            description: 'Decisions archived and searchable. New hires can trace the reasoning behind any system.',
+          },
+        ],
       },
-      timeline: { events: [] },
-      reflect: { prompts: [] },
-      takeaways: { items: [] },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2010',
+            title: 'Stripe Founded',
+            description: 'Patrick and John Collison launch Stripe from their apartment. Writing culture begins from day one.',
+          },
+          {
+            step: 2,
+            year: '2014',
+            title: 'Culture Formalised',
+            description: 'Company scales past 200 employees. Written documentation becomes explicit policy, not just habit.',
+          },
+          {
+            step: 3,
+            year: '2018',
+            title: '2,000 Employees, 46 Countries',
+            description: 'Writing cited as primary mechanism enabling asynchronous coordination across time zones.',
+          },
+          {
+            step: 4,
+            year: '2023',
+            title: 'Stripe at Scale',
+            description: '8,000 employees. $1T+ in annual payment volume. Documentation culture maintains decision coherence at scale.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Think about the last significant decision your team made. Was it written down? Can someone who joins next year understand what was decided and why?',
+          'Stripe\'s meetings start with silent reading. How much of your meeting time is spent getting everyone to the same context that a shared document could have provided in advance?',
+          'The RFC process forces engineers to persuade rather than execute. Where in your work do you implement changes without documenting your reasoning — and what\'s the downstream cost?',
+          'Verbal communication that isn\'t documented disappears. What institutional knowledge in your organisation exists only in the heads of specific people? What happens when they leave?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Writing forces thinking.',
+            body: 'If you cannot explain a decision clearly in writing, you do not understand it clearly. The discipline of prose reveals gaps that slides and bullet points conceal.',
+          },
+          {
+            headline: 'Documentation compounds while verbal communication decays.',
+            body: 'Every undocumented verbal decision disappears. Every documented decision can be revisited, shared, and built upon. Writing is the only communication medium that scales across time.',
+          },
+          {
+            headline: 'Context equality changes meeting dynamics.',
+            body: 'When everyone reads the same document before speaking, charisma and verbal confidence become less powerful than rigour. Silent reading levels the playing field.',
+          },
+          {
+            headline: 'Slow down before execution to prevent costly reversals.',
+            body: 'The RFC process is deliberately slow. The investment in writing a proposal catches objections before they become production incidents. It is faster than fixing a mistake at scale.',
+          },
+        ],
+      },
     },
   },
 
@@ -1042,14 +1208,97 @@ export const MOCK_LESSONS: Lesson[] = [
     status: 'locked',
     tabs: {
       overview: {
-        situation: 'Unlock after completing 8 case studies.',
-        body_paragraphs: [],
-        pull_quote: { text: '', attribution: '' },
-        decisions: [],
+        situation:
+          'By the spring of 1944, the Allied invasion of Nazi-occupied Europe was ready — 156,000 troops, 6,939 naval vessels, 11,590 aircraft, and years of planning compressed into a single launch window. Supreme Allied Commander Dwight D. Eisenhower had to make the go/no-go decision with one variable he could not control: the weather. The decision, made at 4:15am on June 5th, would determine whether the war ended in 1945 or dragged into 1947.',
+        body_paragraphs: [
+          'The original target date was June 5. A full moon and low tide were required for the beach landings — conditions that aligned only once per month, for a three-day window. Group Captain James Stagg, Eisenhower\'s chief meteorologist, faced the most consequential forecast of any meteorologist in history. On June 4th, he told Eisenhower that June 5 was unsuitable — storms would prevent air cover and make landing craft unnavigable. He forecast a brief gap: a 36-hour window of marginally acceptable conditions might open on June 6.',
+          'Eisenhower convened his commanders. Air Marshal Trafford Leigh-Mallory said conditions were still inadequate for air operations. Field Marshal Montgomery said go — "I would say go." Admiral Bertram Ramsay was cautious. The advisors could not agree. Eisenhower listened to all of them, then sat in silence. He later described it: "The tension in the room was palpable. But the decision had to be mine alone." He gave a provisional go for June 6, with a final confirmation at 4:15am on June 5th.',
+          'The confirmation meeting was held in darkness, in a cramped room at Southwick House, rain beating against the windows. Stagg entered with his revised forecast: the window would hold. Eisenhower sat quietly for 45 seconds. Then: "OK, we\'ll go." One witness described his face as "a man carrying the weight of the free world." The decision set 156,000 people in motion across the English Channel. There was no recall.',
+          'What makes this case extraordinary is what Eisenhower did that night. He wrote a message in case the invasion failed: "Our landings in the Cherbourg-Havre area have failed to gain a satisfactory foothold and I have withdrawn the troops... The troops, the air and the Navy did all that bravery and devotion to duty could do. If any blame or fault attaches to the attempt it is mine alone." He dated it July 5 — a mistake that historians believe reveals the crushing weight of the moment. He folded it, put it in his wallet, and prepared to face the beach at dawn.',
+        ],
+        pull_quote: {
+          text: 'I have full confidence in your courage, devotion to duty and skill in battle. We will accept nothing less than full victory.',
+          attribution: 'Dwight D. Eisenhower, Order of the Day, June 6, 1944',
+        },
+        decisions: [
+          {
+            abbreviation: '24',
+            title: '24-Hour Delay',
+            description: 'Delayed from June 5 to June 6 based on a probabilistic weather window. Accepted uncertainty over certainty of failure.',
+          },
+          {
+            abbreviation: 'SC',
+            title: 'Sole Command',
+            description: 'Consulted all advisors but made the final call alone. Did not delegate the decision or seek consensus.',
+          },
+          {
+            abbreviation: 'FN',
+            title: 'Failure Note',
+            description: 'Wrote and carried a personal admission of responsibility in case the invasion failed. Pre-committed to accountability.',
+          },
+          {
+            abbreviation: 'CI',
+            title: 'Commit Irreversibly',
+            description: 'Once given, the order could not be recalled. 156,000 troops in motion. Eisenhower accepted no option of retreat.',
+          },
+        ],
       },
-      timeline: { events: [] },
-      reflect: { prompts: [] },
-      takeaways: { items: [] },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Jun 4, 1944',
+            title: 'June 5 Aborted',
+            description: 'Stagg forecasts storms. Eisenhower delays the invasion by 24 hours. 5,000 ships already at sea ordered to hold.',
+          },
+          {
+            step: 2,
+            year: 'Jun 5, 4:15am',
+            title: 'The Go Decision',
+            description: 'Stagg delivers revised forecast. After 45 seconds of silence, Eisenhower says: "OK, we\'ll go."',
+          },
+          {
+            step: 3,
+            year: 'Jun 5, night',
+            title: 'Failure Note Written',
+            description: 'Eisenhower writes personal admission of failure to carry in his wallet. Accepts sole responsibility in advance.',
+          },
+          {
+            step: 4,
+            year: 'Jun 6, 1944',
+            title: 'D-Day Succeeds',
+            description: '156,000 troops land on five Normandy beaches. 4,414 Allied deaths. The largest amphibious assault in history succeeds.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Eisenhower made the go decision with roughly 50% confidence in the weather forecast. What level of certainty do you demand before committing to major decisions — and is that threshold optimal, or is it fear disguised as rigour?',
+          'He wrote the failure note before launching. Pre-committing to accountability in writing changes how you approach a decision. What would happen if you did this before your next high-stakes choice?',
+          'Monty said go. Leigh-Mallory said the conditions were inadequate. Eisenhower had to decide when his best advisors disagreed. How do you make a call when the people you trust most are split?',
+          'The delay from June 5 to June 6 required 5,000 ships already at sea to hold position in rough weather. The cost of hesitation was concrete and measurable. Where are you incurring a hidden cost by demanding more certainty before acting?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Certainty is not a prerequisite for commitment.',
+            body: 'Eisenhower launched the largest military operation in history on a probabilistic weather forecast from one man. Waiting for certainty would have meant missing the window entirely.',
+          },
+          {
+            headline: 'Pre-committing to accountability improves decision quality.',
+            body: 'Writing the failure note before the launch forced Eisenhower to be clear about what he was deciding and why. Pre-accepted accountability removes the instinct to hedge.',
+          },
+          {
+            headline: 'Consensus among advisors is not the goal — clarity is.',
+            body: 'Eisenhower\'s commanders disagreed. He listened to all of them and decided alone. The goal was not to find unanimous agreement but to gather the best available information and act.',
+          },
+          {
+            headline: 'Delay has a cost. Quantify it before demanding more certainty.',
+            body: 'A second delay would have meant another month\'s wait, with intelligence leaks likely and morale collapsing. Understanding the cost of inaction is as important as understanding the risk of action.',
+          },
+        ],
+      },
     },
   },
 
@@ -1746,121 +1995,6 @@ export const MOCK_LESSONS: Lesson[] = [
   },
 
   {
-    lesson_id: 'L023',
-    title: "Andy Grove's Paranoid Survival",
-    subtitle: "How Intel's CEO killed his own founding product — and saved the company from irrelevance",
-    company: 'Intel',
-    company_abbreviation: 'IN',
-    year_range: '1985–1998',
-    module: 'decision_making',
-    category: 'Decision Making',
-    category_color_key: 'pink',
-    read_time_minutes: 11,
-    difficulty: 'complex',
-    tags: ['Strategy', 'Pivots', 'Mental Models', 'Decisive Action'],
-    source_disclosure: 'Publicly disclosed via Andy Grove\'s "Only the Paranoid Survive," Intel annual reports, and HBS case studies',
-    is_new: true,
-    is_locked: false,
-    unlock_after_count: 0,
-    progress: 0,
-    status: 'new',
-    tabs: {
-      overview: {
-        situation:
-          "In 1985, Intel was a memory chip company — it had invented DRAM, and memory was its identity. But Japanese manufacturers were undercutting prices by 10% with higher quality. Intel was losing $173 million per year. The board was paralysed. Everyone knew the memory business was dying, but no one could say it, because memory was Intel. Andy Grove posed the question that changed the company's history.",
-        body_paragraphs: [
-          'Grove walked into Gordon Moore\'s office. "If we got kicked out and the board brought in a new CEO, what do you think he would do?" Moore answered: "He would get us out of memories." Grove said: "Why shouldn\'t you and I walk out the door, come back in, and do it ourselves?" That "revolving door" mental model became Grove\'s signature decision-making tool: strip away emotional attachment and sunk costs, and ask what a rational outsider would do.',
-          "The decision to exit memory and go all-in on microprocessors was not popular. Engineers who built careers in memory felt abandoned. Middle managers resisted. But Grove was ruthless: shut down plants, redirect R&D, lay off thousands. When questioned, he was direct: \"Memory is not our future. Microprocessors are. We need to mourn this and move on.\" Organisational clarity in crisis matters more than comfort.",
-          'Grove\'s framework centred on "strategic inflection points" — moments where fundamentals change so profoundly that old rules stop working. He argued these are nearly invisible from inside because those closest to the old business have the strongest attachment. The signal comes from "Cassandras" — junior employees and field salespeople who see the shift first but are ignored by leadership.',
-          'The microprocessor bet paid off spectacularly. The Pentium processor, launched in 1993, became the most recognised chip brand. "Intel Inside" turned a commodity component into a consumer brand. By 1998, revenue exceeded $25 billion. Grove was named TIME Person of the Year in 1997.',
-        ],
-        pull_quote: {
-          text: 'There is at least one point in the history of any company when you have to change dramatically to rise to the next level of performance. Miss that moment, and you start to decline.',
-          attribution: 'Andy Grove',
-        },
-        decisions: [
-          {
-            abbreviation: 'RD',
-            title: 'Revolving Door Test',
-            description: '"If a new CEO walked in, what would he do?" Stripped emotional attachment from strategy.',
-          },
-          {
-            abbreviation: 'EM',
-            title: 'Exit Memory',
-            description: 'Shut down founding product line. Redirected all resources to microprocessors. Accepted organisational grief.',
-          },
-          {
-            abbreviation: 'SI',
-            title: 'Strategic Inflection Points',
-            description: 'Codified framework for recognising fundamental shifts. Listened to "Cassandras" at the edges.',
-          },
-          {
-            abbreviation: 'IB',
-            title: 'Intel Inside',
-            description: 'Turned commodity hardware into a consumer brand. Marketing at the component level — unprecedented.',
-          },
-        ],
-      },
-      timeline: {
-        events: [
-          {
-            step: 1,
-            year: '1985',
-            title: 'The Revolving Door Conversation',
-            description: "Grove and Moore agree to exit memory. Intel's founding product abandoned.",
-          },
-          {
-            step: 2,
-            year: '1986–1988',
-            title: 'Painful Transition',
-            description: 'Memory plants closed. Thousands laid off. R&D reallocated to 386 and 486 processors.',
-          },
-          {
-            step: 3,
-            year: '1993',
-            title: 'Pentium Launch',
-            description: "Intel's microprocessor becomes the most recognised chip brand. 'Intel Inside' campaign begins.",
-          },
-          {
-            step: 4,
-            year: '1998',
-            title: 'Paranoid Survival',
-            description: 'Revenue exceeds $25B. Grove publishes "Only the Paranoid Survive." Named TIME Person of the Year.',
-          },
-        ],
-      },
-      reflect: {
-        prompts: [
-          'Apply the revolving door test to your current situation: if a new leader walked in tomorrow, what would they obviously do that you\'re avoiding?',
-          "Grove's \"Cassandras\" are junior people who see shifts first. Who in your organisation is raising uncomfortable signals that leadership is ignoring?",
-          "Intel's identity was tied to memory chips. What is your team's identity tied to — and could that identity be preventing you from seeing a necessary pivot?",
-          'Grove said organisational clarity matters more than comfort. Where are you prioritising comfort over clarity in a situation that demands directness?',
-        ],
-      },
-      takeaways: {
-        items: [
-          {
-            headline: 'The revolving door test strips emotional bias from strategy.',
-            body: 'Asking "what would a new CEO do?" removes sunk costs, identity attachment, and political baggage. It reveals what everyone already knows but no one will say.',
-          },
-          {
-            headline: 'Strategic inflection points are invisible from inside.',
-            body: 'The people closest to the threatened business are the least likely to see the shift. Listen to edge signals — junior employees, field staff, and customers — before the data confirms what they already feel.',
-          },
-          {
-            headline: 'Identity can be a strategic liability.',
-            body: "\"We are a memory company\" nearly killed Intel. When your identity prevents you from seeing reality, that identity has become a constraint, not a strength.",
-          },
-          {
-            headline: 'Clarity is kindness in a crisis.',
-            body: "Grove's directness — \"memory is not our future\" — was painful but allowed people to mourn and move on. Ambiguity prolongs suffering.",
-          },
-        ],
-      },
-    },
-  },
-
-  {
     lesson_id: 'L024',
     title: "Jacinda Ardern's Christchurch Response",
     subtitle: 'How empathy-first leadership changed gun laws in 26 days and redefined crisis communication',
@@ -2199,6 +2333,1505 @@ export const MOCK_LESSONS: Lesson[] = [
           {
             headline: 'Find your Japan — the market that values the innovation the mainstream rejects.',
             body: "When your home market won't accept your product, find the market that will — even if it's geographically or demographically unexpected. Revenue from early adopters funds the assault on the mainstream.",
+          },
+        ],
+      },
+    },
+  },
+
+  // ─── L027–L031: NEW CASE STUDIES ────────────────────────────────────────────
+
+  {
+    lesson_id: 'L027',
+    title: "Phil Jackson's Mindful Dynasty",
+    subtitle: 'How a coach used Zen Buddhism and emotional intelligence to win 11 championships — by letting go of control',
+    company: 'Chicago Bulls / LA Lakers',
+    company_abbreviation: 'NBA',
+    year_range: '1989–2011',
+    module: 'emotional_intelligence',
+    category: 'Emotional Intelligence',
+    category_color_key: 'grey',
+    read_time_minutes: 9,
+    difficulty: 'accessible',
+    tags: ['Empathy', 'Team Dynamics', 'Mindfulness', 'Ego Management'],
+    source_disclosure: "Phil Jackson's 'Eleven Rings,' 'Sacred Hoops,' and public interviews with players and staff",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          'When Phil Jackson became head coach of the Chicago Bulls in 1989, he inherited the most individually talented — and dysfunctional — team in basketball. Michael Jordan was arguably the greatest player alive, and the Bulls built their entire offence around him. They had never won a championship. Jordan\'s talent was not the constraint. The team\'s inability to function as a collective was.',
+        body_paragraphs: [
+          'Jackson\'s diagnosis was unusual for professional sport: the team suffered from excessive individualism, and the cure was not better tactics but a shift in consciousness. He introduced Zen Buddhism and mindfulness practices to his players — mandatory meditation, Native American rituals, and a reading list that included books on Buddhism, philosophy, and mythology. Other coaches called it eccentric. Jackson called it competitive preparation.',
+          'The tactical expression of this philosophy was the triangle offence — a system that required every player to read the floor and make decisions without looking to Jordan for instruction. The offence had no plays in the conventional sense. It responded to what the defence gave. The principle was radical: subordinate individual brilliance to collective intelligence. Jordan, who had spent his career being the answer to every problem, had to learn to be one node in a network.',
+          'The most testing case was Dennis Rodman. Jackson recruited Rodman to the Bulls in 1995 despite — or because of — his reputation as the most uncoachable player in the league. Jackson\'s approach was not to control Rodman but to understand him. He studied Rodman\'s background, met with psychologists, and created specific agreements about behaviour rather than rules. He allowed Rodman to take unannounced trips to Las Vegas for 48 hours in the middle of a season. The team won the championship that year.',
+          "Jackson's ability to manage the relationship between Jordan and Scottie Pippen — one celebrated, one undersold — was equally instructive. Pippen was paid $2.8 million per year while Jordan earned $33 million. Resentment was rational. Jackson created systems that publicly valued Pippen's contribution and privately acknowledged the inequity was real. He never asked Pippen not to feel what he felt. He asked Pippen to channel it.",
+        ],
+        pull_quote: {
+          text: 'The strength of the team is each individual member. The strength of each member is the team.',
+          attribution: 'Phil Jackson',
+        },
+        decisions: [
+          {
+            abbreviation: 'MD',
+            title: 'Mindfulness Practice',
+            description: 'Introduced mandatory meditation and mindfulness to an NBA locker room. Players performed better under pressure.',
+          },
+          {
+            abbreviation: 'TO',
+            title: 'Triangle Offence',
+            description: 'Replaced hero-ball with collective decision-making. Every player reads the floor. No plays.',
+          },
+          {
+            abbreviation: 'RD',
+            title: 'Rodman Agreement',
+            description: "Managed Rodman through bespoke agreements, not rules. Allowed Vegas trips. Won championships anyway.",
+          },
+          {
+            abbreviation: 'EP',
+            title: 'Ego Redistribution',
+            description: "Publicly elevated Pippen. Redirected Jordan's dominance to serve collective outcomes.",
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1989',
+            title: 'Jackson Appointed Head Coach',
+            description: 'Inherits Michael Jordan but no championship culture. Introduces mindfulness and triangle offence.',
+          },
+          {
+            step: 2,
+            year: '1991–1993',
+            title: 'Three-Peat: Chicago',
+            description: 'Bulls win three consecutive NBA championships. Jordan accepts collective play. System proves itself.',
+          },
+          {
+            step: 3,
+            year: '1996–1998',
+            title: 'Second Three-Peat',
+            description: 'Rodman recruited. Three more titles. Jackson manages the most volatile roster in basketball.',
+          },
+          {
+            step: 4,
+            year: '2000–2002',
+            title: 'LA Lakers Three-Peat',
+            description: 'Jackson moves to LA. Applies same system to Kobe Bryant and Shaquille O\'Neal. Three more titles.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'Jackson asked the most talented player in the world to subordinate his instincts to a system. When have you needed to redirect individual brilliance toward collective performance? How did you do it?',
+          'He studied Rodman before setting rules. Where do you apply blanket policies to people whose behaviour requires individual understanding?',
+          'The triangle offence had no plays — it responded to what the defence gave. Where in your team\'s work are you running scripted responses when the situation requires real-time reading?',
+          'Jackson created space for Rodman\'s Vegas trip mid-season. What unconventional flexibility have you denied because of how it looks, when granting it might unlock performance?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Collective intelligence outperforms individual brilliance at scale.',
+            body: 'Jordan was more talented than anyone he played against. The Bulls started winning when Jordan accepted that the team\'s collective awareness was more dangerous than his individual excellence.',
+          },
+          {
+            headline: 'Rules manage averages; agreements manage individuals.',
+            body: "Rules are designed for the average person. Exceptional people — Rodman, Jordan, Kobe — often need individual agreements that acknowledge who they actually are.",
+          },
+          {
+            headline: 'Mindfulness is a competitive advantage, not a wellness exercise.',
+            body: 'Players who meditate regularly perform better under pressure because they can observe their emotional state without being controlled by it. Jackson treated this as a performance tool, not a therapy.',
+          },
+          {
+            headline: 'Acknowledge what is real before asking people to transcend it.',
+            body: "Pippen's pay inequality was real. Jackson didn't ask him to pretend otherwise. He acknowledged it, then asked Pippen to choose how to channel the energy. Honesty precedes transformation.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L028',
+    title: "Mary Barra's GM Recall",
+    subtitle: "How the world's biggest automaker was caught hiding a deadly defect — and how its CEO chose accountability over defence",
+    company: 'General Motors',
+    company_abbreviation: 'GM',
+    year_range: '2014',
+    module: 'emotional_intelligence',
+    category: 'Emotional Intelligence',
+    category_color_key: 'grey',
+    read_time_minutes: 10,
+    difficulty: 'medium',
+    tags: ['Accountability', 'Crisis Communication', 'Institutional Failure', 'Empathy'],
+    source_disclosure: "US Congressional testimony (2014), Anton Valukas investigation report, Mary Barra's public statements and interviews",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 14,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "Mary Barra had been CEO of General Motors for 11 days when the company recalled 2.6 million vehicles for an ignition switch defect linked to at least 124 deaths and 275 injuries. The defect had been known inside GM for over a decade. Engineers had discovered it in 2001. Managers had reviewed it in 2005 and decided not to fix it because the cost — $0.57 per vehicle — wasn't worth approving. The cover-up was not a conspiracy. It was something more insidious: an institution that had learned not to surface bad news.",
+        body_paragraphs: [
+          'The investigation that followed — led by attorney Anton Valukas — produced one of the most devastating institutional post-mortems in American corporate history. It introduced a phrase that entered the business lexicon: "the GM nod." In meetings, GM employees would nod and appear to agree on an action. Then nothing would happen. No one was responsible because no one had explicitly refused. Responsibility dissolved in the gap between agreement and action.',
+          "Barra\'s initial response was imperfect. She appeared before Congress twice and said \"I don't know\" thirty times in a single session — honest, but not reassuring. Critics called her evasive. But the deeper reading is different: she was eleven days into the job when the crisis broke. The honest answer to \"why did this happen\" was genuinely \"I am investigating.\" She chose transparency over performance.",
+          'What distinguished Barra from her predecessors was the structure of the response. She hired Kenneth Feinberg — the same fund manager who administered the 9/11 compensation fund — to run a no-fault victim compensation programme without litigation caps. She did not force families to sue. She did not make them prove causation. She acknowledged corporate responsibility before the legal process compelled her to. This decision cost GM more than $600 million but established Barra as the kind of CEO who would accept the real cost of a real failure.',
+          "Barra also commissioned the Valukas report with a mandate to be fully honest and publish the findings — including findings that reflected badly on her own organisation. The report named names. It described decisions made and not made over thirteen years. It was the most thorough public act of institutional self-examination in recent automotive history. Barra's emotional intelligence was in understanding what the situation required: not defence of the institution, but accountability to the people the institution had harmed.",
+        ],
+        pull_quote: {
+          text: 'I never want to put this behind us. I want to put this in our history so we never forget it.',
+          attribution: 'Mary Barra, General Motors CEO',
+        },
+        decisions: [
+          {
+            abbreviation: 'VR',
+            title: 'Valukas Report',
+            description: 'Commissioned fully independent investigation with mandate to publish. Named names. No whitewash.',
+          },
+          {
+            abbreviation: 'NF',
+            title: 'No-Fault Fund',
+            description: 'Hired Feinberg to run victim compensation without litigation caps. Accepted responsibility before legal compulsion.',
+          },
+          {
+            abbreviation: 'TP',
+            title: 'Transparent Testimony',
+            description: 'Said "I don\'t know" in Congress rather than performing confidence. Chose honesty over optics.',
+          },
+          {
+            abbreviation: 'GM',
+            title: 'Kill the GM Nod',
+            description: "Institutionalised 'Speak Up for Safety' programme. Made surfacing bad news explicitly rewarded.",
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Jan 15, 2014',
+            title: 'Barra Becomes CEO',
+            description: 'First female CEO of a major automaker. Has been in the role 11 days when the crisis breaks.',
+          },
+          {
+            step: 2,
+            year: 'Feb 2014',
+            title: '2.6 Million Vehicles Recalled',
+            description: 'Ignition switch defect linked to 124 deaths. Internal documents show GM knew since 2001.',
+          },
+          {
+            step: 3,
+            year: 'Apr 2014',
+            title: 'Congressional Testimony',
+            description: 'Barra testifies twice. Says "I don\'t know" 30 times. Commits to full Valukas investigation.',
+          },
+          {
+            step: 4,
+            year: 'Jun 2014',
+            title: 'Valukas Report Published',
+            description: '315-page report identifies the "GM nod." Feinberg fund pays $600M+ to victims without litigation.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'The GM nod describes a culture where everyone agrees and no one acts. Where does this pattern exist in your organisation — and what structural condition creates it?',
+          'Barra said "I don\'t know" thirty times in front of Congress. When is honesty about not knowing the more trustworthy response than a confident but uncertain answer?',
+          'GM knew about the defect for 13 years. Who in your organisation knows about a problem that hasn\'t surfaced to leadership? What would it take for them to feel safe raising it?',
+          'Barra commissioned a report designed to damage the company\'s reputation. What would it take for your organisation to conduct a fully honest public post-mortem on a significant failure?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Institutional cultures of silence require structural interventions.',
+            body: "The GM nod wasn't the result of bad people — it was the result of a system where surfacing bad news was riskier than suppressing it. Culture change requires changing what is rewarded and punished.",
+          },
+          {
+            headline: 'Accepting responsibility before legal compulsion builds more trust than denying until forced.',
+            body: 'Barra\'s no-fault fund cost $600M but established moral authority. Companies that defend until discovery spend more and lose more trust in the process.',
+          },
+          {
+            headline: '"I don\'t know" is a form of respect.',
+            body: "Performing confidence you don't have is a form of disrespect to the people asking. Barra's honesty about the limits of her knowledge in Congress was read as weakness at the time and trustworthiness in retrospect.",
+          },
+          {
+            headline: 'Make failure part of the permanent record.',
+            body: "Publishing the Valukas report ensured GM couldn't quietly move on. Encoding institutional failures in the record prevents the forgetting that leads to recurrence.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L029',
+    title: "Lou Gerstner's IBM Elephant Dance",
+    subtitle: 'How an outsider who knew nothing about computers saved the most important technology company in history — by refusing to have a strategy',
+    company: 'IBM',
+    company_abbreviation: 'IB',
+    year_range: '1993–2002',
+    module: 'turnarounds',
+    category: 'Turnarounds',
+    category_color_key: 'red',
+    read_time_minutes: 11,
+    difficulty: 'complex',
+    tags: ['Turnaround', 'Culture', 'Outsider Leadership', 'Focus'],
+    source_disclosure: "Lou Gerstner's 'Who Says Elephants Can't Dance?' (2002) and IBM public records",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 1993, IBM lost $8 billion — the largest annual loss in US corporate history at the time. The board had already decided to break the company into independent units: separate companies for mainframes, PCs, software, and services. IBM had missed the shift from mainframes to personal computing and was being destroyed by focused competitors like Compaq, Dell, Oracle, and Microsoft. When Lou Gerstner arrived from RJR Nabisco — a cookies and tobacco company — the first question every journalist asked was: 'Do you even own a computer?'",
+        body_paragraphs: [
+          'Gerstner\'s first public statement was deliberately counterintuitive. Reporters pressed him for his strategy to save IBM. His answer: "The last thing IBM needs right now is a vision." He meant it exactly as stated. IBM had spent years on strategies, reorganisations, and mission statements while the business collapsed. The problem was execution, not vision. He needed to see the company working before he could decide what it should become.',
+          "The most consequential early decision was to reverse the board's plan to break IBM up. Every advisor — McKinsey, Goldman Sachs, the board itself — recommended the split. Gerstner's instinct was different: IBM's integration was its only remaining competitive advantage. A fragmented IBM was just another set of mid-size technology companies in a market crowded with mid-size technology companies. An integrated IBM could offer something no competitor could: a single company that managed everything from mainframes to services to software for large enterprises.",
+          'The cultural diagnosis was as important as the financial one. Gerstner observed that IBM had become insular, arrogant, and focused entirely on internal politics rather than customers. The company had invented Unix, the PC, the relational database, and numerous other technologies — and then watched competitors build businesses on those inventions because IBM was too slow, too political, and too focused on protecting existing revenue. His cultural intervention was blunt: "IBM has been navel-gazing. We are going to face outward." Performance reviews were redesigned around customer outcomes.',
+          "By 1994, IBM returned to profitability. By 2001, revenue had grown from $62B to $86B. Gerstner had repositioned IBM from a hardware company — which it could never win as — to a services and consulting company, launching IBM Global Services, which became the world's largest IT services business. He later wrote that the transformation was 70% cultural and 30% financial: 'Until I came to IBM, I probably would have said that culture was just one among several important elements in any organisation\'s make-up. I came to see, in my time at IBM, that culture isn\'t just one aspect of the game — it is the game.'",
+        ],
+        pull_quote: {
+          text: "Culture isn't just one aspect of the game — it is the game.",
+          attribution: 'Lou Gerstner',
+        },
+        decisions: [
+          {
+            abbreviation: 'NV',
+            title: 'No Vision Yet',
+            description: "Refused to announce a strategy. Focused on operations and customers for the first year. Earned the right to a vision.",
+          },
+          {
+            abbreviation: 'KT',
+            title: 'Keep IBM Together',
+            description: "Reversed board's breakup plan. Bet on integration as the only remaining competitive advantage.",
+          },
+          {
+            abbreviation: 'FO',
+            title: 'Face Outward',
+            description: 'Redesigned performance reviews around customer outcomes. Replaced internal metrics with external ones.',
+          },
+          {
+            abbreviation: 'GS',
+            title: 'IBM Global Services',
+            description: 'Pivoted from hardware to services. Built the world\'s largest IT consulting business from internal capability.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Apr 1993',
+            title: 'Gerstner Arrives',
+            description: "IBM lost $8B in 1992 — largest US corporate loss at the time. Board prepared to break company up. Gerstner says 'no vision yet.'",
+          },
+          {
+            step: 2,
+            year: '1993–1994',
+            title: 'No Breakup, Cut Costs',
+            description: 'Reverses board plan. Cuts 35,000 jobs. Reduces costs by $2.8B. Returns IBM to profitability by 1994.',
+          },
+          {
+            step: 3,
+            year: '1996',
+            title: 'Services Pivot',
+            description: 'IBM Global Services launched as standalone unit. Services revenue begins to exceed hardware revenue.',
+          },
+          {
+            step: 4,
+            year: '2002',
+            title: "Gerstner's Retirement",
+            description: 'IBM revenue $86B, up from $62B. The elephant has danced. Gerstner publishes his account.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Gerstner refused to announce a strategy for 18 months. When have you announced a vision before you understood the problem — and what was the cost of that sequence?",
+          "Every advisor recommended breaking IBM up. Gerstner disagreed with all of them. How do you maintain a conviction that contradicts expert consensus? What evidence would make you change your mind?",
+          "IBM's problem was cultural before it was financial. Where in your organisation do internal politics consume energy that should go toward customers?",
+          "Gerstner said culture is not one aspect of the game — it is the game. What does your organisation's culture actually reward, as distinct from what it says it values?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Earn the right to a vision before announcing one.',
+            body: "Gerstner's refusal to lead with a strategy wasn't weakness — it was discipline. He understood that a vision built before understanding the problem is just words. Execution clarity comes first.",
+          },
+          {
+            headline: "Contrarian conviction requires first-principles thinking.",
+            body: "Everyone said break IBM up. Gerstner asked: 'What is IBM's only remaining advantage?' The answer — integration — led to the opposite of the consensus view. First-principles thinking often contradicts expert opinion.",
+          },
+          {
+            headline: 'Insular cultures destroy companies from within.',
+            body: "IBM had invented many of the technologies its competitors were monetising. The problem was not innovation — it was a culture so internally focused it failed to commercialise its own breakthroughs.",
+          },
+          {
+            headline: 'Services pivot is available to most product companies.',
+            body: 'IBM turned its internal knowledge into the world\'s largest IT consulting business. Most product companies have deep expertise they could productise as services. The constraint is usually identity, not capability.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L030',
+    title: "Ray Dalio's Radical Transparency",
+    subtitle: 'The hedge fund that records every meeting, grades every employee in public, and became the most successful in history',
+    company: 'Bridgewater Associates',
+    company_abbreviation: 'BW',
+    year_range: '1975–Present',
+    module: 'decision_making',
+    category: 'Decision Making',
+    category_color_key: 'pink',
+    read_time_minutes: 10,
+    difficulty: 'complex',
+    tags: ['Decision Making', 'Transparency', 'Systems Thinking', 'Accountability'],
+    source_disclosure: "Ray Dalio's 'Principles' (2017), Bloomberg and WSJ reporting on Bridgewater's internal culture",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 1982, Ray Dalio made a bold prediction that the US economy was heading into a depression. He was publicly confident, told clients, and bet the firm. He was spectacularly wrong. The economy recovered; Dalio lost nearly everything. Bridgewater Associates shrank to two people — himself and one assistant. Dalio later described this humiliation as the most important event in his career: it forced him to ask why he had been so confident in a prediction that was so wrong, and to build systems that would prevent him from making the same mistake again.",
+        body_paragraphs: [
+          "The core system Dalio built is what he calls \"radical transparency\": every meeting at Bridgewater is recorded. Every employee grades every other employee on a live app during interactions. Performance evaluations are shown to everyone. When Dalio is criticised in a meeting, the recording is available for anyone to review. The stated logic is precise: organisations make better decisions when they have access to all relevant information, and the most important information is often about the quality of the thinking and the character of the people doing it.",
+          "The system produces what Dalio calls an \"idea meritocracy\" — where the quality of an argument matters more than the seniority of the person making it. A new analyst who has a better model than the CIO is expected to say so, and the CIO is expected to engage with the argument rather than dismiss it. Dalio developed a \"believability-weighted\" decision system: when deciding how much weight to give an opinion, you assess how often that person has been right on similar questions before. Experience earns weight, but only in proportion to demonstrated accuracy.",
+          "The formula \"Pain + Reflection = Progress\" is central to Dalio's framework. He argues that most people try to avoid pain — uncomfortable feedback, public failure, challenging conversations — when pain is precisely the signal that learning is available. He designed Bridgewater to make pain unavoidable by making performance visible, so that avoiding it requires leaving the organisation. Roughly 25–30% of new hires leave in the first 18 months. Those who remain tend to perform at exceptional levels.",
+          "The results are difficult to argue with: Bridgewater manages roughly $150 billion and has produced the best risk-adjusted returns of any hedge fund in history. The flagship Pure Alpha fund averaged 11.5% annual returns from 1991 to 2022. Dalio's own net worth exceeds $15 billion. But critics note the culture produces significant psychological stress, that the transparency is asymmetric — more visible for lower-level employees than executives — and that Dalio's departure from day-to-day management in 2017 raised questions about whether the system runs without its architect.",
+        ],
+        pull_quote: {
+          text: 'Pain plus reflection equals progress.',
+          attribution: 'Ray Dalio',
+        },
+        decisions: [
+          {
+            abbreviation: 'RT',
+            title: 'Radical Transparency',
+            description: 'Every meeting recorded. Every grade visible. No private corridors of information.',
+          },
+          {
+            abbreviation: 'IM',
+            title: 'Idea Meritocracy',
+            description: 'Arguments evaluated on quality, not seniority. Junior analysts challenge CIOs with data.',
+          },
+          {
+            abbreviation: 'BW',
+            title: 'Believability Weighting',
+            description: 'Decision weight assigned based on demonstrated track record on similar questions.',
+          },
+          {
+            abbreviation: 'PR',
+            title: 'Pain as Progress',
+            description: 'Designed systems to make failure visible rather than avoidable. Pain signals learning opportunity.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1982',
+            title: 'Catastrophic Prediction Failure',
+            description: 'Dalio predicts depression; loses everything. Shrinks to 2 people. Begins building decision systems to prevent recurrence.',
+          },
+          {
+            step: 2,
+            year: '1990s',
+            title: 'Radical Transparency Codified',
+            description: 'Recording of meetings, real-time performance grading, and public evaluations become standard practice.',
+          },
+          {
+            step: 3,
+            year: '2000s',
+            title: 'Pure Alpha Returns',
+            description: "Bridgewater's flagship fund averages 11.5% annual returns. Manages $150B+. Transparent culture credited.",
+          },
+          {
+            step: 4,
+            year: '2017',
+            title: 'Dalio Steps Back',
+            description: 'Dalio transitions from day-to-day management. Publishes Principles. System tested without its architect.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Dalio's 1982 humiliation drove his entire system. What failure have you experienced that changed how you make decisions? Have you built a system from it — or just a memory?",
+          'Every meeting at Bridgewater is recorded and accessible. What would change in your team\'s conversations if they were fully visible and permanently stored?',
+          "Believability weighting assigns more decision influence to people with better track records. How does your organisation weight opinions — by seniority, by confidence, or by demonstrated accuracy?",
+          "25–30% of new hires leave in 18 months. Is a high turnover rate a sign of a system that isn't working, or a sign of a selection process that is? How do you tell the difference?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Systems built from failure are more durable than those built from success.',
+            body: 'Dalio built Bridgewater\'s decision architecture from a complete collapse. The humiliation of 1982 was more valuable than any success could have been — because it revealed the exact failure mode to design against.',
+          },
+          {
+            headline: 'Information asymmetry degrades decision quality.',
+            body: 'Most organisations have important information distributed unevenly — some people know things others don\'t. Dalio\'s radical transparency is a system to eliminate that asymmetry and improve collective judgement.',
+          },
+          {
+            headline: 'Seniority is a proxy for accuracy — not a substitute for it.',
+            body: 'Hierarchies weight opinions by rank because rank is correlated with experience. Believability weighting is more precise: it weights by demonstrated accuracy on comparable questions.',
+          },
+          {
+            headline: 'Avoiding pain is the same as avoiding learning.',
+            body: 'Organisations designed to protect people from uncomfortable feedback are organisations that compound errors quietly. Making pain visible — through recording, grading, and public post-mortems — accelerates learning at the cost of comfort.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L031',
+    title: "Google's Project Aristotle",
+    subtitle: 'The two-year study that found the secret to great teams — and it had nothing to do with talent',
+    company: 'Google',
+    company_abbreviation: 'GG',
+    year_range: '2012–2016',
+    module: 'culture_building',
+    category: 'Culture Building',
+    category_color_key: 'green',
+    read_time_minutes: 8,
+    difficulty: 'accessible',
+    tags: ['Psychological Safety', 'Team Dynamics', 'Culture', 'Research'],
+    source_disclosure: "Google's official Project Aristotle research publication (2016), Julia Rozovsky's public research papers, and NYT Magazine reporting",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          'In 2012, Google launched a rigorous internal research initiative called Project Aristotle to answer a question every manager intuitively asks: what makes some teams great and others mediocre? Google had access to every possible variable — performance reviews, personality profiles, management assessments, demographic data, tenure, educational background, compensation, and social connections between team members. After two years and hundreds of thousands of data points, the findings surprised everyone, including the researchers.',
+        body_paragraphs: [
+          "Google's People Analytics team initially hypothesised that the best teams would share traits: the best individual performers, a mix of extroverts and introverts, strong managers, diverse educational backgrounds. None of these predicted team performance. The mix of people on a team had almost no relationship to whether the team performed well. This was a genuinely uncomfortable finding for a company built on the premise that hiring the smartest individuals produces the best outcomes.",
+          "The variable that predicted team performance — more than any other, and across every type of team — was psychological safety: the shared belief that team members can speak up, make mistakes, ask questions, and take risks without fear of being embarrassed, punished, or humiliated. Teams with high psychological safety outperformed on every metric: revenue generated, manager ratings, executive evaluations, and self-assessments. Teams with low psychological safety consistently underperformed regardless of the individual talent level of their members.",
+          "The research, led by organisational psychologist Julia Rozovsky, built on Amy Edmondson's original psychological safety research from Harvard. What Rozovsky added was scale: Google could test the model across hundreds of teams with the most rigorous data collection infrastructure in the world. The finding replicated perfectly. The researchers described it as 'norms, not people' — team performance is determined by the behavioural rules the team develops, not by who is on the team.",
+          "The business response was immediate. Google restructured its leadership development programmes around psychological safety. Team health surveys began measuring it explicitly. Managers were trained to model the behaviours that create it: admitting their own errors, explicitly inviting dissent, rewarding the first person who named an uncomfortable truth. The research was published publicly in 2016 and changed how thousands of companies thought about team design — shifting emphasis from talent acquisition to norm construction.",
+        ],
+        pull_quote: {
+          text: 'Psychological safety was far and away the most important of the five key dynamics we found — it\'s the foundation of a high-performing team.',
+          attribution: 'Julia Rozovsky, Google People Analytics',
+        },
+        decisions: [
+          {
+            abbreviation: 'PS',
+            title: 'Psychological Safety First',
+            description: 'Identified as the single most predictive variable. All team development refocused on creating it.',
+          },
+          {
+            abbreviation: 'NP',
+            title: 'Norms Over People',
+            description: 'Shifted emphasis from who is on the team to how the team behaves.',
+          },
+          {
+            abbreviation: 'MP',
+            title: 'Manager Modelling',
+            description: 'Trained managers to visibly admit errors and invite dissent. Safety is top-down.',
+          },
+          {
+            abbreviation: 'PR',
+            title: 'Public Research',
+            description: 'Published full methodology and findings publicly. Industry-wide shift in team design followed.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2012',
+            title: 'Project Aristotle Launched',
+            description: "Google's People Analytics team begins two-year study of hundreds of internal teams.",
+          },
+          {
+            step: 2,
+            year: '2013–2014',
+            title: 'No Simple Answer',
+            description: 'Early hypotheses fail. Talent mix, personality type, and tenure show no consistent correlation with performance.',
+          },
+          {
+            step: 3,
+            year: '2015',
+            title: 'Psychological Safety Identified',
+            description: 'Consistent predictor found: teams where members feel safe to speak up consistently outperform. Finding replicates across all team types.',
+          },
+          {
+            step: 4,
+            year: '2016',
+            title: 'Research Published',
+            description: "Julia Rozovsky publishes findings publicly. NYT Magazine covers it. Industry-wide reassessment of team design begins.",
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          'On your current team, do people freely admit mistakes, challenge each other\'s ideas, and ask "dumb" questions? If not, what specific behaviour — from you or others — suppresses it?',
+          'Google found individual talent was less predictive than team norms. Where have you hired talented people who underperformed because the team norms didn\'t allow them to function well?',
+          'Psychological safety is created top-down through manager modelling. When did you last publicly admit a mistake to your team? What signal did that send?',
+          'The research found norms, not people, determine team performance. What norms does your team have — explicit or implicit — that you\'d want to change?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Individual talent is less predictive than collective norms.',
+            body: "Google's finding overturned the dominant assumption of talent management: that better people produce better outcomes. Better norms produce better outcomes — sometimes dramatically so, even with average individual talent.",
+          },
+          {
+            headline: 'Psychological safety is not comfort — it is the freedom to be honest.',
+            body: 'A psychologically safe team is not one where everyone agrees or no one is challenged. It is one where members can surface disagreement, name failure, and ask questions without fearing social consequences.',
+          },
+          {
+            headline: 'Safety is set by the leader\'s behaviour, not their intentions.',
+            body: "A manager who says 'I want honest feedback' but visibly reacts badly to criticism has told the team what is actually safe. Psychological safety is built through consistent behavioural evidence, not stated policy.",
+          },
+          {
+            headline: 'Publish what you learn, even if it challenges your assumptions.',
+            body: "Google's willingness to publish findings that undermined their own talent-first philosophy — and share them publicly — produced more long-term credibility and industry influence than any marketing could.",
+          },
+        ],
+      },
+    },
+  },
+
+  // ─── L032–L036: NEW CASE STUDIES ────────────────────────────────────────────
+
+  {
+    lesson_id: 'L032',
+    title: "Herb Kelleher's Southwest Revolution",
+    subtitle: 'How a lawyer with no airline experience built the most consistently profitable carrier in history — by treating employees first',
+    company: 'Southwest Airlines',
+    company_abbreviation: 'SW',
+    year_range: '1967–2001',
+    module: 'servant_leadership',
+    category: 'Servant Leadership',
+    category_color_key: 'teal',
+    read_time_minutes: 9,
+    difficulty: 'accessible',
+    tags: ['Servant Leadership', 'Culture', 'Employee First', 'Profitability'],
+    source_disclosure: "Herb Kelleher's public interviews, James L. Heskett's Harvard case studies on Southwest Airlines, and Kelleher's own published essays",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 1967, Herb Kelleher and Rollin King sketched a business plan for a Texas intrastate airline on a cocktail napkin. For three years, the established airlines used legal injunctions to prevent Southwest from flying — they understood the threat. When Southwest finally launched in 1971, it flew three planes between Dallas, Houston, and San Antonio. By the time of Kelleher's retirement in 2001, Southwest had not posted a single annual loss in 29 consecutive years — an unmatched record in one of the world's most volatile and capital-intensive industries.",
+        body_paragraphs: [
+          "Kelleher's central operating belief was a deliberate inversion of conventional management wisdom: put employees first, customers second, shareholders third. He argued — and Southwest's numbers repeatedly validated — that employees who feel genuinely valued treat customers well without being instructed to, and customers who are treated well return, which produces the shareholder returns that come last. The sequence mattered. Companies that put shareholders first and employees last, Kelleher observed, tended to produce mediocre results on all three metrics.",
+          "The operational expression of this philosophy was a culture of ownership and informality. Kelleher famously knew thousands of Southwest employees by name. He worked the ramp, served drinks on flights, and showed up at maintenance hangars at 2am on Christmas Eve to help crew load bags — not as a PR exercise, but as a regular practice. Employees who felt seen and known by their CEO were empirically more likely to go beyond their job descriptions. Southwest's ground crew routinely achieved 20-minute gate turnarounds when the industry average was 45 minutes — not because of superior equipment, but because of discretionary effort from people who cared.",
+          "Southwest was also the first major airline to implement profit sharing for all employees, making every worker a partial owner with a financial stake in turnaround times and fuel efficiency. This was not a motivational programme — it was a structural alignment of incentives. A Southwest ramp agent who gets the plane off the gate 15 minutes early earns more money. The system made every employee a de facto operations manager.",
+          "The hiring philosophy was as distinctive as the culture. Southwest famously hired for attitude and trained for skill — the inverse of most corporations. Kelleher's reasoning: you can teach someone to load bags or process tickets, but you cannot teach someone to genuinely enjoy people. The interview process included observing how candidates treated the administrative staff who greeted them — rude to the receptionist meant immediate disqualification, regardless of technical credentials.",
+        ],
+        pull_quote: {
+          text: "We've never had layoffs. We could have made more money if we'd furloughed people. But we don't do that. And we didn't, because it's not the right thing to do.",
+          attribution: 'Herb Kelleher',
+        },
+        decisions: [
+          {
+            abbreviation: 'EF',
+            title: 'Employees First',
+            description: 'Deliberately inverted the conventional hierarchy: employees first, customers second, shareholders third.',
+          },
+          {
+            abbreviation: 'PS',
+            title: 'Profit Sharing',
+            description: 'First major airline to share profits with all employees. Every worker a partial owner.',
+          },
+          {
+            abbreviation: 'HA',
+            title: 'Hire for Attitude',
+            description: 'Hired attitude, trained skill. Disqualified candidates who were rude to reception staff.',
+          },
+          {
+            abbreviation: 'NL',
+            title: 'No Layoffs Policy',
+            description: 'Never laid off employees in 29 years, including recessions. Voluntary unpaid leave instead.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1967–1971',
+            title: 'Three Years of Legal Battles',
+            description: "Established airlines injunct Southwest to prevent launch. Kelleher fights to the Texas Supreme Court and wins.",
+          },
+          {
+            step: 2,
+            year: '1971',
+            title: 'Southwest Launches',
+            description: 'Three planes, three Texas cities. Low fares, 10-minute boarding, flight attendants in hot pants. Competitors laugh.',
+          },
+          {
+            step: 3,
+            year: '1973',
+            title: 'First Annual Profit',
+            description: 'Southwest becomes profitable. Profit sharing for all employees introduced. No layoffs ever follow.',
+          },
+          {
+            step: 4,
+            year: '2001',
+            title: "Kelleher's Retirement",
+            description: '29 consecutive profitable years. 33,000 employees. Post-9/11 Southwest is one of only two US airlines not to seek federal aid.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Kelleher's sequencing was deliberate: employees first, customers second, shareholders third. What is the actual sequence in your organisation — and is it producing the results you want?",
+          'Southwest hired for attitude and trained for skill. Which roles in your team require innate attitude that cannot be trained? Where are you hiring for credentials when you should be hiring for character?',
+          'Kelleher showed up to help load bags at 2am on Christmas Eve — not once, but regularly. What symbolic acts of service do you perform for your team? What signals do those acts send?',
+          'Southwest had a no-layoff policy across 29 years including recessions. What long-term psychological contract does your team have with you? What would it cost to break it?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Employee experience and shareholder returns are not in tension — the sequence is the strategy.',
+            body: "Kelleher's consistent proof was that putting employees first did not sacrifice profitability — it was the cause of it. The companies that treat employees as a cost centre discover this the hard way.",
+          },
+          {
+            headline: 'Structural incentive alignment is more durable than culture programmes.',
+            body: 'Profit sharing made every Southwest employee a genuine co-owner of the outcome. No motivational poster achieves what a direct financial stake achieves.',
+          },
+          {
+            headline: 'A no-layoff policy creates a psychological contract that unlocks discretionary effort.',
+            body: "Employees who believe their job is secure will invest in the company's long-term success. Employees who expect to be let go at the first downturn rationally withhold commitment.",
+          },
+          {
+            headline: 'The leader who does the work alongside the team sends a signal that no speech can replicate.',
+            body: "Kelleher loading bags at 2am was not symbolic — it was information. It told every Southwest employee that the CEO understood their job and respected it. That knowledge changes how people behave.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L033',
+    title: "Aaron Feuerstein's Malden Mills Decision",
+    subtitle: "The factory owner who kept paying 3,000 employees after his mill burned down — and why he said he had no choice",
+    company: 'Malden Mills',
+    company_abbreviation: 'MM',
+    year_range: '1995–1997',
+    module: 'servant_leadership',
+    category: 'Servant Leadership',
+    category_color_key: 'teal',
+    read_time_minutes: 8,
+    difficulty: 'accessible',
+    tags: ['Servant Leadership', 'Ethics', 'Community', 'Loyalty'],
+    source_disclosure: "Aaron Feuerstein's public interviews, Congressional testimony (1996), and Boston Globe reporting on the Malden Mills fire and recovery",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 7,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "On December 11, 1995 — Aaron Feuerstein's 70th birthday — the Malden Mills factory in Lawrence, Massachusetts burned to the ground. Three buildings destroyed. Thirty-three workers injured. Malden Mills was the sole manufacturer of Polartec fleece, employed 3,000 people in one of New England's poorest cities, and had revenues of approximately $400 million per year. Every business adviser told Feuerstein the same thing: take the insurance money, close the factory, and retire or move production offshore where labour was cheaper. He was 70 years old. Nobody would have blamed him.",
+        body_paragraphs: [
+          'Within days, Feuerstein announced he would rebuild the factory on the same site, keep all 3,000 employees on full pay with full benefits during reconstruction, and have the first production lines running within 90 days. He kept all three promises. The decision cost him approximately $25 million in payroll and benefits for workers who were producing nothing — money that came out of the insurance settlement that was supposed to fund rebuilding.',
+          "Feuerstein's explanation was not strategic — it was moral. He quoted the Talmud and described the obligation of an employer to the community that had worked for his family for three generations. He said the workers of Lawrence had given Malden Mills everything; abandoning them to collect insurance money was not an option he was willing to consider. He later told Congress: 'I could have taken the insurance money and walked away. Instead, I chose to rebuild. I owe it to the community of Lawrence. They have been loyal to me, and I will be loyal to them.'",
+          "The business consequences were real and mixed. Productivity from the returning workforce was extraordinary — workers voluntarily increased output by 25% in the weeks after they returned, and quality defects dropped to near zero. Customers who heard the story placed orders specifically to support Malden Mills. The company received more goodwill coverage than any advertising campaign could have purchased. President Clinton invited Feuerstein to the 1996 State of the Union address as a symbol of ethical American capitalism.",
+          "But the story does not end in triumph. The rebuild cost more than planned, and Malden Mills filed for bankruptcy in 2001 — partly due to construction costs, partly due to competition from cheaper synthetics. Feuerstein spent years fighting to retain control and keep the factory open. He eventually lost ownership. The factory continued to operate under new owners. The employees kept their jobs — for years longer than they would have had Feuerstein taken the insurance money and left. His decision was not strategically optimal in the narrow financial sense. But his employees, the city of Lawrence, and the business ethics community remember it as one of the most significant acts of industrial servant leadership in American history.",
+        ],
+        pull_quote: {
+          text: 'I have a responsibility to the worker, both blue-collar and white-collar. I have an equal responsibility to the community.',
+          attribution: 'Aaron Feuerstein',
+        },
+        decisions: [
+          {
+            abbreviation: 'RB',
+            title: 'Rebuild on Site',
+            description: 'Chose to rebuild in Lawrence rather than relocate offshore. Rejected the economically rational exit.',
+          },
+          {
+            abbreviation: 'FP',
+            title: 'Full Pay During Rebuild',
+            description: "Kept all 3,000 workers on full salary and benefits for months while producing nothing.",
+          },
+          {
+            abbreviation: 'CC',
+            title: 'Community Commitment',
+            description: 'Framed the decision in terms of obligation — three generations of reciprocal loyalty.',
+          },
+          {
+            abbreviation: '90',
+            title: '90-Day Promise',
+            description: 'Publicly committed to having lines running in 90 days. Met the deadline.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Dec 11, 1995',
+            title: 'Fire Destroys the Factory',
+            description: "Feuerstein's 70th birthday. Three buildings gone. Every adviser recommends taking the insurance and closing.",
+          },
+          {
+            step: 2,
+            year: 'Dec 1995',
+            title: 'Feuerstein Announces Rebuild',
+            description: 'Full pay, full benefits, same site, 90-day production target. Statement goes national within days.',
+          },
+          {
+            step: 3,
+            year: '1996',
+            title: 'Factory Reopens; Clinton Invitation',
+            description: 'Production lines restart. Workers return with 25% productivity increase. Clinton features Feuerstein at State of the Union.',
+          },
+          {
+            step: 4,
+            year: '2001–2007',
+            title: 'Bankruptcy and Legacy',
+            description: 'Rebuild costs and competition drive bankruptcy in 2001. Feuerstein loses ownership but factory continues operating under new owners.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Feuerstein said 'I had no choice' — but he clearly did. When have you made a decision that felt morally compelled even when the economically rational option was clearly available?",
+          'His workers returned and voluntarily increased productivity by 25% with near-zero defects. What is the relationship between how you treat people in a crisis and how they perform after it?',
+          "The story doesn't end in triumph — Malden Mills filed for bankruptcy. Does the moral quality of a decision depend on whether it succeeds financially? How do you evaluate decisions that were right but didn't work out?",
+          'Feuerstein drew on his obligation to three generations of workers and a community. What obligations do you have to people who have given your organisation years of their lives?',
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Servant leadership sometimes costs you.',
+            body: "Feuerstein's decision was ethically clear and financially costly. The $25M in payroll during reconstruction contributed to the bankruptcy that followed. Servant leadership is not a strategy for maximising returns — it is a commitment that precedes calculation.",
+          },
+          {
+            headline: "Loyalty is reciprocal — and employees know when it isn't.",
+            body: "The 25% productivity increase when workers returned was not managed or incentivised — it was voluntary. People who believe their leader will stand by them in a crisis reciprocate with discretionary effort you could never buy.",
+          },
+          {
+            headline: 'Moral framing is not a weakness in a crisis.',
+            body: "Feuerstein didn't frame his decision as strategy or PR. He framed it as obligation. That clarity — knowing exactly why you are doing something — produces decisions you can stand behind regardless of outcome.",
+          },
+          {
+            headline: 'The long-term memory of how a leader behaves in extremity outlasts financial results.',
+            body: "Malden Mills filed for bankruptcy. Feuerstein lost control of the company he had run for decades. His decision is still taught in business schools and remembered in Lawrence thirty years later. The financial record fades; the ethical record endures.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L034',
+    title: "OpenAI's 72-Hour Board Crisis",
+    subtitle: 'How the most important AI company in the world fired and rehired its CEO in 72 hours — and what it revealed about governance',
+    company: 'OpenAI',
+    company_abbreviation: 'OA',
+    year_range: '2023',
+    module: 'crisis_leadership',
+    category: 'Crisis Leadership',
+    category_color_key: 'blue',
+    read_time_minutes: 10,
+    difficulty: 'complex',
+    tags: ['Governance', 'Board Dynamics', 'Crisis', 'Stakeholder Management'],
+    source_disclosure: "Public reporting from The Verge, The New York Times, Bloomberg, and OpenAI's official statements (November 2023)",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 9,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "On Friday November 17, 2023, OpenAI's board fired CEO Sam Altman with a four-sentence statement accusing him of not being 'consistently candid' with the board. No specific wrongdoing was named. Within 48 hours, over 500 of OpenAI's 700 employees had signed a letter threatening to quit and follow Altman to Microsoft unless the board resigned and reinstated him. Microsoft — which had invested $13 billion in OpenAI — offered Altman a new AI division to run. By Sunday evening, the board had capitulated. Altman returned as CEO. The entire board that fired him was replaced.",
+        body_paragraphs: [
+          "The crisis exposed a structural fault line at the heart of OpenAI's governance. The company was incorporated as a nonprofit with a 'capped profit' subsidiary — a structure designed to ensure the board's fiduciary duty ran to humanity rather than to shareholders. In practice, this meant a six-person board with majority nonprofit directors controlled a company valued at $90 billion, whose 700 employees had compensation tied to a continued relationship with a CEO the board had just fired. The tension between mission-first governance and commercial reality had been building for years. The firing detonated it.",
+          "The board's tactical errors were significant. They notified Altman on a video call with no prior indication. They told no one — not Microsoft, not OpenAI's largest investors, not its president Greg Brockman (who resigned within hours). They issued a statement so vague it invited speculation about something far worse than what they actually alleged. And they had no plan for what happened next: who would run the company, how Microsoft would react, or how employees would respond.",
+          "The employee letter was the decisive factor. When 500 of 700 employees threaten to walk out of a technology company, the company ceases to exist. Unlike a factory, the assets of an AI research firm are in the heads of its researchers — and those researchers had made their position clear. The board, which had fired Altman to protect the mission of OpenAI, was now the threat to OpenAI's continued existence.",
+          "Altman's return was not a vindication of everything he had done — the board's original concerns about candour and governance may have had merit. What the crisis demonstrated was that in a talent-dense, mission-driven organisation, a CEO who holds the confidence of the team is nearly unfirable by a board that does not. The governance structure that was designed to keep AI development safe had become a single point of failure — a small group of people who could unilaterally destabilise one of the most consequential technology projects in history.",
+        ],
+        pull_quote: {
+          text: "I love OpenAI, and everything I've done has been in service of its mission. I still believe that, with the right governance, OpenAI is the best path to safe AGI.",
+          attribution: "Sam Altman, statement upon return as CEO",
+        },
+        decisions: [
+          {
+            abbreviation: 'FI',
+            title: 'Board Fires Altman',
+            description: 'Four-sentence statement, no named wrongdoing, no stakeholder communication. Board had no succession plan.',
+          },
+          {
+            abbreviation: 'EL',
+            title: 'Employee Letter',
+            description: '500 of 700 employees threaten to quit. Human capital makes the board\'s decision unenforceable.',
+          },
+          {
+            abbreviation: 'MS',
+            title: 'Microsoft Offer',
+            description: 'Nadella offers Altman a new AI division within hours. Competitive pressure forces board timelines.',
+          },
+          {
+            abbreviation: 'RE',
+            title: 'Reinstatement and Reset',
+            description: 'Altman reinstated Sunday evening. Full board replaced. Governance structure subsequently overhauled.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'Fri Nov 17, 2023',
+            title: 'Board Fires Altman',
+            description: 'Friday afternoon video call. No prior warning. Four-sentence public statement. Greg Brockman resigns within hours.',
+          },
+          {
+            step: 2,
+            year: 'Sat Nov 18',
+            title: 'Employee Revolt Begins',
+            description: 'Investor pressure mounts. Reports of back-channel negotiations. Microsoft publicly welcomes Altman.',
+          },
+          {
+            step: 3,
+            year: 'Sun Nov 19',
+            title: '500 Employees Sign Letter',
+            description: 'Majority of staff threaten to quit unless board resigns and reinstates Altman. Letter goes public.',
+          },
+          {
+            step: 4,
+            year: 'Mon Nov 20, 2023',
+            title: 'Altman Reinstated',
+            description: 'Altman returns as CEO. Firing board members replaced. Governance structure review announced.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "The board had legitimate governance authority — and used it catastrophically. What is the difference between having the right to make a decision and having the wisdom to make it well?",
+          "OpenAI's nonprofit governance structure was designed to protect against commercial capture. It nearly destroyed the company. Where in your organisation do governance structures designed to protect a mission create their own risks?",
+          "500 employees made the board's decision unenforceable. Who in your organisation has the informal power to block or reverse formal decisions — and do you know who they are?",
+          "The board had no plan for what happened after the firing. What major decisions have you made without a clear model of what happens next — and what would planning for Day 2 have changed?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Governance authority without stakeholder legitimacy is unenforceable.',
+            body: "The board had legal authority to fire Altman. It did not have the human capital to make the decision stick. In talent-dense organisations, formal authority matters less than the confidence of the people doing the work.",
+          },
+          {
+            headline: 'A communication plan is not optional for decisions of this magnitude.',
+            body: "The board told no one — not Microsoft, not investors, not the president of the company. In a crisis, the information vacuum you create fills immediately with speculation. Stakeholder communication must precede or accompany the decision.",
+          },
+          {
+            headline: 'Governance structures designed to prevent one failure mode can create another.',
+            body: "OpenAI's nonprofit board was a safeguard against commercial capture. It became a single point of failure that could unilaterally destabilise the company without accountability to those most affected.",
+          },
+          {
+            headline: 'Vague accusations invite the worst interpretations.',
+            body: "'Not consistently candid' left 700 employees, $13B of Microsoft investment, and the global AI community to imagine what had actually happened. Specificity — even uncomfortable specificity — would have produced a different 48 hours.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L035',
+    title: "Tobi Lütke's Remote-First Bet",
+    subtitle: 'How Shopify declared itself a remote-first company in 2020 — and rebuilt its entire operating model around asynchronous work',
+    company: 'Shopify',
+    company_abbreviation: 'SH',
+    year_range: '2020–Present',
+    module: 'scaling_teams',
+    category: 'Scaling Teams',
+    category_color_key: 'orange',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['Remote Work', 'Scaling', 'Async Communication', 'Org Design'],
+    source_disclosure: "Tobi Lütke's public tweets and interviews, Shopify's internal memos published publicly, and Wired/Bloomberg reporting on Shopify's remote transition",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 11,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "In May 2020, as most companies were framing remote work as a temporary pandemic measure, Shopify CEO Tobi Lütke announced that Shopify would be 'digital by default' permanently — not after the pandemic, not as a hybrid experiment, but as the core operating model of a company with 7,000 employees and $2.9 billion in annual revenue. Lütke's framing was deliberately ambitious: 'Office centricity is over.' He sold Shopify's headquarters building. Then he rebuilt the company's operating model from first principles.",
+        body_paragraphs: [
+          "Lütke's diagnosis was that most companies doing 'remote work' were actually doing 'office work from home' — replicating office rituals (synchronous meetings, real-time messaging, status updates) in a medium where those rituals were inefficient and exhausting. The transition Shopify undertook was more fundamental: redesign how decisions are made, how information flows, and how trust is established when people share neither a building nor a time zone.",
+          "The first principle was writing. Shopify made written communication the default for anything consequential: decisions, proposals, project updates, and disagreements. The logic was not that writing is inherently better than talking, but that written communication is asynchronous (readable at any time), persistent (searchable forever), and inclusive (accessible to someone in Singapore as easily as someone in Ottawa). A meeting is information that disappears when it ends. A document is infrastructure.",
+          "The second principle was explicit trust architecture. In an office, trust is built through presence — colleagues see each other working, share coffee, read each other's body language. Remote work removes all of these signals. Shopify replaced them with deliberate practices: public documentation of what each team was working on, structured check-ins that were outcome-focused rather than activity-focused, and a bias toward over-communication on decisions. The instinct to have a quick meeting to align was replaced with the discipline to write a short document that aligned without requiring synchronous presence.",
+          "The third principle was calendar hygiene. Lütke publicly deleted all recurring meetings company-wide in 2023 — a reset that forced every team to evaluate whether each meeting was actually necessary. The move generated significant media coverage. The internal reasoning was simpler: recurring meetings accumulate like debt, each one plausible when created, collectively consuming the time that deep work requires. The reset forced intentionality about which synchronous interactions were worth the cost.",
+        ],
+        pull_quote: {
+          text: "Office-centricity is over. The future is working from wherever you do your best work.",
+          attribution: 'Tobi Lütke, Shopify CEO',
+        },
+        decisions: [
+          {
+            abbreviation: 'DD',
+            title: 'Digital by Default',
+            description: 'Permanent remote-first declaration in May 2020. Sold headquarters. Not hybrid — restructured.',
+          },
+          {
+            abbreviation: 'WF',
+            title: 'Writing First',
+            description: 'Written communication default for all consequential work. Documents as infrastructure, not meeting minutes.',
+          },
+          {
+            abbreviation: 'TA',
+            title: 'Trust Architecture',
+            description: 'Replaced presence-based trust with outcome documentation and structured async check-ins.',
+          },
+          {
+            abbreviation: 'CM',
+            title: 'Calendar Meeting Delete',
+            description: 'Deleted all recurring meetings company-wide in 2023. Forced intentionality about synchronous time.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: 'May 2020',
+            title: '"Digital by Default" Announced',
+            description: "Lütke declares permanent remote-first. Sells headquarters. Industry watches to see if it's sustainable.",
+          },
+          {
+            step: 2,
+            year: '2020–2021',
+            title: 'Operating Model Rebuilt',
+            description: 'Writing-first practices, async decision protocols, and trust architecture codified. Hiring goes global.',
+          },
+          {
+            step: 3,
+            year: '2022',
+            title: 'Shopify Layoffs',
+            description: '1,000 employees let go after pandemic e-commerce boom normalises. Remote model separates from layoff narrative.',
+          },
+          {
+            step: 4,
+            year: '2023',
+            title: 'Meeting Deletion Event',
+            description: 'All recurring meetings deleted company-wide. Policy requires 3+ person justification for new recurring meetings.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Lütke's insight was that most 'remote work' is just office work in a different room. What office rituals is your team replicating remotely that should be redesigned rather than migrated?",
+          "Shopify made writing the default for consequential communication. What decisions in your team currently happen in conversations that leave no persistent record — and what is lost when those conversations end?",
+          'Recurring meetings accumulate like debt. Audit the recurring meetings you attend: how many would you re-create if you had to justify each one from scratch today?',
+          "Remote work removes presence-based trust signals. How do you build trust with people you rarely or never see in person? What practices are you using consciously versus accidentally?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Remote-first and remote-compatible are different operating models.',
+            body: "Most companies did remote-compatible work during the pandemic — office processes migrated to video calls. Remote-first means redesigning information flow, decision-making, and trust-building for an async-first world.",
+          },
+          {
+            headline: 'Written communication is infrastructure, not documentation.',
+            body: "A document that captures a decision is reusable, searchable, accessible across time zones, and onboards new employees automatically. A meeting that makes the same decision leaves nothing behind.",
+          },
+          {
+            headline: 'Presence-based trust must be deliberately replaced, not just removed.',
+            body: "Remote work doesn't eliminate the need for trust — it removes the ambient signals that build it. Leaders who don't replace those signals explicitly end up with teams that don't trust each other and can't explain why.",
+          },
+          {
+            headline: 'Recurring meetings are the compound interest of wasted time.',
+            body: 'Each new recurring meeting seems reasonable. Collectively, they consume the uninterrupted time that makes deep work possible. The right cadence for a meeting is the one that would survive being deleted and deliberately recreated.',
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L036',
+    title: "The Wright Brothers' Systematic Breakthrough",
+    subtitle: 'How two bicycle mechanics solved a problem that ruined wealthy engineers — by inventing a scientific method before inventing a plane',
+    company: 'Wright Brothers / Kitty Hawk',
+    company_abbreviation: 'WB',
+    year_range: '1899–1903',
+    module: 'innovation',
+    category: 'Innovation',
+    category_color_key: 'purple',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['Innovation', 'Experimentation', 'First Principles', 'Iteration'],
+    source_disclosure: "David McCullough's 'The Wright Brothers' (2015), Smithsonian Institution archives, and Orville Wright's published diaries",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 6,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "In 1899, the problem of powered human flight had attracted the best-resourced, most credentialed engineers in the world. Samuel Langley, the Secretary of the Smithsonian Institution, had a $50,000 US War Department grant and a team of professional engineers. Hiram Maxim, inventor of the machine gun, had invested £20,000 of his own money. Otto Lilienthal, the German aviation pioneer, had made over 2,000 glider flights before dying in a crash in 1896. Against this field, Wilbur and Orville Wright entered with no formal engineering qualifications, no university degrees, no outside funding, and a bicycle repair business in Dayton, Ohio.",
+        body_paragraphs: [
+          "The reason the Wright Brothers succeeded while better-resourced competitors failed is not mysterious in retrospect — it was methodological. Langley and the other well-funded teams were trying to build powered aircraft and test them at full scale. When a design failed, the failure was catastrophic, expensive, and months away from the next test. The Wright Brothers did the opposite: they separated the problem into components, tested each component systematically at small scale, and built knowledge before building aircraft.",
+          "Their first insight was that the control problem was more important than the power problem. Every prior approach assumed that a stable aircraft with enough power would fly. The Wright Brothers observed that stability was the enemy of controllability — a stable aircraft that encountered a gust of wind would be pushed off course with no way to recover. They studied birds and concluded that control, not stability, was the design priority. This led to their invention of wing warping: a system for twisting the wing tips to create differential lift and maintain control across all three axes.",
+          "Their second insight was that existing aeronautical data was wrong. When their 1900 and 1901 gliders underperformed according to Lilienthal's published lift tables, they didn't assume their execution was at fault. They assumed the data was wrong — and built a wind tunnel to generate their own. The wind tunnel experiments of 1901 produced the most accurate aeronautical measurements in existence and gave the Wright Brothers a data advantage over every competitor in the world. No grant had funded the wind tunnel. They built it from scratch in their bicycle shop for almost nothing.",
+          "On December 17, 1903, Orville flew 120 feet in 12 seconds at Kitty Hawk. Langley's $50,000 government-funded Aerodrome had crashed into the Potomac River nine days earlier on its second failed launch attempt. The Wright Brothers had spent approximately $1,000 in total. The systematic testing approach, the willingness to question existing data, and the separation of the problem into testable components had produced the most consequential engineering breakthrough of the 20th century.",
+        ],
+        pull_quote: {
+          text: "It is possible to fly without motors, but not without knowledge and skill.",
+          attribution: 'Wilbur Wright',
+        },
+        decisions: [
+          {
+            abbreviation: 'CP',
+            title: 'Control Before Power',
+            description: 'Identified control as the primary unsolved problem. Competitors focused on power. Wright Brothers focused on control.',
+          },
+          {
+            abbreviation: 'WW',
+            title: 'Wing Warping',
+            description: 'Invented 3-axis control system from bird observation. Became the basis of all subsequent aircraft design.',
+          },
+          {
+            abbreviation: 'WT',
+            title: 'Wind Tunnel',
+            description: 'Distrusted published lift data. Built their own wind tunnel. Generated the most accurate aeronautical data in the world.',
+          },
+          {
+            abbreviation: 'SM',
+            title: 'Small-Scale Testing',
+            description: 'Tested components at small scale before full builds. Hundreds of glider flights before powered attempt.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1899–1900',
+            title: 'Kite and Glider Tests',
+            description: "First kite tests of wing-warping concept. Kitty Hawk chosen for reliable winds. Control problem prioritised over power.",
+          },
+          {
+            step: 2,
+            year: '1901',
+            title: 'Wind Tunnel Built',
+            description: "Gliders underperform Lilienthal's published tables. Wright Brothers build wind tunnel to generate own lift data. Data advantage established.",
+          },
+          {
+            step: 3,
+            year: '1902',
+            title: 'Glider Control Solved',
+            description: '1000+ glider flights. Three-axis control system working reliably. Ready to add power.',
+          },
+          {
+            step: 4,
+            year: 'Dec 17, 1903',
+            title: 'Kitty Hawk: First Flight',
+            description: '120 feet, 12 seconds. Four flights that day, longest 852 feet. Langley\'s $50,000 machine had crashed 9 days earlier.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "The Wright Brothers distrusted Lilienthal's data and built their own instruments to check it. When did you last question a foundational assumption in your field that everyone else accepts as given?",
+          "Langley had 50x the budget and failed. The Wright Brothers had a systematic method and succeeded. Where in your work are you substituting resources for rigour?",
+          "They separated the control problem from the power problem and solved them sequentially. What complex problem in your organisation are you treating as one thing that should actually be decomposed?",
+          "They made over 1,000 glider flights before adding power. How much low-cost iteration do you do before making expensive commitments — and where do you move to the expensive test too soon?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Method beats resources when the method is right.',
+            body: "Langley had 50 times the budget and failed. The Wright Brothers had a systematic decomposition of the problem and succeeded. In innovation, the quality of the approach matters more than the scale of the investment.",
+          },
+          {
+            headline: 'Question existing data before trusting it.',
+            body: "The Wright Brothers found that standard aeronautical tables were wrong and built their own instruments to generate accurate data. The willingness to verify rather than accept is a competitive advantage most people leave unused.",
+          },
+          {
+            headline: 'Decompose hard problems before attempting to solve them whole.',
+            body: "Control was a different problem from power. Solving control first made the power problem straightforward. Most hard problems that resist solution are actually clusters of simpler problems that need to be separated before they can be addressed.",
+          },
+          {
+            headline: 'Cheap iterations are the prerequisite for expensive commitments.',
+            body: "A thousand glider flights cost almost nothing. A failed powered aircraft attempt is expensive and slow. The discipline of maximising learning at minimum cost before scaling investment is the core discipline of systematic innovation.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L040',
+    title: "Indra Nooyi's Letters to Parents",
+    subtitle: "The PepsiCo CEO who wrote to the parents of her top executives — and what it revealed about gratitude as a leadership practice",
+    company: 'PepsiCo',
+    company_abbreviation: 'PC',
+    year_range: '2006–2018',
+    module: 'emotional_intelligence',
+    category: 'Emotional Intelligence',
+    category_color_key: 'grey',
+    read_time_minutes: 8,
+    difficulty: 'accessible',
+    tags: ['Empathy', 'Gratitude', 'Purpose', 'Leadership Style'],
+    source_disclosure: "Indra Nooyi's 'My Life in Full' (2021), her 2008 speech at Columbia Business School, and interviews with Fortune and Harvard Business Review",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 10,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "Indra Nooyi served as CEO of PepsiCo from 2006 to 2018, leading a company with $65 billion in revenue and 260,000 employees. During those twelve years, she delivered compound annual revenue growth of 80%, grew earnings per share by 162%, and transformed a company known for carbonated drinks into a diversified food and beverage portfolio. But the leadership practice that generated the most lasting discussion was not a strategic decision — it was a letter-writing campaign she ran personally, every year, to the parents of her senior leaders.",
+        body_paragraphs: [
+          "The practice began after a visit home to India, where Nooyi's mother told her that a neighbour had come to congratulate the family when Nooyi was named to PepsiCo's board of directors. Her mother's response crystallised something for Nooyi: the parent, not the executive, was the person who had made the career possible — through years of sacrifice, encouragement, and belief. The institution that benefited from that investment had never once acknowledged it.",
+          "Nooyi began writing personal letters to the parents of her approximately 400 direct and indirect reports — not to their HR files, not to their performance records, but to their parents. The letters were substantive: she described the specific contributions their son or daughter was making to PepsiCo, the qualities of character she had observed, and her gratitude for how they had raised someone who brought those qualities to work. She received handwritten responses from parents in dozens of countries. Several told her it was the most meaningful letter they had ever received about their child.",
+          "The executive response was equally striking. Leaders who received news of the letters from their parents described a shift in how they thought about their work. The letter made visible a connection that professional culture routinely severs: the link between the person at the boardroom table and the family that had formed them. It reminded executives that they were not interchangeable units of corporate productivity but people with histories, and that the company saw them that way.",
+          "Nooyi's broader leadership framework — which she called 'Performance with Purpose' — extended the same logic to customers, communities, and the planet. She made significant investments in healthier product lines, reduced PepsiCo's environmental footprint, and built women's leadership programmes across developing markets. Critics noted that PepsiCo still sold enormous quantities of sugary drinks and processed food. But the framework reflected a consistent instinct: that the long-term interests of the business were inseparable from the long-term interests of the people and systems it depended on.",
+        ],
+        pull_quote: {
+          text: "My biggest regret is not the decisions I made at PepsiCo. My biggest regret is that I didn't tell people enough how much I appreciated them.",
+          attribution: 'Indra Nooyi',
+        },
+        decisions: [
+          {
+            abbreviation: 'LP',
+            title: 'Letters to Parents',
+            description: 'Personal annual letters to parents of 400 senior leaders. Acknowledged the family behind the executive.',
+          },
+          {
+            abbreviation: 'PP',
+            title: 'Performance with Purpose',
+            description: 'Strategic framework linking business performance to human, environmental, and community outcomes.',
+          },
+          {
+            abbreviation: 'PD',
+            title: 'Portfolio Diversification',
+            description: 'Shifted PepsiCo toward healthier products. Revenue from "good for you" lines grew substantially.',
+          },
+          {
+            abbreviation: 'WL',
+            title: "Women's Leadership",
+            description: "Invested in women's leadership pipeline globally. Board and senior team gender balance improved.",
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2006',
+            title: 'Nooyi Becomes CEO',
+            description: 'First woman CEO of PepsiCo. Announces Performance with Purpose as the strategic framework.',
+          },
+          {
+            step: 2,
+            year: '2008',
+            title: 'Letter Campaign Begins',
+            description: 'Begins writing annual personal letters to parents of senior leaders. Practice becomes widely discussed.',
+          },
+          {
+            step: 3,
+            year: '2006–2018',
+            title: 'Revenue Grows 80%',
+            description: 'Compound growth through portfolio diversification and international expansion. EPS up 162%.',
+          },
+          {
+            step: 4,
+            year: '2018',
+            title: 'Nooyi Steps Down',
+            description: "Retires after 12 years. Harvard Business Review names her one of the world's best-performing CEOs.",
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Nooyi saw the family as a partner in the executive's career — PepsiCo had benefited from an investment the family had made. Who else has invested in the people on your team whose contribution your organisation has never acknowledged?",
+          "The letters made executives feel seen as whole people, not just professionals. How much do you know about the people you lead beyond their work outputs — and does it matter to you?",
+          "She described her biggest regret as not telling people enough that she appreciated them. What unspoken appreciation do you carry for people on your team that they have no way of knowing?",
+          "'Performance with Purpose' linked business results to broader human outcomes. Where do the long-term interests of your business and the long-term interests of the people and communities it serves converge?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'Gratitude expressed to the right person is more powerful than gratitude expressed to the recipient.',
+            body: "Nooyi's letters worked because they closed a loop the executives had never expected to be closed. Telling someone's parent what they contribute to the world activates something that a performance review never can.",
+          },
+          {
+            headline: "People work better when the institution sees them as whole people, not just role occupants.",
+            body: "The letter made visible the human being behind the title. Leaders who invest in understanding their team members as people — not just performers — unlock a form of loyalty and discretionary effort that compensation alone cannot buy.",
+          },
+          {
+            headline: 'Gratitude is not soft — it is information.',
+            body: "Telling a parent specifically what their child contributes, in detail, is not sentimentality. It is specific, honest acknowledgement of value. The specificity is what makes it credible and meaningful.",
+          },
+          {
+            headline: 'Purpose frameworks are credible only when they survive commercial pressure.',
+            body: "Performance with Purpose was tested every quarter by analysts asking whether the healthier portfolio investments were worth the margin trade-off. Nooyi held the framework consistently. That consistency is what made it a culture rather than a slogan.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L041',
+    title: "Tony Hsieh's Zappos Culture Experiment",
+    subtitle: 'The e-commerce CEO who paid new hires to quit, bet the company on culture, and then tried to abolish management entirely',
+    company: 'Zappos',
+    company_abbreviation: 'ZP',
+    year_range: '1999–2020',
+    module: 'culture_building',
+    category: 'Culture Building',
+    category_color_key: 'green',
+    read_time_minutes: 10,
+    difficulty: 'complex',
+    tags: ['Culture', 'Holacracy', 'Employee Experience', 'Self-Management'],
+    source_disclosure: "Tony Hsieh's 'Delivering Happiness' (2010), Zappos's published Culture Book, and reporting from Forbes, The Atlantic, and Bloomberg Businessweek on the holacracy experiment",
+    is_new: true,
+    is_locked: true,
+    unlock_after_count: 8,
+    progress: 0,
+    status: 'locked',
+    tabs: {
+      overview: {
+        situation:
+          "In 1999, Tony Hsieh invested $500,000 in Zappos — an online shoe retailer nobody believed in, in a category everyone said would never work online (customers needed to try shoes before buying them). In 2009, Amazon acquired Zappos for $1.2 billion. The acquisition price was not for the shoe inventory or the technology — it was for the culture. Amazon, one of the most operationally excellent companies in the world, wanted what Zappos had built: a customer service culture so distinctive that customers called the company just to talk, and employees voluntarily stayed beyond their shifts because they didn't want to leave.",
+        body_paragraphs: [
+          "The foundational culture mechanism was the '$2,000 offer' — formally called 'The Offer.' After completing new hire training, every Zappos employee was offered $2,000 to quit immediately, no questions asked. The logic was precise: an employee who takes money to leave is someone who was going to leave anyway, or someone who doesn't genuinely want to be there. Paying them to leave early is cheaper than the hidden cost of a disengaged employee staying. The people who decline the offer have actively chosen to be at Zappos — and that choice, publicly made, changes how they relate to the work.",
+          "The customer service culture was built on deliberate anti-efficiency choices. Zappos did not measure call handle time — the metric every other call centre optimised for. The longest call in Zappos history lasted over ten hours, and Hsieh publicised it as something to be proud of. Representatives were encouraged to go off-script, build genuine relationships with callers, and solve whatever problem the customer actually had — even if that meant sending them to a competitor. The bet was that customers who experienced genuine human service would return and tell others, at a cost far lower than any advertising campaign.",
+          "In 2013, Hsieh made a more radical bet. He announced that Zappos would adopt holacracy — a management system that abolished traditional hierarchy entirely, replacing managers and job titles with self-organising 'circles' of autonomous workers. The stated goal was to create an organisation that could adapt as fluidly as a living organism rather than a military hierarchy. The transition was the most ambitious corporate organisational experiment of its decade.",
+          "The holacracy experiment produced serious turbulence. In 2015, Hsieh gave all employees an ultimatum: fully commit to holacracy or take a severance package and leave. Approximately 18% of the company — 210 people — chose to leave. Productivity and morale declined during the transition. Long-serving employees struggled to function without role clarity. The experiment was never fully declared a success or a failure before Hsieh stepped back from day-to-day operations. He died in November 2020 at age 46. The company he sold to Amazon is still studied as one of the most deliberate culture experiments in corporate history — both the parts that worked and the parts that didn't.",
+        ],
+        pull_quote: {
+          text: "Your culture is your brand.",
+          attribution: 'Tony Hsieh',
+        },
+        decisions: [
+          {
+            abbreviation: 'TO',
+            title: 'The Offer',
+            description: "$2,000 to quit after training. Filtered out disengaged employees before they could contaminate culture.",
+          },
+          {
+            abbreviation: 'NH',
+            title: 'No Handle Time',
+            description: 'Abolished call handle time metric. Longest call: 10+ hours. Service depth over throughput efficiency.',
+          },
+          {
+            abbreviation: 'HL',
+            title: 'Holacracy Adoption',
+            description: 'Abolished management hierarchy. Self-organising circles. 18% of employees chose severance over adoption.',
+          },
+          {
+            abbreviation: 'CB',
+            title: 'Culture as Product',
+            description: 'Published annual Culture Book written by employees. Culture became the marketing and the hiring filter.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '1999–2003',
+            title: 'Zappos Founded and Pivots',
+            description: 'Online shoe retail dismissed as unworkable. Hsieh invests. Company nearly bankrupt before pivoting to own inventory and overnight shipping.',
+          },
+          {
+            step: 2,
+            year: '2004–2008',
+            title: 'Culture Codified',
+            description: 'The Offer, no handle time, annual Culture Book all established. Zappos becomes famous for customer service before e-commerce.',
+          },
+          {
+            step: 3,
+            year: '2009',
+            title: 'Amazon Acquires for $1.2B',
+            description: "Amazon acquires Zappos. Hsieh negotiates autonomy as condition. Culture preserved post-acquisition.",
+          },
+          {
+            step: 4,
+            year: '2013–2015',
+            title: 'Holacracy Experiment',
+            description: 'Hierarchy abolished. 18% leave rather than adopt. Productivity disruption. Experiment inconclusive.',
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Zappos paid people to leave rather than keep disengaged employees who would corrode culture. What is the equivalent of The Offer in your context — and what would it reveal about who genuinely wants to be there?",
+          "They abolished call handle time and trusted representatives to serve customers without a clock. What efficiency metric in your organisation might be producing the opposite of the behaviour you want?",
+          "Holacracy created serious turbulence and 18% voluntary departure. When you change how people work fundamentally, what obligation do you have to the people who can't adapt?",
+          "The Amazon acquisition valued culture at $1.2B. How would you price the culture your team has built — and what would you do differently if you treated culture as a balance sheet asset?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: "Paying people to leave is cheaper than keeping people who don't want to be there.",
+            body: "The $2,000 offer was not generosity — it was an investment in culture purity. The hidden cost of one disengaged employee who stays and poisons the culture of ten others is orders of magnitude higher than the cost of paying them to go.",
+          },
+          {
+            headline: 'Efficiency metrics shape behaviour with more force than any culture statement.',
+            body: "Abolishing call handle time did not just change how calls were measured — it changed what representatives believed they were there to do. Metrics are the most powerful culture tool available, and most companies ignore this.",
+          },
+          {
+            headline: 'Radical organisational experiments require explicit exit provisions for people who cannot adapt.',
+            body: "The holacracy transition failed to adequately support employees who had built careers around structures that were abolished. Transformation without transition support produces the opposite of buy-in.",
+          },
+          {
+            headline: 'Culture is the product that makes every other product possible.',
+            body: "Zappos sold shoes. Amazon bought culture. The $1.2B price for a shoe retailer was a market signal that the culture — its customer service reputation, its employee experience, its brand — was worth more than the business it housed.",
+          },
+        ],
+      },
+    },
+  },
+
+  {
+    lesson_id: 'L042',
+    title: "Amazon's Working Backwards",
+    subtitle: 'How Jeff Bezos banned PowerPoint, mandated six-page memos, and built a decision-making culture that scales',
+    company: 'Amazon',
+    company_abbreviation: 'AZ',
+    year_range: '2004–Present',
+    module: 'decision_making',
+    category: 'Decision Making',
+    category_color_key: 'pink',
+    read_time_minutes: 9,
+    difficulty: 'medium',
+    tags: ['Decision Making', 'Communication', 'Innovation Process', 'Org Design'],
+    source_disclosure: "Jeff Bezos's shareholder letters (2004–2021), Colin Bryar and Bill Carr's 'Working Backwards' (2021), and Amazon's published leadership principles",
+    is_new: true,
+    is_locked: false,
+    unlock_after_count: 0,
+    progress: 0,
+    status: 'new',
+    tabs: {
+      overview: {
+        situation:
+          "In 2004, Jeff Bezos banned PowerPoint from Amazon executive meetings. The announcement generated industry ridicule — PowerPoint was the universal medium of corporate communication, and a company telling its senior leaders they couldn't use it seemed eccentric at best. Bezos's reasoning was systematic: a PowerPoint presentation allows the presenter to hide behind bullet points, to elide the connections between ideas, and to perform confidence in a plan that has not been fully thought through. A six-page narrative memo cannot hide those things. If you cannot write the argument out in complete sentences, you do not fully understand it.",
+        body_paragraphs: [
+          "The six-page narrative memo became one of the most distinctive elements of Amazon's operating culture. Every major proposal — a new product, a significant investment, a strategic change — was written as a six-page document before any meeting could be scheduled to discuss it. Meetings began with 20–30 minutes of silent reading. No one presented. Everyone read. Discussion began only after everyone in the room had read the full document. The practice eliminated the information asymmetry of presentations, where the presenter controls what is emphasised and when — and forced every participant to engage with the full argument before responding.",
+          "The Press Release/FAQ method — the operational expression of 'working backwards' — took this discipline further. Before building any new product or service, Amazon teams were required to write the press release that would announce it at launch, and the FAQ that would answer every customer objection. The press release had to be written for the customer, not for the company. It had to explain, in plain language, what the product did, why the customer would care, and why it was better than alternatives. If the team could not write a compelling press release for the product before building it, they were unlikely to be able to explain why a customer should care about it after building it.",
+          "The Amazon Leadership Principles — 16 explicitly stated principles that governed hiring, promotion, and decision-making — were the complementary structure. 'Customer Obsession' was always first. 'Bias for Action' explicitly acknowledged that speed mattered: 'Many decisions and actions are reversible and do not need extensive study. We value calculated risk taking.' 'Are Right, A Lot' was a principle about how leaders should form opinions — not through authority, but through strong mental models and the willingness to change positions when new information arrived. The principles were not aspirational values — they were the basis on which people were hired and fired.",
+          "The combined effect of these practices — six-page memos, silent reading meetings, PR/FAQ processes, and explicit leadership principles — was a decision-making culture that could scale across a company growing to over a million employees without losing consistency. New managers at Amazon in Singapore made decisions using the same frameworks as senior leaders in Seattle. The culture was encoded in practices that were learnable and repeatable, not dependent on proximity to the founders.",
+        ],
+        pull_quote: {
+          text: "PowerPoint-style presentations somehow give permission to gloss over ideas, flatten out any sense of relative importance, and ignore the dependencies of ideas.",
+          attribution: 'Jeff Bezos, 2004 shareholder letter',
+        },
+        decisions: [
+          {
+            abbreviation: 'NP',
+            title: 'No PowerPoint',
+            description: 'Banned from executive meetings in 2004. Replaced by six-page narrative memos. Writing forces thinking.',
+          },
+          {
+            abbreviation: 'SR',
+            title: 'Silent Reading',
+            description: 'Meetings begin with 20–30 min of silent reading. No presentations. Full document before discussion.',
+          },
+          {
+            abbreviation: 'PR',
+            title: 'Press Release First',
+            description: "Write the launch press release before building the product. If you can't explain it to customers, don't build it.",
+          },
+          {
+            abbreviation: 'LP',
+            title: 'Leadership Principles',
+            description: '16 explicit principles used for hiring and firing. Encoded the culture in practices, not posters.',
+          },
+        ],
+      },
+      timeline: {
+        events: [
+          {
+            step: 1,
+            year: '2004',
+            title: 'PowerPoint Banned',
+            description: 'Bezos bans PowerPoint from senior leadership meetings. Industry mocks it. Six-page memo becomes the format.',
+          },
+          {
+            step: 2,
+            year: '2004–2006',
+            title: 'PR/FAQ Process Codified',
+            description: 'Working backwards from the customer press release becomes the product development entry point.',
+          },
+          {
+            step: 3,
+            year: '2015',
+            title: 'Leadership Principles Published',
+            description: 'Amazon publishes 14 (later 16) leadership principles. Used explicitly in hiring, reviews, and decisions.',
+          },
+          {
+            step: 4,
+            year: '2021',
+            title: "'Working Backwards' Published",
+            description: "Former Amazon VPs Colin Bryar and Bill Carr publish the full methodology. Practices adopted globally.",
+          },
+        ],
+      },
+      reflect: {
+        prompts: [
+          "Bezos said PowerPoint gives permission to hide behind bullets and avoid connecting ideas. What communication format in your organisation allows people to perform understanding rather than demonstrate it?",
+          "The silent reading meeting removes the presenter's control over what is emphasised. What would change in your meetings if everyone came having read the full document rather than listened to a summary?",
+          "Write a press release for your current most important initiative — as if it has launched and you are explaining it to a customer. What does this exercise reveal about how clear your thinking actually is?",
+          "Amazon's principles are used to hire and fire — not as values on a wall. What are the actual principles your organisation uses to make people decisions, stated or unstated?",
+        ],
+      },
+      takeaways: {
+        items: [
+          {
+            headline: 'The medium of communication shapes the quality of thinking it produces.',
+            body: "Bullet points allow incomplete logic to hide between items. Narrative prose requires every idea to connect to the next. The format of your thinking documents is a design choice with real consequences for decision quality.",
+          },
+          {
+            headline: 'Starting from the customer outcome reverses the failure mode of most product development.',
+            body: "Most products are built and then described to customers. The PR/FAQ approach requires the description first — which surfaces the gaps between what you are building and what a customer would actually value, before the investment is made.",
+          },
+          {
+            headline: 'Silent reading equalises the meeting before discussion begins.',
+            body: "A presentation gives the presenter enormous control over what is attended to. Silent reading means every participant engages with the same document at the same time, with no filter. The discussion that follows is richer because it starts from a shared understanding.",
+          },
+          {
+            headline: 'Culture scales through practices, not posters.',
+            body: "Amazon's leadership principles work because they are used — in hiring, in performance reviews, in daily decisions. Principles that are not operationalised in this way become decoration. The test of a cultural value is whether it has ever caused a painful decision.",
           },
         ],
       },

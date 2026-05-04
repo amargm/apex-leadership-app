@@ -162,7 +162,20 @@ function BottomTabs() {
     >
       <Tab.Screen name="Learn" component={LearnStack} options={{ title: 'LEARN' }} />
       <Tab.Screen name="Path" component={FadedPathScreen} options={{ title: 'PATH' }} />
-      <Tab.Screen name="Notes" component={NotesStack} options={{ title: 'NOTES' }} />
+      <Tab.Screen
+        name="Notes"
+        component={NotesStack}
+        options={{ title: 'NOTES' }}
+        listeners={({ navigation }) => ({
+          tabPress: () => {
+            // Always navigate to NotesList when the Notes tab is pressed.
+            // If NoteEditor was stranded (e.g. Android back reverted a tab switch
+            // without popping NoteEditor), this pops it — triggering beforeRemove
+            // and auto-saving any content — so the user always lands on the list.
+            navigation.navigate('Notes', { screen: 'NotesList' });
+          },
+        })}
+      />
       <Tab.Screen name="Profile" component={FadedProfileScreen} options={{ title: 'PROFILE' }} />
     </Tab.Navigator>
   );

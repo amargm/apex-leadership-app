@@ -10,7 +10,7 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import type { LessonStatus } from '../types/lesson';
 import { MOCK_LESSONS } from '../data/mockLessons';
 import { configureGoogleSignIn, signInWithGoogle, signOut as authSignOut, onAuthStateChanged } from '../services/authService';
-import { saveUserData, loadUserData } from '../services/firestoreService';
+import { saveUserData, loadUserData, subscribeToUserTier, initUserTierIfMissing } from '../services/firestoreService';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -173,6 +173,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cloudSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stateRef = useRef<AppState>(state);
+  const tierUnsubRef = useRef<(() => void) | null>(null);
   useEffect(() => { stateRef.current = state; }, [state]);
 
   // Configure Google Sign-In once
@@ -182,15 +183,18 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(async (user) => {
       setFirebaseUser(user);
-      // Set Crashlytics user context
+
+      // Tear down any previous tier subscription
+      if (tierUnsubRef.current) {
+        tierUnsubRef.current();
+        tierUnsubRef.current = null;
+      }
+
       if (user) {
         crashlytics().setUserId(user.uid);
-        crashlytics().setAttributes({ tier: 'free', email: user.email || '' });
-      } else {
-        crashlytics().setUserId('');
-      }
-      if (user) {
-        // Load cloud data on sign-in
+        crashlytics().setAttributes({ email: user.email || '' });
+
+        // Load all cloud data on sign-in
         try {
           const cloudData = await loadUserData(user.uid);
           if (cloudData) {
@@ -203,15 +207,33 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
               userName: cloudData.userName ?? user.displayName ?? prev.userName,
               largeFontOn: cloudData.largeFontOn ?? prev.largeFontOn,
               hasCompletedOnboarding: true,
+              // Tier comes from Firestore (admin-controlled); fall back to 'free'
               userTier: (cloudData.userTier as UserTier) ?? 'free',
             }));
+          } else {
+            // New user — ensure a default tier document exists for admin to promote
+            initUserTierIfMissing(user.uid).catch(() => {});
           }
         } catch {
           // Use local state if cloud load fails
         }
+
+        // Subscribe to real-time tier changes — picks up admin promotions instantly
+        tierUnsubRef.current = subscribeToUserTier(user.uid, (tier) => {
+          setState((prev) => {
+            if (prev.userTier === (tier as UserTier)) return prev;
+            return { ...prev, userTier: tier as UserTier };
+          });
+          crashlytics().setAttributes({ tier }).catch(() => {});
+        });
+      } else {
+        crashlytics().setUserId('');
       }
     });
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      if (tierUnsubRef.current) tierUnsubRef.current();
+    };
   }, []);
 
   // Load persisted state on mount
@@ -251,7 +273,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
     }, DEBOUNCE_MS);
 
-    // Cloud sync (if signed in) — debounced at 3s to avoid excessive writes
+    // Cloud sync (if signed in) — debounced at 3s to avoid excessive writes.
+    // userTier is NOT included — it's admin-controlled in Firestore and must
+    // never be overwritten by the client.
     if (firebaseUser) {
       if (cloudSyncRef.current) clearTimeout(cloudSyncRef.current);
       cloudSyncRef.current = setTimeout(() => {
@@ -262,7 +286,6 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
           notes: state.notes,
           userName: state.userName,
           largeFontOn: state.largeFontOn,
-          userTier: state.userTier,
         }).catch(() => {});
       }, 3000);
     }

@@ -49,6 +49,7 @@ export default function PathScreen({ navigation }: PathScreenProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [collapsedModules, setCollapsedModules] = useState<Record<string, boolean>>({});
+  const [allCollapsed, setAllCollapsed] = useState(false);
   const { state, getLessonProgress, isLessonUnlocked } = useAppState();
   const tier = state.userTier;
   const lockMsgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,7 +64,19 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
   const toggleModule = (key: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setCollapsedModules((prev) => ({ ...prev, [key]: !prev[key] }));
+    // Individual toggle overrides the global state for this module
+    setCollapsedModules((prev) => {
+      const currentlyCollapsed = prev[key] ?? allCollapsed;
+      return { ...prev, [key]: !currentlyCollapsed };
+    });
+  };
+
+  const toggleAllCollapsed = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const next = !allCollapsed;
+    setAllCollapsed(next);
+    // Reset per-module overrides so all modules follow the global state
+    setCollapsedModules({});
   };
 
   const handleNodePress = (lesson: Lesson) => {
@@ -131,10 +144,21 @@ export default function PathScreen({ navigation }: PathScreenProps) {
             {state.stats.casesCompleted} of {MOCK_LESSONS.length} complete
           </Text>
         </View>
-        <View style={styles.headerCount}>
-          <Text style={styles.headerCountText}>
-            {tier === 'pro' ? MOCK_LESSONS.length : tier === 'free' ? 4 : 2} unlocked
-          </Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            style={styles.collapseToggle}
+            onPress={toggleAllCollapsed}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.collapseToggleText}>
+              {allCollapsed ? 'EXPAND ALL' : 'COLLAPSE ALL'}
+            </Text>
+          </TouchableOpacity>
+          <View style={styles.headerCount}>
+            <Text style={styles.headerCountText}>
+              {tier === 'pro' ? MOCK_LESSONS.length : tier === 'free' ? 4 : 2} unlocked
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -187,7 +211,9 @@ export default function PathScreen({ navigation }: PathScreenProps) {
 
         {groupedByModule.map((group) => {
           const dotColor = CATEGORY_DOT_COLORS[group.module.colorKey];
-          const isCollapsed = !collapsedModules[group.module.key] && !isSearching;
+          // Per-module override takes precedence; otherwise follow global state
+          const moduleCollapsedState = collapsedModules[group.module.key] ?? allCollapsed;
+          const isCollapsed = moduleCollapsedState && !isSearching;
           const completedInGroup = group.lessons.filter(
             (l) => getLessonProgress(l.lesson_id).status === 'completed',
           ).length;
@@ -336,6 +362,23 @@ const styles = StyleSheet.create({
     color: '#666666',
     letterSpacing: 0.04 * 9,
     marginTop: 2,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  collapseToggle: {
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  collapseToggleText: {
+    fontFamily: FontFamily.dmMonoLight,
+    fontSize: 9,
+    color: Colors.textMuted,
+    letterSpacing: 0.04 * 9,
   },
   headerCount: {
     borderWidth: 1,

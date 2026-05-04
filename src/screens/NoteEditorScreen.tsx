@@ -88,6 +88,24 @@ export default function NoteEditorScreen({ navigation, route }: Props) {
     return unsubscribe;
   }, [navigation, addNote, updateNote]);
 
+  // Also save when the screen loses focus via a tab switch (Android back can revert a
+  // tab switch without popping NoteEditor, so beforeRemove never fires in that case).
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      if (skipAutoSave.current) return;
+      const trimmed = contentRef.current.trim();
+      if (!trimmed) return;
+      const headingVal = headingRef.current.trim() || undefined;
+      if (createdNoteId.current) {
+        updateNote(createdNoteId.current, trimmed, headingVal, lessonIdRef.current);
+      } else {
+        const id = addNote(trimmed, lessonIdRef.current, headingVal);
+        if (id) createdNoteId.current = id;
+      }
+    });
+    return unsubscribe;
+  }, [navigation, addNote, updateNote]);
+
   const saveNote = () => {
     const trimmed = content.trim();
     if (!trimmed) return;
